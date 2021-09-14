@@ -24,6 +24,5 @@ class AppServiceProvider extends ServiceProvider
     public function boot(){
         $option = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ'];
         view()->share('option', $option);
-        Schema::defaultStringLength(191);
     }
 }
