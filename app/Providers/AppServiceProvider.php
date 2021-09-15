@@ -26,5 +26,8 @@ class AppServiceProvider extends ServiceProvider
         $option = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ'];
         view()->share('option', $option);
         Schema::defaultStringLength(191);
+        if (\App::environment(['production'])) {
+            \URL::forceScheme('https');
+        }
     }
 }
