@@ -147,7 +147,7 @@ class QuestionController extends Controller
 
         //分母が１の場合の処理
         for($i=1;$i<6;$i+=2){
-            if(abs($right_answers[$i]) === 1){
+            if(abs($right_answers[$i]) == 1){
                 unset($right_answers[$i]);
                 $item[($i-1)/2] = str_replace(['\frac{','}{\fbox{'.$option[$i].'}}'],['',''],$item[($i-1)/2]);
                 unset($option[$i]);
