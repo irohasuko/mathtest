@@ -329,7 +329,7 @@ class QuestionController extends Controller
         //解答テキストの設定
         $item[0] = '(x';
         $item[1] = ($right_answers[0]>0 ? '+' : '-').'\fbox{'.$option[0].'}y';
-        $item[2] = ($right_answers[1]>0 ? '+' : '-').'\fbox{'.$option[1].'}';
+        $item[2] = ($right_answers[1]>0 ? '+' : '-').'\fbox{'.$option[1].'})';
         $item[3] = '(\fbox{'.$option[2].'}x';
         $item[4] = ($right_answers[3]>0 ? '+' : '-').'\fbox{'.$option[3].'}y';
         $item[5] = ($right_answers[4]>0 ? '+' : '-').'\fbox{'.$option[4].'})';
