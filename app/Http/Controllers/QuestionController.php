@@ -178,7 +178,7 @@ class QuestionController extends Controller
 
         for($i=0;$i<$blanks;$i++)
         {
-            $right_answers[$i] = abs($right_answers[$i]);
+            $right_answers[$i] = abs((int)$right_answers[$i]);
         }
 
         $text = '$$ ('.fo(li(frac($a,$b),'x').li(frac($c,$d),'y')).')('.fo(li(frac($e,$f),'x').li(frac($g,$h),'y')).')';
