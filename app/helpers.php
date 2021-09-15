@@ -5,7 +5,7 @@ if (! function_exists('gmp')) {
     function gcd($a,$b)
     {
         $c = gmp_gcd($a,$b);
-        return array($a/$c, $b/$c);
+        return array((int)$a/$c, (int)$b/$c);
     }
 }
 
