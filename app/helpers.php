@@ -163,7 +163,7 @@ if (! function_exists('d_sin')) {
 
         if($degree > 180){
             $degree -= 180;
-            $denominator = $denominator.map(function($a){ return $a*-1; });
+            $denominator = array_map((function($a){ return $a*-1; }),$denominator);
         }
         $k = array_search($degree,$deg);
 
@@ -214,7 +214,7 @@ if (! function_exists('get_data')) {
     }
 }
 
-//角度を0°≦Θ≦360°に強制する
+//弧度法の角度を0°≦Θ≦360°に強制
 if (! function_exists('rad')) {
     function rad($a,$b)
     {
@@ -229,6 +229,14 @@ if (! function_exists('rad')) {
         }
 
         return array($a,$b);
+    }
+}
+
+//弧度法を度数法に変換
+if (! function_exists('rad_to_deg')) {
+    function rad_to_deg($a)
+    {
+        return $a[0]/$a[1]*180;
     }
 }
 

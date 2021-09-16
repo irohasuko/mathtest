@@ -3138,29 +3138,50 @@ class QuestionController extends Controller
     public function unit204_q01($unit_id){
         //初期設定
         $question_id = 20401;
-        $blanks = 6;
+        $blanks = 8;
         $option = $this->option;
 
         //変数の設定
-        $a = rand(-5,5);
+        do { $a = rand(-11,11); } while( $a==0 );
         do { $b = rand(2,6); } while( $b==5 );
-        list($a,$b) = d_cos($degree);
-        list($b,$a) = d_cos($degree);
+        list($a,$b) = gcd($a,$b);
 
         //答えの計算
-        $right_answers[0] = $degree;
+        $right_answers[0] = 1;
+        list($right_answers[1],$right_answers[2]) = d_sin(rad_to_deg(rad($a,$b)));
+        $right_answers[3] = 1;
+        list($right_answers[4],$right_answers[5]) = d_cos(rad_to_deg(rad($a,$b)));
+        $right_answers[6] = $right_answers[5];
+        $right_answers[7] = $right_answers[1]*$right_answers[4];
+        $right_answers[8] = $right_answers[2]*$right_answers[4];
 
-        //正解テキストの設定
-        $text = '$$ 0° \leqq \alpha \leqq 180° で、'.d1($a,'\cos \theta').'+\sqrt{'.$b.'}=0 \\ のとき、\\\\';
-        if($b == 1){
-            $text = str_replace('\sqrt{'.$b.'}',$b,$text);
-        } elseif($b == 0){
-            $text = str_replace('+\sqrt{'.$b.'}','',$text);
+        for($i=0;$i<3;$i++){
+            list($right_answers[3*$i],$right_answers[3*$i+1]) = root($right_answers[3*$i],$right_answers[3*$i+1]);
+            list($right_answers[3*$i],$right_answers[3*$i+2]) = root($right_answers[3*$i],$right_answers[3*$i+2]);
         }
 
-        //空欄テキストの設定
-        $blank_text = '\theta = \fbox{ア}° $$';
+        //正解テキストの設定
+        $text = '$$';
+        $radian = $b==1?'':($a*$b<0?'-':'').'\frac{'.abs($a).'}{'.abs($b).'}';
 
+        //空欄テキストの設定
+        $item[0] = '\sin{('.$radian.'\pi)} = \frac{\fbox{ア}\sqrt{\fbox{イ}}}{\fbox{ウ}}、';
+        $item[1] = '\cos{('.$radian.'\pi)} = \frac{\fbox{エ}\sqrt{\fbox{オ}}}{\fbox{カ}}、\\\\';
+        $item[2] = '\tan{('.$radian.'\pi)} = \frac{\fbox{キ}\sqrt{\fbox{ク}}}{\fbox{ケ}}';
+
+        for($i=0;$i<3;$i++){
+            if($right_answers[3*$i+1] == 0){
+                $item[$i] = str_replace(['\frac{\fbox{'.$option[3*$i].'}\sqrt{','}}{\fbox{'.$option[3*$i+2].'}}'],['',''],$item[$i]);
+                unset($right_answers[3*$i]);
+                unset($right_answers[3*$i+2]);
+                unset($option[3*$i]);
+                unset($option[3*$i+2]);
+            }elseif($right_answers[3*$i+1] == 1){
+                
+            }
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
     }
 
