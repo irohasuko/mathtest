@@ -3134,6 +3134,36 @@ class QuestionController extends Controller
         return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
     }
 
+    //弧度法
+    public function unit204_q01($unit_id){
+        //初期設定
+        $question_id = 20401;
+        $blanks = 6;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(-5,5);
+        do { $b = rand(2,6); } while( $b==5 );
+        list($a,$b) = d_cos($degree);
+        list($b,$a) = d_cos($degree);
+
+        //答えの計算
+        $right_answers[0] = $degree;
+
+        //正解テキストの設定
+        $text = '$$ 0° \leqq \alpha \leqq 180° で、'.d1($a,'\cos \theta').'+\sqrt{'.$b.'}=0 \\ のとき、\\\\';
+        if($b == 1){
+            $text = str_replace('\sqrt{'.$b.'}',$b,$text);
+        } elseif($b == 0){
+            $text = str_replace('+\sqrt{'.$b.'}','',$text);
+        }
+
+        //空欄テキストの設定
+        $blank_text = '\theta = \fbox{ア}° $$';
+
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
 
     /*テンプレ
     public function unit000?q00($unit_id){
