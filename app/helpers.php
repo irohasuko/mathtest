@@ -153,27 +153,34 @@ if (! function_exists('root')) {
     }
 }
 
-//sinの処理(0°≦Θ≦180°)
+//sinの処理(0°≦Θ≦360°)
 if (! function_exists('d_sin')) {
     function d_sin($degree)
     {
         $deg = [0,30,45,60,90,120,135,150,180];
-        $numerator = [0,1,2,3,1,3,2,1,0];    //すべてルートをつけていると仮定
-        $denominator = [1,2,2,2,1,2,2,2,1];  //有理化済み
+        $numerator = [0,1,2,3,1,3,2,1,0];    //分子：すべてルートをつけていると仮定
+        $denominator = [1,2,2,2,1,2,2,2,1];  //分母：有理化済み
 
+        if($degree > 180){
+            $degree -= 180;
+            $denominator = $denominator.map(function($a){ return $a*-1; });
+        }
         $k = array_search($degree,$deg);
 
         return array($numerator[$k],$denominator[$k]);
     }
 }
 
-//cosの処理(0°≦Θ≦180°)
+//cosの処理(0°≦Θ≦360°)
 if (! function_exists('d_cos')) {
     function d_cos($degree)
     {
         $deg = [0,30,45,60,90,120,135,150,180];
-        $numerator = [1,3,2,1,0,1,2,3,1];    //すべてルートをつけていると仮定
-        $denominator = [1,2,2,2,1,-2,-2,-2,-1];  //有理化済み
+        if($degree > 180){
+            $degree -= 180;
+        }
+        $numerator = [1,3,2,1,0,1,2,3,1];    //分子：すべてルートをつけていると仮定
+        $denominator = [1,2,2,2,1,-2,-2,-2,-1];  //分母：有理化済み
 
         $k = array_search($degree,$deg);
 
@@ -204,6 +211,24 @@ if (! function_exists('get_data')) {
             array_push($data,rand(1,50));
         }
         return $data;
+    }
+}
+
+//角度を0°≦Θ≦360°に強制する
+if (! function_exists('rad')) {
+    function rad($a,$b)
+    {
+        if($a/$b < 0){
+            do{
+                $a += 2*$b;
+            }while($a/$b < 0);
+        }elseif($a/$b > 2){
+            do{
+                $a -= 2*$b;
+            }while($a/$b > 2);
+        }
+
+        return array($a,$b);
     }
 }
 
