@@ -131,6 +131,9 @@ if (! function_exists('d4')) {
 if (! function_exists('root')) {
     function root($a,$b)
     {
+        if($b == 0){
+            return array($a,$b);
+        }
         $temp = array();
         $c = 1;
         for($i=2;$b>1;$i++){
@@ -176,11 +179,13 @@ if (! function_exists('d_cos')) {
     function d_cos($degree)
     {
         $deg = [0,30,45,60,90,120,135,150,180];
-        if($degree > 180){
-            $degree -= 180;
-        }
         $numerator = [1,3,2,1,0,1,2,3,1];    //分子：すべてルートをつけていると仮定
         $denominator = [1,2,2,2,1,-2,-2,-2,-1];  //分母：有理化済み
+        
+        if($degree > 180){
+            $degree -= 180;
+            $denominator = array_map((function($a){ return $a*-1; }),$denominator);
+        }
 
         $k = array_search($degree,$deg);
 
@@ -214,29 +219,22 @@ if (! function_exists('get_data')) {
     }
 }
 
-//弧度法の角度を0°≦Θ≦360°に強制
-if (! function_exists('rad')) {
-    function rad($a,$b)
+
+//弧度法を度数法に変換
+if (! function_exists('rad_to_deg')) {
+    function rad_to_deg(int $a,int $b)
     {
         if($a/$b < 0){
             do{
                 $a += 2*$b;
             }while($a/$b < 0);
-        }elseif($a/$b > 2){
+        }elseif($a/$b >= 2){
             do{
                 $a -= 2*$b;
-            }while($a/$b > 2);
+            }while($a/$b >= 2);
         }
-
-        return array($a,$b);
-    }
-}
-
-//弧度法を度数法に変換
-if (! function_exists('rad_to_deg')) {
-    function rad_to_deg($a)
-    {
-        return $a[0]/$a[1]*180;
+        $degree = 180/$b*$a;
+        return $degree;
     }
 }
 

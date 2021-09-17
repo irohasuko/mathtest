@@ -3138,47 +3138,74 @@ class QuestionController extends Controller
     public function unit204_q01($unit_id){
         //初期設定
         $question_id = 20401;
-        $blanks = 8;
+        $blanks = 6;
         $option = $this->option;
 
         //変数の設定
         do { $a = rand(-11,11); } while( $a==0 );
         do { $b = rand(2,6); } while( $b==5 );
         list($a,$b) = gcd($a,$b);
+        $a = gmp_intval($a); $b = gmp_intval($b);
 
         //答えの計算
         $right_answers[0] = 1;
-        list($right_answers[1],$right_answers[2]) = d_sin(rad_to_deg(rad($a,$b)));
+        list($right_answers[1],$right_answers[2]) = d_sin(rad_to_deg($a,$b));
         $right_answers[3] = 1;
-        list($right_answers[4],$right_answers[5]) = d_cos(rad_to_deg(rad($a,$b)));
-        $right_answers[6] = $right_answers[5];
-        $right_answers[7] = $right_answers[1]*$right_answers[4];
-        $right_answers[8] = $right_answers[2]*$right_answers[4];
+        list($right_answers[4],$right_answers[5]) = d_cos(rad_to_deg($a,$b));
 
-        for($i=0;$i<3;$i++){
+        for($i=0;$i<2;$i++){
             list($right_answers[3*$i],$right_answers[3*$i+1]) = root($right_answers[3*$i],$right_answers[3*$i+1]);
-            list($right_answers[3*$i],$right_answers[3*$i+2]) = root($right_answers[3*$i],$right_answers[3*$i+2]);
+            list($right_answers[3*$i],$right_answers[3*$i+2]) = gcd($right_answers[3*$i],$right_answers[3*$i+2]);
         }
 
         //正解テキストの設定
         $text = '$$';
-        $radian = $b==1?'':($a*$b<0?'-':'').'\frac{'.abs($a).'}{'.abs($b).'}';
+        $radian = ($a*$b<0?'-':'').'\frac{'.abs($a).'}{'.abs($b).'}';
+        if(abs($b) == 1){
+            $radian = d1($a);
+        }
 
         //空欄テキストの設定
-        $item[0] = '\sin{('.$radian.'\pi)} = \frac{\fbox{ア}\sqrt{\fbox{イ}}}{\fbox{ウ}}、';
-        $item[1] = '\cos{('.$radian.'\pi)} = \frac{\fbox{エ}\sqrt{\fbox{オ}}}{\fbox{カ}}、\\\\';
-        $item[2] = '\tan{('.$radian.'\pi)} = \frac{\fbox{キ}\sqrt{\fbox{ク}}}{\fbox{ケ}}';
+        $item[0] = '\sin{('.$radian.'\pi)} = ';
+        $item[1] = ($right_answers[1]*$right_answers[2]<0?'-':'').'\frac{\fbox{ア}\sqrt{\fbox{イ}}}{\fbox{ウ}}、';
+        $item[2] = '\cos{('.$radian.'\pi)} = ';
+        $item[3] = ($right_answers[4]*$right_answers[5]<0?'-':'').'\frac{\fbox{エ}\sqrt{\fbox{オ}}}{\fbox{カ}}';
 
-        for($i=0;$i<3;$i++){
+        for($i=0;$i<2;$i++){
             if($right_answers[3*$i+1] == 0){
-                $item[$i] = str_replace(['\frac{\fbox{'.$option[3*$i].'}\sqrt{','}}{\fbox{'.$option[3*$i+2].'}}'],['',''],$item[$i]);
+                $item[2*$i+1] = str_replace(['\frac{\fbox{'.$option[3*$i].'}\sqrt{','}}{\fbox{'.$option[3*$i+2].'}}'],['',''],$item[2*$i+1]);
                 unset($right_answers[3*$i]);
                 unset($right_answers[3*$i+2]);
                 unset($option[3*$i]);
                 unset($option[3*$i+2]);
-            }elseif($right_answers[3*$i+1] == 1){
-                
+                $blanks -= 2;
+            }else{
+                if(abs($right_answers[3*$i+1]) == 1){
+                    $item[2*$i+1] = str_replace('\sqrt{\fbox{'.$option[3*$i+1].'}}','',$item[2*$i+1]);
+                    unset($right_answers[3*$i+1]);
+                    unset($option[3*$i+1]);
+                    $blanks -= 1;
+                }elseif(abs($right_answers[3*$i]) == 1){
+                    $item[2*$i+1] = str_replace('\fbox{'.$option[3*$i].'}','',$item[2*$i+1]);
+                    unset($right_answers[3*$i]);
+                    unset($option[3*$i]);
+                    $blanks -= 1;
+                }
+                if(abs($right_answers[3*$i+2]) == 1){
+                    $item[2*$i+1] = str_replace(['\frac{','}{\fbox{'.$option[3*$i+2].'}}'],['',''],$item[2*$i+1]);
+                    unset($right_answers[3*$i+2]);
+                    unset($option[3*$i+2]);
+                    $blanks -= 1;
+                }
             }
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
