@@ -5,7 +5,8 @@ if (! function_exists('gmp')) {
     function gcd($a,$b)
     {
         $c = gmp_gcd($a,$b);
-        return array((int)$a/$c, (int)$b/$c);
+        $a /= $c;   $b /= $c;
+        return array(gmp_intval($a), gmp_intval($b));
     }
 }
 
@@ -219,7 +220,6 @@ if (! function_exists('get_data')) {
     }
 }
 
-
 //弧度法を度数法に変換
 if (! function_exists('rad_to_deg')) {
     function rad_to_deg(int $a,int $b)
@@ -235,6 +235,40 @@ if (! function_exists('rad_to_deg')) {
         }
         $degree = 180/$b*$a;
         return $degree;
+    }
+}
+
+//ルートのテキスト処理
+if (! function_exists('l_root')) {
+    function l_root($right_answers,$option,$a,$b,$blanks,$item) //$a√$bを想定
+    {
+        if($right_answers[$b] == 1){
+            $item = str_replace('\sqrt{\fbox{'.$option[$b].'}}','',$item);
+            unset($right_answers[$b]);
+            unset($option[$b]);
+            $blanks -= 1;
+        }elseif(abs($right_answers[$a]) == 1){
+            $item = str_replace('\fbox{'.$option[$a].'}','',$item);
+            unset($right_answers[$a]);
+            unset($option[$a]);
+            $blanks -= 1;
+        }
+
+        return array($right_answers,$option,$blanks,$item);
+    }
+}
+
+//分数のテキスト処理
+if (! function_exists('l_frac')) {
+    function l_frac($right_answers,$option,$a,$b,$blanks,$item) //$a/$bを想定
+    {
+        if(abs($right_answers[$b]) == 1){
+            $item = str_replace(['\frac{','}{\fbox{'.$option[$b].'}}'],['',''],$item);
+            unset($right_answers[$b]);
+            unset($option[$b]);
+            $blanks -= 1;
+        }
+        return array($right_answers,$option,$blanks,$item);
     }
 }
 

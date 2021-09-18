@@ -3212,6 +3212,137 @@ class QuestionController extends Controller
         return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
     }
 
+    //三角関数のグラフ
+    public function unit204_q02($unit_id){
+        //初期設定
+        $question_id = 20402;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(2,4);
+        do { $b = rand(-5,5); } while( $b==0 );
+        do { $c = rand(-5,5); } while( $c==0 );
+        do { $d = rand(-5,5); } while( $d==0 );
+        list($b,$c) = gcd($b,$c);
+
+        //答えの計算
+        $right_answers[0] = -1*$b;
+        $right_answers[1] = $c;
+        $right_answers[2] = $d;
+        $right_answers[3] = 2*$a;
+
+        //正解テキストの設定
+        $text = '$$ y=2\sin{(\frac{x}{'.$a.'}'.($b*$c<0?'-':'+').'\frac{'.abs($b).'}{'.abs($c).'}\pi)}'.d3($d).'は、\\\\';
+        if(abs($c)==1){
+            $text = '$$ y=2\sin{(\frac{x}{'.$a.'}'.($b*$c<0?'-':'+').''.d1(abs($b)).'\pi)}'.d3($d).'は、\\\\';
+        }
+
+        //空欄テキストの設定
+        $item[0] = 'y=2\sin{\frac{x}{'.$a.'}}\\ のグラフを';
+        $item[1] = 'x軸方向に'.($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}\pi、\\\\';
+        $item[2] = 'y軸方向に'.($right_answers[2]<0?'-':'').'\fbox{ウ}だけ移動したものであり、\\\\';
+        $item[3] = 'このグラフの周期は\fbox{エ}\piである。';
+
+        list($right_answers,$option,$blanks,$item[1]) = l_frac($right_answers,$option,0,1,$blanks,$item[1]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //加法定理
+    public function unit204_q03($unit_id){
+        //初期設定
+        $question_id = 20403;
+        $blanks = 9;
+        $option = $this->option;
+        $pattern = rand(1,2);
+
+        //変数の設定
+        $a = rand(1,5);
+        do { $b = rand(1,7); } while( $a>=$b );
+        $c = rand(1,5);
+        do { $d = rand(1,7); } while( $c>=$d || (gcd($a,$b)==gcd($c,$d)));
+
+        list($a,$b) = gcd($a,$b);
+        list($c,$d) = gcd($c,$d);
+
+        //答えの計算
+        $right_answers[0] = $a*$c;
+        $right_answers[1] = 1;
+        $right_answers[2] = ($b*$b-$a*$a)*($d*$d-$c*$c);
+        $right_answers[3] = $b*$d;
+
+        $right_answers[4] = $c;
+        $right_answers[5] = ($b*$b-$a*$a);
+        $right_answers[6] = $a;
+        $right_answers[7] = ($d*$d-$c*$c);
+        $right_answers[8] = $b*$d;
+
+        list($right_answers[1],$right_answers[2]) = root($right_answers[1],$right_answers[2]);
+        $s = gmp_gcd(gmp_gcd($right_answers[0],$right_answers[1]),$right_answers[3]);
+        $right_answers[0] /= $s;    $right_answers[1] /= $s;    $right_answers[3] /= $s;
+
+        list($right_answers[4],$right_answers[5]) = root($right_answers[4],$right_answers[5]);
+        list($right_answers[6],$right_answers[7]) = root($right_answers[6],$right_answers[7]);
+        $s = gmp_gcd(gmp_gcd($right_answers[4],$right_answers[6]),$right_answers[8]);
+        $right_answers[4] /= $s;    $right_answers[6] /= $s;    $right_answers[8] /= $s;
+
+        //正解テキストの設定
+        $text = '$$ 0 \lt \alpha \lt \frac{\pi}{2}、0 \lt \beta \lt \frac{\pi}{2}とする。\\\\
+                 \sin{\alpha}=\frac{'.$a.'}{'.$b.'}、\cos{\beta}=\frac{'.$c.'}{'.$d.'}のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '\sin{(\alpha + \beta)} = \frac{\fbox{ア}+\fbox{イ}\sqrt{\fbox{ウ}}}{\fbox{エ}}、\\\\';
+        $item[1] = '\cos{(\alpha + \beta)} = \frac{\fbox{オ}\sqrt{\fbox{カ}}';
+        $item[2] = '-\fbox{キ}\sqrt{\fbox{ク}}}{\fbox{ケ}}である。';
+
+        if($right_answers[2] == 1){
+            $blanks -= 2;
+            $right_answers[0] += $right_answers[1];
+            //$right_answers[3] = $right_answers[3];
+            unset($right_answers[1]); unset($right_answers[2]);
+            unset($option[1]);  unset($option[2]);
+            list($right_answers[0],$right_answers[3]) = gcd($right_answers[0],$right_answers[3]);
+            $item[0] = '\sin{(\alpha + \beta)} = \frac{\fbox{ア}}{\fbox{エ}}、\\\\';
+
+            $blanks -= 2;
+            $right_answers[4] = $right_answers[4]-$right_answers[6];
+            //$right_answers[5] = $b*$b-$a*$a;
+            //$right_answers[8] = $b*$d;
+            unset($right_answers[6]);   unset($right_answers[7]);
+            unset($option[6]);  unset($option[7]);
+            list($right_answers[4],$right_answers[8]) = gcd($right_answers[4],$right_answers[8]);
+            $item[1] = '\cos{(\alpha + \beta)} = '.($right_answers[4]<0?'-':'').'\frac{\fbox{オ}\sqrt{\fbox{カ}}}{\fbox{ケ}}である。';
+            unset($item[2]);
+            list($right_answers,$option,$blanks,$item[1]) = l_root($right_answers,$option,4,5,$blanks,$item[1]);
+        }else{
+            list($right_answers,$option,$blanks,$item[0]) = l_root($right_answers,$option,1,2,$blanks,$item[0]);
+            list($right_answers,$option,$blanks,$item[1]) = l_root($right_answers,$option,4,5,$blanks,$item[1]);
+            list($right_answers,$option,$blanks,$item[2]) = l_root($right_answers,$option,6,7,$blanks,$item[2]);
+        }
+
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
 
     /*テンプレ
     public function unit000?q00($unit_id){
