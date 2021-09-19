@@ -260,7 +260,7 @@ if (! function_exists('l_root')) {
 
 //分数のテキスト処理
 if (! function_exists('l_frac')) {
-    function l_frac($right_answers,$option,$a,$b,$blanks,$item) //$a/$bを想定
+    function l_frac($right_answers,$option,$b,$blanks,$item) //$a/$bを想定
     {
         if(abs($right_answers[$b]) == 1){
             $item = str_replace(['\frac{','}{\fbox{'.$option[$b].'}}'],['',''],$item);
@@ -269,6 +269,16 @@ if (! function_exists('l_frac')) {
             $blanks -= 1;
         }
         return array($right_answers,$option,$blanks,$item);
+    }
+}
+
+//符号のランダム処理
+if (! function_exists('rand_sign')) {
+    function rand_sign() 
+    {
+        $sign = [-1,1];
+        $sign = $sign[rand(0,1)];
+        return $sign;
     }
 }
 

@@ -3264,7 +3264,6 @@ class QuestionController extends Controller
         $question_id = 20403;
         $blanks = 9;
         $option = $this->option;
-        $pattern = rand(1,2);
 
         //変数の設定
         $a = rand(1,5);
@@ -3343,27 +3342,341 @@ class QuestionController extends Controller
         return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
     }
 
+    //2倍角の公式
+    public function unit204_q04($unit_id){
+        //初期設定
+        $question_id = 20404;
+        $blanks = 5;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,5);
+        do { $b = rand(1,7); } while( $a>=$b );
+        list($a,$b) = gcd($a,$b);
+
+        //答えの計算
+        $right_answers[0] = 2*$a;
+        $right_answers[1] = $b*$b - $a*$a;
+        $right_answers[2] = $b*$b;
+        $right_answers[3] = $b*$b - 2*$a*$a;
+        $right_answers[4] = $b*$b;
+
+        list($right_answers[0],$right_answers[1]) = root($right_answers[0],$right_answers[1]);
+        list($right_answers[0],$right_answers[2]) = gcd($right_answers[0],$right_answers[2]);
+        list($right_answers[3],$right_answers[4]) = gcd($right_answers[3],$right_answers[4]);
+
+        //正解テキストの設定
+        $text = '$$ 0 \lt \alpha \lt \frac{\pi}{2}とする。\sin{\alpha}=\frac{'.$a.'}{'.$b.'}のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '\sin{2 \alpha} = \frac{\fbox{ア}\sqrt{\fbox{イ}}}{\fbox{ウ}}、';
+        $item[1] = '\cos{2 \alpha} = '.($right_answers[3]<0?'-':'').'\frac{\fbox{エ}}{\fbox{オ}}、';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_root($right_answers,$option,0,1,$blanks,$item[0]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //三角不等式　その１
+    public function unit204_q05($unit_id){
+        //初期設定
+        $question_id = 20405;
+        $blanks = 4;
+        $option = $this->option;
+        $pattern = rand(1,2);
+
+        //変数の設定
+        $a = 1;
+        switch($pattern){
+            case 1: //sin
+                $nu = [1,1,1,7,5,4];
+                $de = [6,4,3,6,4,3];
+                $n = rand(0,5);
+                list($b,$c) = d_sin(rad_to_deg($nu[$n],$de[$n]));
+                break;
+            case 2: //cos
+                $nu = [1,1,1,1,2,3,5];
+                $de = [6,4,3,2,3,4,6];
+                $n = rand(0,6);
+                list($b,$c) = d_cos(rad_to_deg($nu[$n],$de[$n]));
+                break;
+        }
+
+        list($a,$b) = root($a,$b);
+
+        //答えの計算
+        switch($pattern){
+            case 1:
+                if($n < 3){
+                    $right_answers[0] = $nu[$n];
+                    $right_answers[1] = $de[$n];
+                    $right_answers[2] = $de[$n] - $nu[$n];
+                    $right_answers[3] = $de[$n];
+                }else{
+                    $blanks = 5;
+                    $right_answers[0] = $nu[$n];
+                    $right_answers[1] = $de[$n];
+                    $right_answers[2] = 3*$de[$n] - $nu[$n];
+                    $right_answers[3] = $de[$n];
+                    $right_answers[4] = 2;
+                }
+                break;
+            case 2:
+                $right_answers[0] = $nu[$n];
+                $right_answers[1] = $de[$n];
+                $right_answers[2] = 2*$de[$n] - $nu[$n];
+                $right_answers[3] = $de[$n];
+                break;
+        }
+
+        //正解テキストの設定
+        $l_ans = ($c<0?'-':'').'\frac{'.$a.'\sqrt{'.$b.'}}{'.abs($c).'}';
+        if($a == 1){
+            $l_ans = ($c<0?'-':'').'\frac{\sqrt{'.$b.'}}{'.abs($c).'}';
+        }
+        if($b == 1){
+            $l_ans = ($c<0?'-':'').'\frac{'.$a.'}{'.abs($c).'}';
+        }
+        if($b == 0){
+            $l_ans = '0';
+        }
+        $text = '$$ 0 \leqq \theta \lt 2\piとする。';
+        switch($pattern){
+            case 1:
+                $text .= '\sin{\theta} \geqq '.$l_ans.'の解は、\\\\';
+                break;
+            case 2:
+                $text .= '\cos{\theta} \lt '.$l_ans.'の解は、\\\\';
+                break;
+        }
+
+        //空欄テキストの設定
+        switch($pattern){
+            case 1:
+                if($n < 3){
+                    $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}\pi \leqq \theta \leqq';
+                    $item[1] = '\frac{\fbox{ウ}}{\fbox{エ}}\pi';
+                }else{
+                    $item[0] = '0 \leqq \theta \leqq \frac{\fbox{ア}}{\fbox{イ}}\pi、';
+                    $item[1] = '\frac{\fbox{ウ}}{\fbox{エ}}\pi \leqq \theta \lt \fbox{オ}\pi';
+                }
+                break;
+            case 2:
+                $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}\pi \lt \theta \lt';
+                $item[1] = '\frac{\fbox{ウ}}{\fbox{エ}}\pi';
+                break;
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //三角不等式　その２
+    public function unit204_q06($unit_id){
+        //初期設定
+        $question_id = 20406;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $a = 2;
+        $b = 1*rand_sign();
+        $c = rand(2,5)*rand_sign();
+
+        $c_1 = $a;
+        $c_2 = -1*($a*$c + $b);
+        $c_3 = -1*($a + $b*$c);
+
+        //答えの計算
+        if($b == 1){
+            $theta = [2,3];
+        }elseif($b == -1){
+            $theta = [1,3];
+        }
+
+        $right_answers[0] = $theta[0];
+        $right_answers[1] = $theta[1];
+        $right_answers[2] = 2*$theta[1] - $theta[0];
+        $right_answers[3] = $theta[1];
+
+        if($c < 0){
+            $blanks = 5;
+            $right_answers[4] = 2;
+        }
+
+        //問題テキストの設定
+        $text = '$$ 0 \leqq \theta \lt 2\piとする。\\\\';
+        $text .= d1($c_1,'\sin{^{2}\theta}').d2($c_2,'\cos{\theta}').d4($c_3).'\gt 0 \\ の解は、\\\\';
+
+
+        //空欄テキストの設定
+        if($c > 0){
+            $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}\pi \lt \theta \lt \frac{\fbox{ウ}}{\fbox{エ}}\pi';
+        }else{
+            $item[0] = '0 \leqq \theta \lt \frac{\fbox{ア}}{\fbox{イ}}\pi、';
+            $item[1] = '\frac{\fbox{ウ}}{\fbox{エ}}\pi \lt \theta \lt \fbox{オ}\pi';
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //半角の公式
+    public function unit204_q07($unit_id){
+        //初期設定
+        $question_id = 20407;
+        $blanks = 6;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,5);
+        do { $b = rand(-7,7); } while( abs($a)>=abs($b));
+        list($a,$b) = gcd($a,$b);
+
+        //答えの計算
+        $right_answers[0] = 1;
+        $right_answers[1] = ($b-$a)*2*$b;
+        $right_answers[2] = 2*$b;
+        $right_answers[3] = 1;
+        $right_answers[4] = ($b+$a)*2*$b;
+        $right_answers[5] = 2*$b;
+
+        list($right_answers[0],$right_answers[1]) = root($right_answers[0],$right_answers[1]);
+        list($right_answers[3],$right_answers[4]) = root($right_answers[3],$right_answers[4]);
+        list($right_answers[0],$right_answers[2]) = gcd($right_answers[0],$right_answers[2]);
+        list($right_answers[3],$right_answers[5]) = gcd($right_answers[3],$right_answers[5]);
+
+        //正解テキストの設定
+        $text = '$$ 0 \lt \theta \lt \piとする。\cos{\theta}='.($b<0?'-':'').'\frac{'.$a.'}{'.abs($b).'}のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '\sin{\frac{\theta}{2}} = \frac{\fbox{ア}\sqrt{\fbox{イ}}}{\fbox{ウ}}、';
+        $item[1] = '\cos{\frac{\theta}{2}} = \frac{\fbox{エ}\sqrt{\fbox{オ}}}{\fbox{カ}}';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_root($right_answers,$option,0,1,$blanks,$item[0]);
+        list($right_answers,$option,$blanks,$item[1]) = l_root($right_answers,$option,3,4,$blanks,$item[1]);
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,2,$blanks,$item[0]);
+        list($right_answers,$option,$blanks,$item[1]) = l_frac($right_answers,$option,5,$blanks,$item[1]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //三角関数の合成
+    public function unit204_q08($unit_id){
+        //初期設定
+        $question_id = 20408;
+        $blanks = 8;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,3);
+        $b = [1,3,1,3];
+        $rad = [4,3,-4,-3];
+        $pattern = rand(0,3);
+
+        //答えの計算
+        $right_answers[0] = $rad[$pattern] - 2;
+        $right_answers[1] = 2*$rad[$pattern];
+        $right_answers[2] = 1;
+        $right_answers[3] = $a*$a + $a*$a*$b[$pattern];
+
+        $right_answers[4] = 3*$rad[$pattern] - 2;
+        $right_answers[5] = 2*$rad[$pattern];
+        $right_answers[6] = -1;
+        $right_answers[7] = $a*$a + $a*$a*$b[$pattern];
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[4],$right_answers[5]) = gcd($right_answers[4],$right_answers[5]);
+        list($right_answers[2],$right_answers[3]) = root($right_answers[2],$right_answers[3]);
+        list($right_answers[6],$right_answers[7]) = root($right_answers[6],$right_answers[7]);
+
+
+        //問題テキストの設定
+        $text = '$$ 0 \leqq \theta \lt 2\piとする。\\\\';
+        $text .= 'f(\theta)='.d1($a,'\sin{\theta}').($rad[$pattern]<0?'-':'+').d1($a).'\sqrt{'.$b[$pattern].'}\cos{\theta}\\ とすると、f(\theta)は、\\\\';
+        if($b[$pattern] == 1){
+            $text = str_replace('\sqrt{'.$b[$pattern].'}','',$text);
+        }
+
+
+        //空欄テキストの設定
+        $item[0] = '\theta = \frac{\fbox{ア}}{\fbox{イ}}\pi\\ で最大値\fbox{ウ}\sqrt{\fbox{エ}}、\\\\';
+        $item[1] = '\theta = \frac{\fbox{オ}}{\fbox{カ}}\pi\\ で最小値-\fbox{キ}\sqrt{\fbox{ク}}をとる。';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_root($right_answers,$option,2,3,$blanks,$item[0]);
+        list($right_answers,$option,$blanks,$item[1]) = l_root($right_answers,$option,6,7,$blanks,$item[1]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+
 
     /*テンプレ
-    public function unit000?q00($unit_id){
+    public function unit000_q00($unit_id){
         //初期設定
-        $question_id = ;
+        $question_id = 00000;
         $blanks = 2;
         $option = $this->option;
         $pattern = rand(1,2);
+
+        switch($pattern){
+            case 1:
+                break;
+            case 2:
+                break;
+        }
 
         //変数の設定
         do { $a = rand(-5,5); } while( $a==0 );
         do { $b = rand(1,5); } while( $b==0 );
 
         //答えの計算
-        $right_answers[0]
-        $right_answers[1]
+        $right_answers[0] = $a;
 
-        //正解テキストの設定
+        //問題テキストの設定
+        $text = '$$ ';
 
         //空欄テキストの設定
+        $item[0] = '';
 
+        list($right_answers,$option,$blanks,$item[0]) = l_root($right_answers,$option,0,1,$blanks,$item[0]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
     }
 
