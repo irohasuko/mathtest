@@ -3635,7 +3635,49 @@ class QuestionController extends Controller
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
     }
+    
+    //指数関数・対数関数
+    //指数の計算
+    public function unit205_q01($unit_id){
+        //初期設定
+        $question_id = 20501;
+        $blanks = 2;
+        $option = $this->option;
+        $pattern = rand(1,2);
 
+        switch($pattern){
+            case 1:
+                break;
+            case 2:
+                break;
+        }
+
+        //変数の設定
+        do { $a = rand(-5,5); } while( $a==0 );
+        do { $b = rand(1,5); } while( $b==0 );
+
+        //答えの計算
+        $right_answers[0] = $a;
+
+        //問題テキストの設定
+        $text = '$$ ';
+
+        //空欄テキストの設定
+        $item[0] = '';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_root($right_answers,$option,0,1,$blanks,$item[0]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
 
 
     /*テンプレ

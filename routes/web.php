@@ -112,7 +112,6 @@ Route::get('/q_select/{unit_id}/20507',[App\Http\Controllers\QuestionController:
 Route::get('/q_select/{unit_id}/20508',[App\Http\Controllers\QuestionController::class, 'unit205_q08'])->name('Q20508');
 Route::get('/q_select/{unit_id}/20509',[App\Http\Controllers\QuestionController::class, 'unit205_q09'])->name('Q20509');
 Route::get('/q_select/{unit_id}/20510',[App\Http\Controllers\QuestionController::class, 'unit205_q10'])->name('Q20510');
-Route::get('/q_select/{unit_id}/20511',[App\Http\Controllers\QuestionController::class, 'unit205_q11'])->name('Q20511');
 
 Route::get('/q_select/{unit_id}/20601',[App\Http\Controllers\QuestionController::class, 'unit206_q01'])->name('Q20601');
 Route::get('/q_select/{unit_id}/20602',[App\Http\Controllers\QuestionController::class, 'unit206_q02'])->name('Q20602');
@@ -325,7 +324,6 @@ Route::post('/q_select/{unit_id}/20507',[App\Http\Controllers\AnswerController::
 Route::post('/q_select/{unit_id}/20508',[App\Http\Controllers\AnswerController::class, 'unit205_a08'])->name('A20508');
 Route::post('/q_select/{unit_id}/20509',[App\Http\Controllers\AnswerController::class, 'unit205_a09'])->name('A20509');
 Route::post('/q_select/{unit_id}/20510',[App\Http\Controllers\AnswerController::class, 'unit205_a10'])->name('A20510');
-Route::post('/q_select/{unit_id}/20511',[App\Http\Controllers\AnswerController::class, 'unit205_a11'])->name('A20511');
 
 Route::post('/q_select/{unit_id}/20601',[App\Http\Controllers\AnswerController::class, 'unit206_a01'])->name('A20601');
 Route::post('/q_select/{unit_id}/20602',[App\Http\Controllers\AnswerController::class, 'unit206_a02'])->name('A20602');

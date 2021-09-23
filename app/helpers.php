@@ -282,6 +282,19 @@ if (! function_exists('rand_sign')) {
     }
 }
 
+//対数の処理
+if (! function_exists('log_ans')) {
+    function log_ans($a,$b) 
+    {
+        $c = 0;
+        while($b%$a == 0){
+            $c += 1;
+            $b /= $a;
+        }
+        return array($c,$b);
+    }
+}
+
 
 
 
