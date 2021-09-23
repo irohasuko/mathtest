@@ -3244,7 +3244,7 @@ class QuestionController extends Controller
         $item[2] = 'y軸方向に'.($right_answers[2]<0?'-':'').'\fbox{ウ}だけ移動したものであり、\\\\';
         $item[3] = 'このグラフの周期は\fbox{エ}\piである。';
 
-        list($right_answers,$option,$blanks,$item[1]) = l_frac($right_answers,$option,0,1,$blanks,$item[1]);
+        list($right_answers,$option,$blanks,$item[1]) = l_frac($right_answers,$option,1,$blanks,$item[1]);
 
         $right_answers = array_values($right_answers);
         $option = array_values($option);
