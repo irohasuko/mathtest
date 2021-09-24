@@ -56,7 +56,7 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
-        $text = '$$ ('.li($a,'x') .sign($b).')('.li($c,'x').sign($d).')';
+        $text = '$$ ('.d1($a,'x') .d3($b).')('.d1($c,'x').d3($d).')';
         $blank_text = implode($item).'$$';
 
         return view('question/equation',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
@@ -3643,29 +3643,25 @@ class QuestionController extends Controller
         $question_id = 20501;
         $blanks = 2;
         $option = $this->option;
-        $pattern = rand(1,2);
-
-        switch($pattern){
-            case 1:
-                break;
-            case 2:
-                break;
-        }
 
         //変数の設定
-        do { $a = rand(-5,5); } while( $a==0 );
-        do { $b = rand(1,5); } while( $b==0 );
+        $a = rand(1,4);
+        $b = rand(3,6);
+        $c = rand(1,3);
 
         //答えの計算
-        $right_answers[0] = $a;
+        $right_answers[0] = 2*$a*$b + 4 - $b*$c;
+        $right_answers[1] = 2*$b;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
 
         //問題テキストの設定
-        $text = '$$ ';
+        $text = '$$ 2^{'.$a.'} \times \sqrt['.$b.']{4} \div \sqrt{2^{'.$c.'}}';
 
         //空欄テキストの設定
-        $item[0] = '';
+        $item[0] = '2^{'.($right_answers[0]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}}';
 
-        list($right_answers,$option,$blanks,$item[0]) = l_root($right_answers,$option,0,1,$blanks,$item[0]);
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
 
         $right_answers = array_values($right_answers);
         $option = array_values($option);
@@ -3674,6 +3670,323 @@ class QuestionController extends Controller
         {
             $right_answers[$i] = abs($right_answers[$i]);
         }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/equation',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //指数の式の値
+    public function unit205_q02($unit_id){
+        //初期設定
+        $question_id = 20502;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(2,7);
+
+        //答えの計算
+        $right_answers[0] = $a*$a + 2;
+        $right_answers[1] = $a * ($a*$a + 3);
+
+        //問題テキストの設定
+        $text = '$$ a \gt 0、a^{x}-a^{-x}='.$a.'\\ のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'a^{2x} + a^{-2x} = \fbox{ア} \\\\';
+        $item[1] = 'a^{3x} - a^{-3x} = \fbox{イ}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //指数方程式
+    public function unit205_q03($unit_id){
+        //初期設定
+        $question_id = 20503;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $x = rand(1,5);
+        do { $y = rand(1,7); } while( $x >= $y );
+
+        $a = -1*$x - $y;
+        $b = $x*$y;
+
+        //答えの計算
+        list($right_answers[0],$right_answers[1]) = log_ans(3,$x);
+        list($right_answers[2],$right_answers[3]) = log_ans(3,$y);
+
+        //問題テキストの設定
+        $text = '$$ 9^{x}'.d2($a,'\cdot 3^{x}').d3($b).'=0\\ の解は、小さい順に\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'x= \fbox{ア} +  \log_3 \fbox{イ}、';
+        $item[1] = '\fbox{ウ} +  \log_3 \fbox{エ}';
+
+        for($i=0;$i<2;$i++){
+            if($right_answers[2*$i+1] == 1){
+                $item[$i] = str_replace('+  \log_3 \fbox{'.$option[2*$i+1].'}','',$item[$i]);
+                unset($right_answers[2*$i+1]);
+                unset($option[2*$i+1]);
+                $blanks -= 1;
+            }elseif($right_answers[2*$i] == 0){
+                $item[$i] = str_replace('\fbox{'.$option[2*$i].'} +  ','',$item[$i]);
+                unset($right_answers[2*$i]);
+                unset($option[2*$i]);
+                $blanks -= 1;
+            }
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //指数不等式
+    public function unit205_q04($unit_id){
+        //初期設定
+        $question_id = 20504;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        do { $x = rand(-5,5); } while( $x == 0 );
+        do { $y = rand(1,7); } while( $x >= $y );
+
+        $a = -1*$x - $y;
+        $b = $x*$y;
+
+        //答えの計算
+        if($x > 0){
+            list($right_answers[0],$right_answers[1]) = log_ans(2,$x);
+            list($right_answers[2],$right_answers[3]) = log_ans(2,$y);
+        }else{
+            $blanks = 2;
+            list($right_answers[0],$right_answers[1]) = log_ans(2,$y);
+        }
+
+        //問題テキストの設定
+        $text = '$$ 4^{x}'.d2($a,(abs($a)!=1?'\cdot':'').'2^{x}').d3($b).'>0\\ の解は、\\\\';
+
+        //空欄テキストの設定
+        if($x > 0){
+            $item[0] = 'x \lt \fbox{ア} + \log_2 \fbox{イ}、';
+            $item[1] = '\fbox{ウ} + \log_2 \fbox{エ} \lt x';
+            for($i=0;$i<2;$i++){
+                if($right_answers[2*$i+1] == 1){
+                    $item[$i] = str_replace('+ \log_2 \fbox{'.$option[2*$i+1].'}','',$item[$i]);
+                    unset($right_answers[2*$i+1]);
+                    unset($option[2*$i+1]);
+                    $blanks -= 1;
+                }elseif($right_answers[2*$i] == 0){
+                    $item[$i] = str_replace('\fbox{'.$option[2*$i].'} + ','',$item[$i]);
+                    unset($right_answers[2*$i]);
+                    unset($option[2*$i]);
+                    $blanks -= 1;
+                }
+            }
+        }else{
+            $item[0] = 'x \gt \fbox{ア} + \log_2 \fbox{イ}';
+            if($right_answers[1] == 1){
+                $item[0] = str_replace('+ \log_2 \fbox{'.$option[1].'}','',$item[0]);
+                unset($right_answers[1]);
+                unset($option[1]);
+                $blanks -= 1;
+            }elseif($right_answers[0] == 0){
+                $item[0] = str_replace('\fbox{'.$option[0].'} + ','',$item[0]);
+                unset($right_answers[0]);
+                unset($option[0]);
+                $blanks -= 1;
+            }
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //対数の計算
+    public function unit205_q05($unit_id){
+        //初期設定
+        $question_id = 20505;
+        $blanks = 1;
+        $option = $this->option;
+
+        //変数の設定
+        $x = pow(rand(2,6),2);
+        $y = rand(1,3);
+        $z = sqrt($x)*pow(2,$y);
+
+        $a = $z;
+        $b = $x;
+ 
+        //答えの計算
+        $right_answers[0] = $y;
+
+        //問題テキストの設定
+        $text = '$$ \log_2 '.$a.'- \log_4 '.$b;
+
+        //空欄テキストの設定
+        $item[0] = '\fbox{ア}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/equation',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //対数の式の値
+    public function unit205_q06($unit_id){
+        //初期設定
+        $question_id = 20506;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $x = rand(1,3);
+        $y = rand(1,7);
+
+        $a = pow(10,$x);
+        $b = pow(2,$y);
+
+        list($a,$b) = gcd($a,$b);
+
+        //答えの計算
+        $right_answers[0] = $x;
+        $right_answers[1] = $y;
+
+        //問題テキストの設定
+        $text = '$$ \log_{10} 2 = a\\ とおくと、\\\\';
+        $text .= 'log_{10} '.($b==1?$a:'\frac{'.$a.'}{'.$b.'}');
+
+        //空欄テキストの設定
+        $item[0] = '\fbox{ア} - ';
+        $item[1] = '\fbox{イ}a';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/equation',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //対数方程式
+    public function unit205_q07($unit_id){
+        //初期設定
+        $question_id = 20507;
+        $blanks = 1;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(2,5);
+        do { $b = rand(-5,5); } while( $b == 0 );
+        $c = rand(1,4);
+
+        //答えの計算
+        $right_answers[0] = pow($a,$c) - $b;
+
+        //問題テキストの設定
+        $text = '$$ \log_'.$a.' (x'.d4($b).')='.$c.'のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'x= \fbox{ア}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //対数不等式
+    public function unit205_q08($unit_id){
+        //初期設定
+        $question_id = 20508;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(2,5);
+        do { $b = rand(-5,5); } while( $b == 0 );
+        $c = rand(1,4);
+
+        //答えの計算
+        $right_answers[0] = -1*$b;
+        $right_answers[1] = pow($a,$c) - $b;
+
+        //問題テキストの設定
+        $text = '$$ \log_'.$a.' (x'.d4($b).') \lt'.$c.'のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '\fbox{ア} \lt x \lt \fbox{イ}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //大小関係
+    public function unit205_q09($unit_id){
+        //初期設定
+        $question_id = 20509;
+        $blanks = 3;
+        $option = $this->option;
+
+        //変数の設定
+        $x = rand(2,4);
+        do { $y = rand(2,5); } while( $x >= $y );
+
+        $a = $x;
+        $b = $y*rand(1,3);
+        $c = $y;
+        $d = $x;
+        $e = pow($a,2);
+        $f = pow($a,3);
+
+        //答えの計算
+        $s['a'] = log($b,$a);
+        $s['b'] = log($d,$c);
+        $s['c'] = log($f,$e);
+
+        asort($s);
+
+        $right_answers = array_keys($s);
+
+        //問題テキストの設定
+        $text = '$$ a = \log_{'.$a.'}'.$b.'、b = \log_{'.$c.'}'.$d.'、c = \log_{'.$e.'}'.$f.'\\\\を小さい順に並び変えると、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '\fbox{ア} \lt \fbox{イ} \lt \fbox{ウ}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/alphabet',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //桁数
+    public function unit205_q10($unit_id){
+        //初期設定
+        $question_id = 20510;
+        $blanks = 1;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(2,10)*10;
+
+        //答えの計算
+        $right_answers[0] = floor(0.3010*$a)+1;
+
+        //問題テキストの設定
+        $text = '$$ \log_{10} 2 = 0.3010\\ とすると、\\\\ 2^{'.$a.'}は、';
+
+        //空欄テキストの設定
+        $item[0] = '\fbox{ア}桁の整数である。';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
