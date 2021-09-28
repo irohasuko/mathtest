@@ -3992,6 +3992,332 @@ class QuestionController extends Controller
         return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
     }
 
+    //微分法
+    //平均変化率
+    public function unit206_q01($unit_id){
+        //初期設定
+        $question_id = 20601;
+        $blanks = 1;
+        $option = $this->option;
+
+        //変数の設定
+        do { $a = rand(-5,5); } while( $a==0 );
+        $b = rand(-5,5);
+        $c = rand(-5,5);
+        $d = rand(-5,5);
+
+        $e = rand(-4,4);
+        do { $f = rand(-5,5); } while( $e>=$f );
+
+        //答えの計算
+        $right_answers[0] = $a*($f*$f+$f*$e+$e*$e) + $b*($f+$e) + $c;
+
+        //問題テキストの設定
+        $text = '$$ f(x) = '.d1($a,'x^{3}').d2($b,'x^{2}').d2($c,'x').d4($d).'\\ において、\\\\
+                 xが'.$e.'から'.$f.'まで変化するときの平均変化率は、';
+
+        //空欄テキストの設定
+        $item[0] = '\fbox{ア}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //公式による微分
+    public function unit206_q02($unit_id){
+        //初期設定
+        $question_id = 20602;
+        $blanks = 3;
+        $option = $this->option;
+
+        //変数の設定
+        do { $a = rand(-7,7); } while( $a==0 );
+        $b = rand(-7,7);
+        $c = rand(-7,7);
+        $d = rand(-7,7);
+
+        //答えの計算
+        $right_answers[0] = 3*$a;
+        $right_answers[1] = 2*$b;
+        $right_answers[2] = $c;
+
+        //問題テキストの設定
+        $text = '$$ f(x) = '.d1($a,'x^{3}').d2($b,'x^{2}').d2($c,'x').d4($d).'\\ とすると、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'f\'(x) = ';
+        $item[1] = ($right_answers[0]<0?'-':'').'\fbox{ア}x^{2}';
+        $item[2] = ($right_answers[1]<0?'-':'+').'\fbox{イ}x';
+        $item[3] = ($right_answers[2]<0?'-':'+').'\fbox{ウ}';
+
+        for($i=0;$i<3;$i++){
+            if($right_answers[$i] == 0){
+                $item[$i+1] = '';
+                unset($right_answers[$i]);
+                unset($option[$i]);
+                $blanks -= 1;
+            }
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //接線の方程式
+    public function unit206_q03($unit_id){
+        //初期設定
+        $question_id = 20603;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        do { $a = rand(-5,5); } while( $a==0 );
+        $b = rand(-7,7);
+        $c = rand(-7,7);
+
+        $d = rand(-3,3);
+        $e = $a*$d*$d + $b*$d + $c;
+
+        //答えの計算
+        $right_answers[0] = 2*$a*$d + $b;
+        $right_answers[1] = -1*$a*$d*$d + $c;
+
+        //問題テキストの設定
+        $text = '$$ f(x) = '.d1($a,'x^{2}').d2($b,'x').d4($c).'\\ とする。\\\\
+                 y = f(x)\\ 上の点('.$d.','.$e.')における接線は、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'y = ';
+        $item[1] = ($right_answers[0]<0?'-':'').'\fbox{ア}x';
+        $item[2] = ($right_answers[1]<0?'-':'+').'\fbox{イ}';
+
+        for($i=0;$i<2;$i++){
+            if($right_answers[$i] == 0){
+                $item[$i+1] = '';
+                unset($right_answers[$i]);
+                unset($option[$i]);
+                $blanks -= 1;
+            }
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //曲線上にない点から引いた接線
+    public function unit206_q04($unit_id){
+        //初期設定
+        $question_id = 20604;
+        $blanks = 6;
+        $option = $this->option;
+
+        //変数の設定
+        do { $a = rand(-5,5); } while( $a==0 );
+        $b = rand(-5,5);
+        $c = rand(-5,5);
+
+        $d = rand(-3,3);
+        $f = rand(1,6);
+        $e[0] = $a*$a*$d*$d + $a*$b*$d + $a*$c - $f*$f;
+        $e[1] = $a;
+        list($e[0],$e[1]) = gcd($e[0],$e[1]);
+        
+
+        //答えの計算
+        $right_answers[0] = 2*($a*$d - $f) + $b;
+        $right_answers[1] = -1*pow(($a*$d - $f),2) + $a*$c;
+        $right_answers[2] = $a;
+
+        $right_answers[3] = 2*($a*$d + $f) + $b;
+        $right_answers[4] = -1*pow(($a*$d + $f),2) + $a*$c;
+        $right_answers[5] = $a;
+
+        list($right_answers[1],$right_answers[2]) = gcd($right_answers[1],$right_answers[2]);
+        list($right_answers[4],$right_answers[5]) = gcd($right_answers[4],$right_answers[5]);
+
+        //問題テキストの設定
+        $text = '$$ f(x) = '.d1($a,'x^{2}').d2($b,'x').d4($c).'\\ とする。\\\\
+                 y = f(x)\\ 上の接線のうち、点('.$d.','.($e[0]*$e[1]<0?'-':'').'\frac{'.abs($e[0]).'}{'.abs($e[1]).'})における接線は、\\\\';
+
+        if(abs($e[1]) == 1){
+            $text = '$$ f(x) = '.d1($a,'x^{2}').d2($b,'x').d4($c).'\\ とする。\\\\
+            y = f(x)\\ 上の接線のうち、点('.$d.','.($e[0]*$e[1]<0?'-':'').abs($e[0]).')を通る接線は、\\\\';
+        }
+
+        //空欄テキストの設定
+        $item[0] = 'y = '.($right_answers[0]<0?'-':'').'\fbox{ア}x';
+        $item[1] = ($right_answers[1]*$right_answers[2]<0?'-':'+').'\frac{\fbox{イ}}{\fbox{ウ}}、';
+        $item[2] = 'y = '.($right_answers[3]<0?'-':'').'\fbox{エ}x';
+        $item[3] = ($right_answers[4]*$right_answers[5]<0?'-':'+').'\frac{\fbox{オ}}{\fbox{カ}}\\\\';
+        if($right_answers[0]*$right_answers[3]>0){
+            $item[4] = 'ただし、'.($right_answers[0]<0?'-':'').'\fbox{ア} \lt '.($right_answers[3]<0?'-':'').'\fbox{エ}';
+        }
+
+        for($i=0;$i<2;$i++){
+            if($right_answers[3*$i] == 0){
+                $item[2*$i] = 'y = ';
+                $blanks -= 1;
+            }
+            list($right_answers,$option,$blanks,$item[2*$i+1]) = l_frac($right_answers,$option,3*$i+2,$blanks,$item[2*$i+1]);
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //極値
+    public function unit206_q05($unit_id){
+        //初期設定
+        $question_id = 20605;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        do { $x = rand(-5,5); } while( $x==0 );
+        $y = rand(-4,4);
+        do { $z = rand(-5,5); } while( $y >= $z );
+        
+        $a = 2*$x;
+        $b = -3*$x*($y+$z);
+        $c = 6*$x*$y*$z;
+        $d = rand(-5,5);
+
+        //答えの計算
+        if($a > 0){
+            $right_answers[0] = $y;
+            $right_answers[1] = $a*$y*$y*$y + $b*$y*$y + $c*$y + $d;
+            $right_answers[2] = $z;
+            $right_answers[3] = $a*$z*$z*$z + $b*$z*$z + $c*$z + $d;
+        }else{
+            $right_answers[0] = $z;
+            $right_answers[1] = $a*$z*$z*$z + $b*$z*$z + $c*$z + $d;
+            $right_answers[2] = $y;
+            $right_answers[3] = $a*$y*$y*$y + $b*$y*$y + $c*$y + $d;
+        }
+
+        //問題テキストの設定
+        $text = '$$ f(x) = '.d1($a,'x^{3}').d2($b,'x^{2}').d2($c,'x').d4($d).'\\ は、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'x = \fbox{ア}で';
+        $item[1] = '極大値\fbox{イ}、';
+        $item[2] = 'x = \fbox{ウ}で';
+        $item[3] = '極大値\fbox{エ}をとる。';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //極値から係数の決定
+    public function unit206_q06($unit_id){
+        //初期設定
+        $question_id = 20606;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        do { $p = rand(-5,5); } while( $p==0 );
+        do { $q = rand(-5,5); } while( $q==0 );
+        do { $r = rand(-5,5); } while( $r==0 );
+        do { $s = rand(-6,6); } while( $s==0 || $r>=$s);
+
+        //答えの計算
+        $right_answers[0] = $q;
+        $right_answers[1] = 3*$r*$s;
+        $right_answers[2] = -1*$q*($s+$r);
+        $right_answers[3] = 2*$p*$r*$s;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[2],$right_answers[3]) = gcd($right_answers[2],$right_answers[3]);
+        
+        //問題テキストの設定
+        $text = '$$ f(x) = ax^{3}'.d2($p,'bx^{2}').d2($q,'x').'+a\\ が、\\\\
+                x='.$r.','.$s.'で極値をとるとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'a = '.($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}、';
+        $item[1] = 'b = '.($right_answers[2]*$right_answers[3]<0?'-':'').'\frac{\fbox{ウ}}{\fbox{エ}}';
+
+        for($i=0;$i<2;$i++){
+            list($right_answers,$option,$blanks,$item[$i]) = l_frac($right_answers,$option,2*$i+1,$blanks,$item[$i]);
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //方程式の解の個数
+    public function unit206_q07($unit_id){
+        //初期設定
+        $question_id = 20607;
+        $blanks = 1;
+        $option = $this->option;
+
+        //変数の設定
+        do { $x = rand(-5,5); } while( $x==0 );
+        $y = rand(-4,4);
+        do { $z = rand(-5,5); } while( $y >= $z );
+        
+        $a = 2*$x;
+        $b = -3*$x*($y+$z);
+        $c = 6*$x*$y*$z;
+        $d = rand(-5,5);
+
+        $f_y = $a*$y*$y*$y + $b*$y*$y + $c*$y + $d;
+        $f_z = $a*$z*$z*$z + $b*$z*$z + $c*$z + $d;
+
+        //答えの計算
+        if($f_y*$f_z > 0){
+            $right_answers[0] = 1;
+        }elseif($f_y*$f_z == 0){
+            $right_answers[0] = 2;
+        }else{
+            $right_answers[0] = 3;
+        }
+
+        //問題テキストの設定
+        $text = '$$ '.d1($a,'x^{3}').d2($b,'x^{2}').d2($c,'x').d4($d).'=0\\ の実数解の個数は、';
+
+        //空欄テキストの設定
+        $item[0] = '\fbox{ア}個である。';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
 
     /*テンプレ
     public function unit000_q00($unit_id){
