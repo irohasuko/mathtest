@@ -120,13 +120,14 @@ Route::get('/q_select/{unit_id}/20604',[App\Http\Controllers\QuestionController:
 Route::get('/q_select/{unit_id}/20605',[App\Http\Controllers\QuestionController::class, 'unit206_q05'])->name('Q20605');
 Route::get('/q_select/{unit_id}/20606',[App\Http\Controllers\QuestionController::class, 'unit206_q06'])->name('Q20606');
 Route::get('/q_select/{unit_id}/20607',[App\Http\Controllers\QuestionController::class, 'unit206_q07'])->name('Q20607');
-Route::get('/q_select/{unit_id}/20608',[App\Http\Controllers\QuestionController::class, 'unit206_q08'])->name('Q20608');
 
 Route::get('/q_select/{unit_id}/20701',[App\Http\Controllers\QuestionController::class, 'unit207_q01'])->name('Q20701');
 Route::get('/q_select/{unit_id}/20702',[App\Http\Controllers\QuestionController::class, 'unit207_q02'])->name('Q20702');
 Route::get('/q_select/{unit_id}/20703',[App\Http\Controllers\QuestionController::class, 'unit207_q03'])->name('Q20703');
 Route::get('/q_select/{unit_id}/20704',[App\Http\Controllers\QuestionController::class, 'unit207_q04'])->name('Q20704');
 Route::get('/q_select/{unit_id}/20705',[App\Http\Controllers\QuestionController::class, 'unit207_q05'])->name('Q20705');
+Route::get('/q_select/{unit_id}/20706',[App\Http\Controllers\QuestionController::class, 'unit207_q06'])->name('Q20706');
+Route::get('/q_select/{unit_id}/20707',[App\Http\Controllers\QuestionController::class, 'unit207_q07'])->name('Q20707');
 
 //数学Ⅲ
 Route::get('/q_select/{unit_id}/30101',[App\Http\Controllers\QuestionController::class, 'unit301_q01'])->name('Q30101');
@@ -332,13 +333,15 @@ Route::post('/q_select/{unit_id}/20604',[App\Http\Controllers\AnswerController::
 Route::post('/q_select/{unit_id}/20605',[App\Http\Controllers\AnswerController::class, 'unit206_a05'])->name('A20605');
 Route::post('/q_select/{unit_id}/20606',[App\Http\Controllers\AnswerController::class, 'unit206_a06'])->name('A20606');
 Route::post('/q_select/{unit_id}/20607',[App\Http\Controllers\AnswerController::class, 'unit206_a07'])->name('A20607');
-Route::post('/q_select/{unit_id}/20608',[App\Http\Controllers\AnswerController::class, 'unit206_a08'])->name('A20608');
 
 Route::post('/q_select/{unit_id}/20701',[App\Http\Controllers\AnswerController::class, 'unit207_a01'])->name('A20701');
 Route::post('/q_select/{unit_id}/20702',[App\Http\Controllers\AnswerController::class, 'unit207_a02'])->name('A20702');
 Route::post('/q_select/{unit_id}/20703',[App\Http\Controllers\AnswerController::class, 'unit207_a03'])->name('A20703');
 Route::post('/q_select/{unit_id}/20704',[App\Http\Controllers\AnswerController::class, 'unit207_a04'])->name('A20704');
 Route::post('/q_select/{unit_id}/20705',[App\Http\Controllers\AnswerController::class, 'unit207_a05'])->name('A20705');
+Route::post('/q_select/{unit_id}/20706',[App\Http\Controllers\AnswerController::class, 'unit207_a06'])->name('A20706');
+Route::post('/q_select/{unit_id}/20707',[App\Http\Controllers\AnswerController::class, 'unit207_a07'])->name('A20707');
+
 
 //数学Ⅲ
 Route::post('/q_select/{unit_id}/30101',[App\Http\Controllers\AnswerController::class, 'unit301_a01'])->name('A30101');

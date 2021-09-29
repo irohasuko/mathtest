@@ -1120,6 +1120,97 @@ class AnswerController extends Controller
         return view('answer/sentence',compact('text','answer_text','question_id','unit_id','next_id','result'));
     }
 
+    public function unit207_a01(Request $request, $unit_id)
+    {
+        $question_id = 20701;
+        $option = $this->option;
+        $result = $this->check_answer($request->answers,$request->right_answers);
+        $this->store_result($unit_id,$question_id,$result);
+
+        $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
+        $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
+        $next_id = 20702;         
+        return view('answer/sentence',compact('text','answer_text','question_id','unit_id','next_id','result'));
+    }
+
+    public function unit207_a02(Request $request, $unit_id)
+    {
+        $question_id = 20702;
+        $option = $this->option;
+        $result = $this->check_answer($request->answers,$request->right_answers);
+        $this->store_result($unit_id,$question_id,$result);
+
+        $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
+        $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
+        $next_id = 20703;         
+        return view('answer/sentence',compact('text','answer_text','question_id','unit_id','next_id','result'));
+    }
+
+    public function unit207_a03(Request $request, $unit_id)
+    {
+        $question_id = 20703;
+        $option = $this->option;
+        $result = $this->check_answer($request->answers,$request->right_answers);
+        $this->store_result($unit_id,$question_id,$result);
+
+        $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
+        $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
+        $next_id = 20704;         
+        return view('answer/sentence',compact('text','answer_text','question_id','unit_id','next_id','result'));
+    }
+
+    public function unit207_a04(Request $request, $unit_id)
+    {
+        $question_id = 20704;
+        $option = $this->option;
+        $result = $this->check_answer($request->answers,$request->right_answers);
+        $this->store_result($unit_id,$question_id,$result);
+
+        $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
+        $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
+        $next_id = 20705;         
+        return view('answer/sentence',compact('text','answer_text','question_id','unit_id','next_id','result'));
+    }
+
+    public function unit207_a05(Request $request, $unit_id)
+    {
+        $question_id = 20705;
+        $option = $this->option;
+        $result = $this->check_answer($request->answers,$request->right_answers);
+        $this->store_result($unit_id,$question_id,$result);
+
+        $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
+        $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
+        $next_id = 20706;         
+        return view('answer/sentence',compact('text','answer_text','question_id','unit_id','next_id','result'));
+    }
+
+    public function unit207_a06(Request $request, $unit_id)
+    {
+        $question_id = 20706;
+        $option = $this->option;
+        $result = $this->check_answer($request->answers,$request->right_answers);
+        $this->store_result($unit_id,$question_id,$result);
+
+        $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
+        $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
+        $next_id = 20707;         
+        return view('answer/sentence',compact('text','answer_text','question_id','unit_id','next_id','result'));
+    }
+
+    public function unit207_a07(Request $request, $unit_id)
+    {
+        $question_id = 20707;
+        $option = $this->option;
+        $result = $this->check_answer($request->answers,$request->right_answers);
+        $this->store_result($unit_id,$question_id,$result);
+
+        $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
+        $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
+        $next_id = 30101;         
+        return view('answer/sentence',compact('text','answer_text','question_id','unit_id','next_id','result'));
+    }
+
 
 
 }
