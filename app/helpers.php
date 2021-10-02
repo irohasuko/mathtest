@@ -295,6 +295,31 @@ if (! function_exists('log_ans')) {
     }
 }
 
+//素因数分解
+if (! function_exists('prime_factrization')) {
+    function prime_factrization($N) 
+    {
+        if($N == 1){
+            return array([1],[1]);
+        }
+        $base = array();
+        $ex = array();
+        for($i=2;$N>1;$i++){
+            while($N%$i == 0){
+                if(in_array($i,$base)){
+                    $ex[array_search($i,$base)] += 1;
+                } else {
+                    array_push($base,$i);
+                    array_push($ex,1);
+                }
+                $N /= $i;
+            }
+        }
+
+        return array($base,$ex);
+    }
+}
+
 
 
 

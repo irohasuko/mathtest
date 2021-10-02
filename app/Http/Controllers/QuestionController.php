@@ -4632,8 +4632,388 @@ class QuestionController extends Controller
 
     //数学A
     //場合の数と確率
-    //
+    //約数の個数とその和
+    public function unit401_q01($unit_id){
+        //初期設定
+        $question_id = 40101;
+        $blanks = 2;
+        $option = $this->option;
 
+        //変数の設定
+        $N = rand(10,20)*rand(10,20);
+        list($base,$ex) = prime_factrization($N);
+
+        //答えの計算
+        $right_answers[0] = 1;
+        for($i=0;$i<count($ex);$i++){
+            $right_answers[0] *= ($ex[$i]+1);
+        }
+        $right_answers[1] = 1;
+        for($i=0;$i<count($base);$i++){
+            $temp = 0;
+            for($j=0;$j<=$ex[$i];$j++){
+                $temp += pow($base[$i],$j);
+            }
+            $right_answers[1] *= $temp;
+        }
+
+        //問題テキストの設定
+        $text = '$$'.$N.'の';
+
+        //空欄テキストの設定
+        $item[0] = '正の約数の個数は\fbox{ア}個、';
+        $item[1] = 'その和は、\fbox{イ}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //順列、組み合わせ、階乗の記号
+    public function unit401_q02($unit_id){
+        //初期設定
+        $question_id = 40102;
+        $blanks = 3;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(4,8);
+        do { $b = rand(2,5); } while( $a<=$b );
+        $c = rand(4,8);
+        do { $d = rand(2,5); } while( $c<=$d );
+        $e = rand(4,8);
+
+        //答えの計算
+        $right_answers[0] = gmp_fact($a)/gmp_fact($a-$b);
+        $right_answers[1] = gmp_fact($c)/(gmp_fact($d)*gmp_fact($c-$d));
+        $right_answers[2] = gmp_fact($e);
+        
+        //問題テキストの設定
+        $text = '$$ ';
+
+        //空欄テキストの設定
+        $item[0] = '{}_'.$a.' \mathrm{P}_'.$b.'=\fbox{ア}、';
+        $item[1] = '{}_'.$c.' \mathrm{C}_'.$d.'=\fbox{イ}、';
+        $item[2] = $e.'! = \fbox{ウ}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //順列
+    public function unit401_q03($unit_id){
+        //初期設定
+        $question_id = 40103;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(2,5);
+        $b = rand(3,5);
+
+        //答えの計算
+        $right_answers[0] = gmp_fact($a+$b);
+        $right_answers[1] = 2*gmp_fact($a+$b-2);
+        
+        //問題テキストの設定
+        $text = '$$ 男子'.$a.'人、女子'.$b.'人が一列に並ぶ。\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'この並び方の総数は、\fbox{ア}通り、\\\\';
+        $item[1] = '両端が女子になる並び方は、\fbox{イ}通り';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //円順列
+    public function unit401_q04($unit_id){
+        //初期設定
+        $question_id = 40104;
+        $blanks = 1;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(4,9);
+
+        //答えの計算
+        $right_answers[0] = gmp_fact($a-1);
+        
+        //問題テキストの設定
+        $text = '$$ '.$a.'人が円になって座るとき、その並び方は\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '\fbox{ア}通り';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //重複順列
+    public function unit401_q05($unit_id){
+        //初期設定
+        $question_id = 40105;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(4,9);
+
+        //答えの計算
+        $right_answers[0] = pow(2,$a);
+        $right_answers[1] = pow(2,$a)-1;
+        
+        //問題テキストの設定
+        $text = '$$ 異なる'.$a.'冊の本がある。\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '１冊も取らなくてもいい場合、取り方は\fbox{ア}通り、\\\\';
+        $item[1] = '１冊以上取る場合、取り方は\fbox{イ}通り';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //組み合わせ
+    public function unit401_q06($unit_id){
+        //初期設定
+        $question_id = 40106;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(3,6);
+        $b = rand(3,6);
+        do { $c = rand(5,8); } while( $c>=$a+$b );
+        do { $d = rand(2,4); } while( $a<=$d );
+        do { $e = rand(2,4); } while( $b<=$e );
+
+        //答えの計算
+        $right_answers[0] = gmp_fact($a+$b)/(gmp_fact($c)*gmp_fact($a+$b-$c));
+        $right_answers[1] = (gmp_fact($a)/(gmp_fact($d)*gmp_fact($a-$d)))*(gmp_fact($b)/(gmp_fact($e)*gmp_fact($b-$e)));
+        
+        //問題テキストの設定
+        $text = '$$ 男子が'.$a.'人、女子が'.$b.'人いる。\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'この中から'.$c.'人選ぶ方法は\fbox{ア}通り、\\\\';
+        $item[1] = '男子'.$d.'人、女子'.$e.'人選ぶ方法は\fbox{イ}通り';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //同じものを含む順列
+    public function unit401_q07($unit_id){
+        //初期設定
+        $question_id = 40107;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(3,5);
+        $b = rand(4,6);
+        do { $d = rand(1,4); } while( $d>=$a );
+        do { $c = rand(1,5); } while( $c>=$b );
+
+        //答えの計算
+        $right_answers[0] = gmp_fact($a+$b)/(gmp_fact($a)*gmp_fact($b));
+        $right_answers[1] = gmp_fact($c+$d)/(gmp_fact($c)*gmp_fact($d))*gmp_fact($a-$d + $b-$c)/(gmp_fact($a-$d)*gmp_fact($b-$c));
+        
+        //問題テキストの設定
+        $canvas = '<canvas id="canvas" width="350" height="200">
+                        canvas対応のブラウザでは、ここに図形が表示されます。
+                   </canvas>';
+
+        var_dump([$a,$b,$c,$d]);
+        $script = '<script type="text/javascript">
+        　         window.onload = function draw() {
+                        var canvas = document.getElementById(\'canvas\');
+                        if (canvas.getContext) {
+                            var ctx = canvas.getContext(\'2d\');
+                            var point_a = canvas.getContext(\'2d\');
+                            var point_b = canvas.getContext(\'2d\');
+                            var point_c = canvas.getContext(\'2d\');
+                            var a = canvas.getContext(\'2d\');
+                            var b = canvas.getContext(\'2d\');
+                            var c = canvas.getContext(\'2d\');
+                            ctx.strokeRect(25, 10, 300, 180);
+                            ctx.beginPath();
+                            for (let step = 1; step < '.$a.'; step++) {
+                                ctx.moveTo(25,10+180/'.$a.'*step);
+                                ctx.lineTo(325,10+180/'.$a.'*step);
+                            }
+                            for (let step = 1; step < '.$b.'; step++) {
+                                ctx.moveTo(25+300/'.$b.'*step,10);
+                                ctx.lineTo(25+300/'.$b.'*step,190);
+                            }
+                            ctx.stroke();
+                            point_a.beginPath();
+                            point_a.arc(25,190,5,0,Math.PI*2,true);
+                            point_a.fill();
+                            a.font = \'15pt Arial\';
+                            a.fillText(\'A\', 25+5, 190-5);
+                            point_b.beginPath();
+                            point_b.arc(25+'.$c.'*(300/'.$b.'),200-(10+'.$d.'*(180/'.$a.')),5,0,Math.PI*2,true);
+                            point_b.fill();
+                            b.font = \'15pt Arial\';
+                            b.fillText(\'B\', 25+'.$c.'*(300/'.$b.')+5, 200-(10+'.$d.'*(180/'.$a.'))-5);
+                            point_c.beginPath();
+                            point_c.arc(325,10,5,0,Math.PI*2,true);
+                            point_c.fill();
+                            c.font = \'15pt Arial\';
+                            c.fillText(\'C\', 325+5, 10+20);
+                        }
+                    }
+                   </script>';
+                   
+        $text = '$$ 上の図のA点からC点までを最短距離を向かう。\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'このときの経路の総数は\fbox{ア}通り、\\\\';
+        $item[1] = 'A点からB点を通ってC点に向かう経路数は\fbox{イ}通り';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/canvas',compact('right_answers','unit_id','question_id','text','blank_text','blanks','canvas','script'));
+    }
+
+    //確率の基本
+    public function unit401_q08($unit_id){
+        //初期設定
+        $question_id = 40108;
+        $blanks = 6;
+        $option = $this->option;
+
+        //変数の設定
+        $r_1 = rand(1,6);
+        $r_2 = rand(1,6);
+        $a = $r_1*$r_2;
+        $b = rand(3,6)*rand(1,2);
+        do { $b = rand(3,6)*rand(1,2); } while( $b==$a );
+
+        $list_1 = [1,2,3,4,5,6,8,9,10,12,15,16,18,20,24,25,30,36];
+        $list_2 = [1,2,2,3,2,4,2,1,2, 4, 2, 1, 2, 2, 2, 1, 2, 1];
+
+        //答えの計算
+        $right_answers[0] = $list_2[array_search($a,$list_1)];
+        $right_answers[1] = 36;
+        $right_answers[2] = 0;
+        $right_answers[3] = 36;
+        $right_answers[4] = 0;
+        $right_answers[5] = 36;
+        for($i=0;$i<18;$i++){
+            if($list_1[$i]%$b === 0){
+                $right_answers[2] += $list_2[$i];
+                if($list_1[$i] == $a){
+                    $right_answers[4] -= $list_2[$i];
+                }
+            }
+        }
+        $right_answers[4] += ($right_answers[0]+$right_answers[2]);
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[2],$right_answers[3]) = gcd($right_answers[2],$right_answers[3]);
+        list($right_answers[4],$right_answers[5]) = gcd($right_answers[4],$right_answers[5]);
+
+        //問題テキストの設定
+        $text = '$$ さいころを２回続けて投げ、出た目の積を考える。\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '積が'.$a.'になる確率は、\frac{\fbox{ア}}{\fbox{イ}}\\\\';
+        $item[1] = '積が'.$b.'の倍数になる確率は、\frac{\fbox{ウ}}{\fbox{エ}}\\\\';
+        $item[2] = '積が'.$b.'の倍数または'.$a.'になる確率は、\frac{\fbox{オ}}{\fbox{カ}}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //余事象の確率
+    public function unit401_q09($unit_id){
+        //初期設定
+        $question_id = 40109;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(3,7);
+        $b = rand(3,6);
+        do { $c = rand(2,6); } while( $a+$b<=$c || $a<=$c );
+
+        //答えの計算
+        $right_answers[0] = gmp_fact($a-$c)*gmp_fact($a+$b)-gmp_fact($a)*gmp_fact($a+$b-$c);
+        $right_answers[1] = gmp_fact($a+$b)*gmp_fact($a-$c);
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
+        //問題テキストの設定
+        $text = '$$ 男子'.$a.'人、女子'.$b.'人の中から'.$c.'人を選ぶとき、\\\\
+                少なくとも1人が女子である確率は、';
+
+        //空欄テキストの設定
+        $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}\\\\';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //反復試行の確率
+    public function unit401_q10($unit_id){
+        //初期設定
+        $question_id = 40110;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(3,5);
+        $b = rand(3,5);
+        $c = rand(3,6);
+        do { $d = rand(1,5); } while( $c<=$d );
+
+        //答えの計算
+        $right_answers[0] = gmp_fact($c)*pow($a,$d)*pow($b,$c-$d);
+        $right_answers[1] = gmp_fact($d)*gmp_fact($c-$d)*pow($a+$b,$c);
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
+        //問題テキストの設定
+        $text = '$$ 袋に赤玉が'.$a.'個、白玉が'.$b.'個入っている。\\\\
+                この中から1つ取り出し、色を確認してから袋に戻す。\\\\
+                '.$c.'回行って、赤玉を'.$d.'回、白玉を'.($c-$d).'回引く確率は、';
+
+        //空欄テキストの設定
+        $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}\\\\';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //条件付き確率
+    public function unit401_q11($unit_id){
+        //初期設定
+        $question_id = 40111;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(2,9)*10;
+        do { $b = rand(1,8)*10; } while( $a<=$b );
+
+        //答えの計算
+        $right_answers[0] = $b;
+        $right_answers[1] = $a;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
+        //問題テキストの設定
+        $text = '$$ ある鉄道の乗客のうち、全体の'.$a.'\%が定期券利用者で、\\\\
+                全体の'.$b.'\%が学生の定期券利用者である。\\\\
+                定期券利用者の中から1人を選んだ時、\\\\その人が学生である確率は、';
+
+        //空欄テキストの設定
+        $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}\\\\';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
     
 
 
