@@ -4824,7 +4824,6 @@ class QuestionController extends Controller
                         canvas対応のブラウザでは、ここに図形が表示されます。
                    </canvas>';
 
-        var_dump([$a,$b,$c,$d]);
         $script = '<script type="text/javascript">
         　         window.onload = function draw() {
                         var canvas = document.getElementById(\'canvas\');
