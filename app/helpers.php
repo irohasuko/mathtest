@@ -320,6 +320,44 @@ if (! function_exists('prime_factrization')) {
     }
 }
 
+//１次不定方程式の解を一つ求める
+if (! function_exists('d_equ')) {
+    function d_equ($a,$b) 
+    {
+        if($b == 0){
+            $x = 1;
+            $y = 0;
+            return array($x,$y);
+        }
+        list($s,$t) = d_equ($b,$a%$b);
+        $x = $t;
+        $y = $s-floor($a/$b)*$t;
+        return array((int)$x,(int)$y);
+    }
+}
+
+//10進数からn進数へ変換
+if (! function_exists('n_ary')) {
+    function n_ary($N,$b) 
+    {
+        $temp = array();
+        $l = $b-1;
+        $i = 0;
+        while(pow($b,$i) <= $N){ $i++; }
+        $i--;
+
+        for($j=$i;$j>=0;$j--){
+            while($l*pow($b,$j) > $N){
+                $l--;
+            }
+            $N -= $l*pow($b,$j);
+            array_push($temp,$l);
+            $l = $b-1;
+        }
+        return implode($temp);
+    }
+}
+
 
 
 

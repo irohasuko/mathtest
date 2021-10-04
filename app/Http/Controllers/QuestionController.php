@@ -5014,7 +5014,176 @@ class QuestionController extends Controller
         return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
     }
     
+    //整数の性質
+    //素因数分解
+    public function unit403_q01($unit_id){
+        //初期設定
+        $question_id = 40301;
+        $option = $this->option;
 
+        //変数の設定
+        $a = rand(2,12)*rand(2,12)*rand(2,12);
+        list($base,$ex) = prime_factrization($a);
+
+        //答えの計算
+        $blanks = 2*count($base);
+        for($i=0;$i<count($base);$i++){
+            $right_answers[2*$i] = $base[$i];
+            $right_answers[2*$i+1] = $ex[$i];
+        }
+
+
+        //問題テキストの設定
+        $text = '$$'.$a.'を素因数分解すると、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = $a.'=\fbox{ア}^{\fbox{イ}}';
+
+        for($i=1;$i<count($base);$i++)
+        {
+            $item[0] .= '×\fbox{'.$option[2*$i].'}^{\fbox{'.$option[2*$i+1].'}}';
+        }
+
+        if(count($base) != 1){
+            $item[1] = '\\\\ ただし、' ;
+            for($i=0;$i<count($base);$i++)
+            {
+                $item[1] .= '\fbox{'.$option[2*$i].'} \lt';
+            }
+            $item[1] = rtrim($item[1],'\lt');
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //最大公約数・最小公倍数
+    public function unit403_q02($unit_id){
+        //初期設定
+        $question_id = 40302;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $g = rand(2,13)*rand(2,13);
+        $a = $g*rand(2,5)*rand(2,5);
+        do { $b = $g*rand(2,7)*rand(2,7); } while( $a==$b );
+        $g = gmp_gcd($a,$b);
+        $l = $a*$b/$g;
+
+        //答えの計算
+        $right_answers[0] = $g;
+        $right_answers[1] = $l;
+
+
+        //問題テキストの設定
+        $text = '$$'.$a.'と'.$b.'の';
+
+        //空欄テキストの設定
+        $item[0] = '最大公約数は\fbox{ア}\\\\';
+        $item[1] = '最小公倍数は\fbox{イ}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //余り
+    public function unit403_q03($unit_id){
+        //初期設定
+        $question_id = 40303;
+        $blanks = 1;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(2,5);
+        do { $b = rand(1,4); } while( $a<=$b );
+        $c = rand(2,5);
+        do { $d = rand(1,4); } while( $c<=$d );
+        $g = gmp_lcm($a,$c);
+        $e = $g/$a*rand(1,3);
+        $f = $g/$c*rand(1,3);
+
+        //答えの計算
+        $right_answers[0] = ($e*$b + $f*$d)%$g;
+
+
+        //問題テキストの設定
+        $text = '$$ m,nを自然数とする。\\\\
+                mを'.$a.'で割った余りが'.$b.'、nを'.$c.'で割った余りが'.$d.'となるとき、\\\\
+                '.d1($e,'m').d2($f,'n').'を'.$g.'で割った余りは、';
+
+        //空欄テキストの設定
+        $item[0] = '\fbox{ア}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //ユークリッドの互除法と１次不定方程式
+    public function unit403_q04($unit_id){
+        //初期設定
+        $question_id = 40304;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(11,61);
+        $b = rand(11,61);
+
+        list($a,$b) = gcd($a,$b);
+
+        //答えの計算
+        list($x,$y) = d_equ($a,$b);
+        $right_answers[0] = $b;
+        $right_answers[1] = $x;
+        $right_answers[2] = -1*$a;
+        $right_answers[3] = $y;
+
+
+        //問題テキストの設定
+        $text = '$$'.d1($a,'x').d2($b,'y').'=1\\ の整数解は、\\\\
+                 整数kを用いて、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'x = '.($right_answers[0]<0?'-':'').'\fbox{ア}k'.($right_answers[1]<0?'-':'+').'\fbox{イ}、';
+        $item[1] = 'y = '.($right_answers[2]<0?'-':'').'\fbox{ウ}k'.($right_answers[3]<0?'-':'+').'\fbox{エ}';
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //余り
+    public function unit403_q05($unit_id){
+        //初期設定
+        $question_id = 40305;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $n = rand(2,6);
+        $m = rand(2,6);
+        $a = rand(1,$n-1); $b = rand(0,$n-1); $c = rand(0,$n-1);
+        $N = rand(20,50);
+
+        //答えの計算
+        $right_answers[0] = $a*$n*$n + $b*$n + $c;
+        $right_answers[1] = n_ary($N,$m);
+
+        //問題テキストの設定
+        $text = '$$ ';
+
+        //空欄テキストの設定
+        $item[0] = $n.'進数\\ '.$a.$b.$c.'_{('.$n.')}を10進数で表すと、\fbox{ア}\\\\';
+        $item[1] = '10進数\\ '.$N.'を'.$m.'進数で表すと、\fbox{イ}_{('.$m.')}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
 
     /*テンプレ
     public function unit000_q00($unit_id){
