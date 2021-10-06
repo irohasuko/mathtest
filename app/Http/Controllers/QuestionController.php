@@ -5013,6 +5013,731 @@ class QuestionController extends Controller
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
     }
+
+    //図形の性質
+    //三角形の重心
+    public function unit402_q01($unit_id){
+        //初期設定
+        $question_id = 40201;
+        $blanks = 6;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(2,8);
+        do { $b = rand(1,8); } while( 2*$a <= $b );
+
+        //答えの計算
+        $right_answers[0] = 1;
+        $right_answers[1] = 4*$a*$a - $b*$b;
+        $right_answers[2] = 2;
+        $right_answers[3] = 1;
+        $right_answers[4] = 4*$a*$a - $b*$b;
+        $right_answers[5] = 3;
+
+        list($right_answers[0],$right_answers[1]) = root($right_answers[0],$right_answers[1]);
+        list($right_answers[3],$right_answers[4]) = root($right_answers[3],$right_answers[4]);
+        list($right_answers[0],$right_answers[2]) = gcd($right_answers[0],$right_answers[2]);
+        list($right_answers[3],$right_answers[5]) = gcd($right_answers[3],$right_answers[5]);
+
+        //問題テキストの設定
+        $text = '$$ AB=AC='.$a.'、BC='.$b.'である二等辺三角形ABCについて、\\\\
+                 BCの中点をM、重心をGとすると、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'AM = \frac{\fbox{ア}\sqrt{\fbox{イ}}}{\fbox{ウ}}、';
+        $item[1] = 'AG = \frac{\fbox{エ}\sqrt{\fbox{オ}}}{\fbox{カ}}';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_root($right_answers,$option,0,1,$blanks,$item[0]);
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,2,$blanks,$item[0]);
+        list($right_answers,$option,$blanks,$item[1]) = l_root($right_answers,$option,3,4,$blanks,$item[1]);
+        list($right_answers,$option,$blanks,$item[1]) = l_frac($right_answers,$option,5,$blanks,$item[1]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //三角形の内心
+    public function unit402_q02($unit_id){
+        //初期設定
+        $question_id = 40202;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        list($a,$b,$c) = make_tri();
+
+        //答えの計算
+        $right_answers[0] = $a*$b;
+        $right_answers[1] = $a+$c;
+        $right_answers[2] = $a*($a+$c);
+        $right_answers[3] = $a*$b;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[2],$right_answers[3]) = gcd($right_answers[2],$right_answers[3]);
+
+        //問題テキストの設定
+        $text = '$$ AB='.$a.'、BC='.$b.'、CA='.$c.'である△ABCの、\\\\
+                \angle{BAC}の二等分線が辺BCと交わる点をD、\\\\
+                △ABCの内心をIとするとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'BD = \frac{\fbox{ア}}{\fbox{イ}}、';
+        $item[1] = 'AI:ID = \fbox{ウ}:\fbox{エ}';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //三角形の外心
+    public function unit402_q03($unit_id){
+        //初期設定
+        $question_id = 40203;
+        $blanks = 1;
+        $option = $this->option;
+
+        //変数の設定
+        do{
+            $a[0] = rand(85,175);
+            $a[1] = sqrt(8100-pow($a[0]-175,2))+100;
+            $b[0] = rand(85,265); 
+            $b[1] = -sqrt(8100-pow($b[0]-175,2))+100;
+            do { $c[0] = rand(175,260); } while($b[0]==$c[0]);
+            $c[1] = sqrt(8100-pow($c[0]-175,2))+100;
+
+            $AB = sqrt(pow($a[0]-$b[0],2)+pow($a[1]-$b[1],2));
+            $BC = sqrt(pow($b[0]-$c[0],2)+pow($b[1]-$c[1],2));
+            $CA = sqrt(pow($c[0]-$a[0],2)+pow($c[1]-$a[1],2));
+
+            $A = acos((pow($AB,2)+pow($CA,2)-pow($BC,2))/(2*$AB*$CA));
+            $B = acos((pow($AB,2)+pow($BC,2)-pow($CA,2))/(2*$AB*$BC));
+            $C = acos((pow($BC,2)+pow($CA,2)-pow($AB,2))/(2*$BC*$CA));
+            $BASE = 5/12*pi();
+
+        }while($A>$BASE || $B>$BASE || $C>$BASE);
+
+        $r = ($BC/sin($A))/2;
+        $alpha = acos((pow($r,2)+pow($r,2)-pow($AB,2))/(2*$r*$r));
+        $beta = acos((pow($r,2)+pow($BC,2)-pow($r,2))/(2*$BC*$r));
+        $theta_1 = acos((pow($r,2)+pow($r,2)-pow($CA,2))/(2*$r*$r)) + atan(abs(100-$c[1])/abs(175-$c[0]));;
+        $theta_2 = atan(($b[1]-$c[1])/($b[0]-$c[0]));
+        if($b[0]-$c[0]>0){
+            $theta_2 += pi();
+        }
+
+        //答えの計算
+        $right_answers[0] = (floor($alpha*180/pi())%2==0?floor($alpha*180/pi()):floor($alpha*180/pi())+1)/2 - floor($beta*180/pi());
+
+        //問題テキストの設定
+        $canvas = '<canvas id="canvas" width="350" height="200">
+                        canvas対応のブラウザでは、ここに図形が表示されます。
+                   </canvas>';
+                   
+        $script = '<script type="text/javascript">
+        　         window.onload = function draw() {
+                        var canvas = document.getElementById(\'canvas\');
+                        if (canvas.getContext) {
+                            var circle = canvas.getContext(\'2d\');
+                            circle.beginPath();
+                            circle.arc(175, 100, 90, 0, 2 * Math.PI);
+                            circle.stroke() ;
+                            var point = canvas.getContext(\'2d\');
+                            point.beginPath();
+                            point.arc(175, 100, 3, 0, 2 * Math.PI);
+                            point.fill() ;
+
+                            var point_A = canvas.getContext(\'2d\');
+                            point_A.beginPath();
+                            point_A.arc('.$a[0].', '.$a[1].', 3, 0, 2 * Math.PI);
+                            point_A.fill() ;
+
+                            var point_B = canvas.getContext(\'2d\');
+                            point_B.beginPath();
+                            point_B.arc('.$b[0].', '.$b[1].', 3, 0, 2 * Math.PI);
+                            point_B.fill() ;
+
+                            var point_C = canvas.getContext(\'2d\');
+                            point_C.beginPath();
+                            point_C.arc('.$c[0].', '.$c[1].', 3, 0, 2 * Math.PI);
+                            point_C.fill() ;
+
+                            var side = canvas.getContext(\'2d\');
+                            side.beginPath();
+                            side.moveTo('.$a[0].','.$a[1].');
+                            side.lineTo('.$b[0].', '.$b[1].');
+                            side.lineTo('.$c[0].', '.$c[1].');
+                            side.lineTo('.$a[0].', '.$a[1].');
+                            side.lineTo(175,100);
+                            side.lineTo('.$b[0].', '.$b[1].');
+                            side.moveTo('.$c[0].', '.$c[1].');
+                            side.lineTo(175,100);
+                            side.stroke();
+
+                            
+                            var alpha = canvas.getContext(\'2d\');
+                            alpha.beginPath();
+                            alpha.strokeStyle = \'red\';
+                            alpha.arc(175,100,15,'.$theta_1.','.($theta_1+$alpha).');
+                            alpha.stroke();
+                            var beta = canvas.getContext(\'2d\');
+                            beta.beginPath();
+                            beta.strokeStyle = \'red\';
+                            beta.arc('.$b[0].','.$b[1].',15,'.$theta_2.','.($theta_2+$beta).');
+                            beta.stroke();
+
+                            var A = canvas.getContext(\'2d\');
+                            A.fillStyle = \'blue\';
+                            A.font = \'15pt Arial\';
+                            A.fillText(\'A\', '.$a[0].'-20, '.$a[1].');
+
+                            var B = canvas.getContext(\'2d\');
+                            B.fillStyle = \'blue\';
+                            B.font = \'15pt Arial\';
+                            B.fillText(\'B\', '.$b[0].'-20, '.$b[1].'+10);
+
+                            var C = canvas.getContext(\'2d\');
+                            C.fillStyle = \'blue\';
+                            C.font = \'15pt Arial\';
+                            C.fillText(\'C\', '.$c[0].'+5, '.$c[1].');
+
+                            var O = canvas.getContext(\'2d\');
+                            O.fillStyle = \'blue\';
+                            O.font = \'15pt Arial\';
+                            O.fillText(\'O\',180,100);
+
+                            var a = canvas.getContext(\'2d\');
+                            a.fillStyle = \'red\';
+                            a.font = \'10pt Arial\';
+                            a.fillText(\'α\',150,100);
+
+                            var b = canvas.getContext(\'2d\');
+                            b.fillStyle = \'red\';
+                            b.font = \'10pt Arial\';
+                            b.fillText(\'β\','.$b[0].','.$b[1].'+30);
+                        }
+                    }
+                   </script>';
+
+        $text = '$$ 上図において、Oは\triangle{ABC}の外心である。\\\\
+                 \alpha = '.(floor($alpha*180/pi())%2==0?floor($alpha*180/pi()):floor($alpha*180/pi())+1).'^\circ、\beta = '.floor($beta*180/pi()).'^\circのとき、';
+
+        //空欄テキストの設定
+        $item[0] = '\angle{OCA} = \fbox{ア}^\circである。';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/canvas',compact('right_answers','unit_id','question_id','text','blank_text','blanks','canvas','script'));
+    }
+
+    //チェバ、メネラウスの定理
+    public function unit402_q04($unit_id){
+        //初期設定
+        $question_id = 40204;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,5);
+        $b = rand(1,5);
+        $c = rand(1,5);
+        $d = rand(1,5);
+
+        list($a,$b) = gcd($a,$b);
+        list($c,$d) = gcd($c,$d);
+
+        //答えの計算
+        $right_answers[0] = $b*$c;
+        $right_answers[1] = $a*$d;
+        $right_answers[2] = $b*$c+$a*$d;
+        $right_answers[3] = $b*$d;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[2],$right_answers[3]) = gcd($right_answers[2],$right_answers[3]);
+
+        //問題テキストの設定
+        $text = '$$ △ABCの辺AB、AC上にそれぞれ\\\\
+                 AP:PB='.$a.':'.$b.'、AQ:QC='.$c.':'.$d.'となる点P,Qをとる。\\\\
+                 BQとPCの交点をO、AOとBCの交点をRとすると、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'BR:RC=\fbox{ア}:\fbox{イ}\\\\';
+        $item[1] = 'AO:OR=\fbox{ウ}:\fbox{エ}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //三角形の面積比
+    public function unit402_q05($unit_id){
+        //初期設定
+        $question_id = 40205;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,5);
+        $b = rand(1,5);
+        $c = rand(1,5);
+        $d = rand(1,5);
+
+        list($a,$b) = gcd($a,$b);
+        list($c,$d) = gcd($c,$d);
+
+        //答えの計算
+        $right_answers[0] = $a*($c+$d);
+        $right_answers[1] = $b*$d;
+        $right_answers[2] = ($a*($c+$d)+$b*$d)*($a+$b);
+        $right_answers[3] = $a*$b*$c;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[2],$right_answers[3]) = gcd($right_answers[2],$right_answers[3]);
+
+        //問題テキストの設定
+        $text = '$$ △ABCの辺AB、BC上にそれぞれ\\\\
+                 AP:PB='.$a.':'.$b.'、BQ:QC='.$c.':'.$d.'となる点P,Qをとる。\\\\
+                 AQとCPの交点をRとすると、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'AR:RQ=\fbox{ア}:\fbox{イ}より、\\\\';
+        $item[1] = '\triangle{ABC}:\triangle{BPR}=\fbox{ウ}:\fbox{エ}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //円に内接する四角形
+    public function unit402_q06($unit_id){
+        //初期設定
+        $question_id = 40206;
+        $blanks = 1;
+        $option = $this->option;
+
+        //変数の設定
+        $a[0] = rand(85,175);
+        $a[1] = sqrt(8100-pow($a[0]-175,2))+100;
+        $b[0] = rand(85,175); 
+        $b[1] = -sqrt(8100-pow($b[0]-175,2))+100;
+        $c[0] = rand(176,260);
+        $c[1] = sqrt(8100-pow($c[0]-175,2))+100;
+        $d[0] = rand(176,260);
+        $d[1] = -sqrt(8100-pow($d[0]-175,2))+100;
+
+        $AD = sqrt(pow($a[0]-$d[0],2)+pow($a[1]-$d[1],2));
+
+        $AB = sqrt(pow($a[0]-$b[0],2)+pow($a[1]-$b[1],2));
+        $BD = sqrt(pow($b[0]-$d[0],2)+pow($b[1]-$d[1],2));
+        $DC = sqrt(pow($d[0]-$c[0],2)+pow($d[1]-$c[1],2));
+        $CA = sqrt(pow($c[0]-$a[0],2)+pow($c[1]-$a[1],2));
+
+        $alpha = acos((pow($BD,2)+pow($AB,2)-pow($AD,2))/(2*$BD*$AB));
+        $beta = acos((pow($CA,2)+pow($DC,2)-pow($AD,2))/(2*$CA*$DC));
+        $theta_1 = atan(abs($b[1]-$d[1])/abs($b[0]-$d[0]));
+        if($b[1]-$d[1]>0){
+            $theta_1 *= -1;
+        }
+        $theta_2 = atan(abs($a[1]-$c[1])/abs($a[0]-$c[0]));
+        if($a[1]-$c[1]>=0){
+            $theta_2 = pi() - $theta_2;
+        }else{
+            $theta_2 = pi() + $theta_2;
+        }
+
+
+        //答えの計算
+        $right_answers[0] = 180-floor($alpha*180/pi());
+
+        //問題テキストの設定
+        $canvas = '<canvas id="canvas" width="350" height="200">
+                        canvas対応のブラウザでは、ここに図形が表示されます。
+                   </canvas>';
+                   
+        $script = '<script type="text/javascript">
+        　         window.onload = function draw() {
+                        var canvas = document.getElementById(\'canvas\');
+                        if (canvas.getContext) {
+                            var circle = canvas.getContext(\'2d\');
+                            circle.beginPath();
+                            circle.arc(175, 100, 90, 0, 2 * Math.PI);
+                            circle.stroke() ;
+
+                            var side = canvas.getContext(\'2d\');
+                            side.beginPath();
+                            side.moveTo('.$a[0].','.$a[1].');
+                            side.lineTo('.$b[0].', '.$b[1].');
+                            side.lineTo('.$d[0].', '.$d[1].');
+                            side.lineTo('.$c[0].', '.$c[1].');
+                            side.lineTo('.$a[0].','.$a[1].');
+                            side.stroke();
+
+                            var alpha = canvas.getContext(\'2d\');
+                            alpha.beginPath();
+                            alpha.strokeStyle = \'red\';
+                            alpha.arc('.$b[0].','.$b[1].',10,'.$theta_1.','.($theta_1+$alpha).');
+                            alpha.stroke();
+                            var beta = canvas.getContext(\'2d\');
+                            beta.beginPath();
+                            beta.strokeStyle = \'red\';
+                            beta.arc('.$c[0].','.$c[1].',10,'.$theta_2.','.($theta_2+$beta).');
+                            beta.stroke();
+
+                            var a = canvas.getContext(\'2d\');
+                            a.fillStyle = \'red\';
+                            a.font = \'10pt Arial\';
+                            a.fillText(\'α\','.$b[0].'+5,'.$b[1].'+20);
+
+                            var b = canvas.getContext(\'2d\');
+                            b.fillStyle = \'red\';
+                            b.font = \'10pt Arial\';
+                            b.fillText(\'β\','.$c[0].'-20,'.$c[1].');
+                        }
+                    }
+                   </script>';
+
+        $text = '$$ 上図において、\alpha = '.floor($alpha*180/pi()).'^\circであるとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '\beta = \fbox{ア}^\circ';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/canvas',compact('right_answers','unit_id','question_id','text','blank_text','blanks','canvas','script'));
+    }
+
+    //円の接線
+    public function unit402_q07($unit_id){
+        //初期設定
+        $question_id = 40207;
+        $blanks = 1;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(5,12);
+        do{ $b = rand(2,6); } while($a<=$b);
+        $c = rand(3,8);
+
+        //答えの計算
+        $right_answers[0] = $a-$b+$c;
+
+        //問題テキストの設定
+        $text = '$$ △ABCとその内接円について、\\\\
+                 辺BC,CA,ABと内接円の接点ををそれぞれP,Q,Rとおく。\\\\
+                 AB='.$a.'、BP='.$b.'、PC='.$c.'のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'AC = \fbox{ア}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //接線と弦のつくる角
+    public function unit402_q08($unit_id){
+        //初期設定
+        $question_id = 40208;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a[0] = rand(85,160);
+        $a[1] = sqrt(8100-pow($a[0]-175,2))+100;
+        $b[0] = rand(85,160); 
+        $b[1] = -sqrt(8100-pow($b[0]-175,2))+100;
+        $c[0] = rand(180,260);
+        $c[1] = sqrt(8100-pow($c[0]-175,2))+100;
+        do{ $d[0] = rand(180,260); } while($d[0]==$c[0]);
+        $d[1] = -sqrt(8100-pow($d[0]-175,2))+100;
+
+        $AD = sqrt(pow($a[0]-$d[0],2)+pow($a[1]-$d[1],2));
+
+        $AB = sqrt(pow($a[0]-$b[0],2)+pow($a[1]-$b[1],2));
+        $BD = sqrt(pow($b[0]-$d[0],2)+pow($b[1]-$d[1],2));
+        $DC = sqrt(pow($d[0]-$c[0],2)+pow($d[1]-$c[1],2));
+        $CA = sqrt(pow($c[0]-$a[0],2)+pow($c[1]-$a[1],2));
+
+        $alpha = acos((pow($BD,2)+pow($AB,2)-pow($AD,2))/(2*$BD*$AB));
+        $beta = acos((pow($AD,2)+pow($DC,2)-pow($CA,2))/(2*$AD*$DC));
+        $theta_1 = atan(abs($b[1]-$d[1])/abs($b[0]-$d[0]));
+        if($b[1]-$d[1]>0){
+            $theta_1 *= -1;
+        }
+        $theta_2 = atan(abs($c[1]-$d[1])/abs($c[0]-$d[0]));
+        if($c[0]-$d[0]>=0){
+            $theta_2;
+        }else{
+            $theta_2 = pi() - $theta_2;
+        }
+
+        $l = (175-$c[0])/($c[1]-100);
+
+        $a_text = floor(180/pi()*$alpha).'°';
+        $b_text = floor(180/pi()*$beta).'°';
+
+        $e[0] = $c[0] + 100;
+        $e[1] = $l*($e[0]-$c[0])+$c[1];
+        $f[0] = $c[0] - 100;
+        $f[1] = $l*($f[0]-$c[0])+$c[1];
+
+        $CE = sqrt(pow($c[0]-$e[0],2)+pow($c[1]-$e[1],2));
+        $DE = sqrt(pow($d[0]-$e[0],2)+pow($d[1]-$e[1],2));
+
+        $CF = sqrt(pow($c[0]-$f[0],2)+pow($c[1]-$f[1],2));
+        $AF = sqrt(pow($a[0]-$f[0],2)+pow($a[1]-$f[1],2));
+        
+        $gamma = acos((pow($DC,2)+pow($CE,2)-pow($DE,2))/(2*$DC*$CE));
+        $phai = acos((pow($CF,2)+pow($CA,2)-pow($AF,2))/(2*$CF*$CA));
+
+        $theta_3 = 2*pi() - atan(abs($d[1]-$c[1])/abs($d[0]-$c[0]));
+        if($d[0]-$c[0]<0){
+            $theta_3 = pi() + atan(abs($d[1]-$c[1])/abs($d[0]-$c[0]));
+        }
+        $theta_4 = pi() - atan(abs($f[1]-$c[1])/abs($f[0]-$c[0]));
+
+
+        //答えの計算
+        $right_answers[0] = floor($beta*180/pi());
+        $right_answers[1] = floor($alpha*180/pi()) - floor($beta*180/pi());
+
+        //問題テキストの設定
+        $canvas = '<canvas id="canvas" width="350" height="200">
+                        canvas対応のブラウザでは、ここに図形が表示されます。
+                   </canvas>';
+                   
+        $script = '<script type="text/javascript">
+        　         window.onload = function draw() {
+                        var canvas = document.getElementById(\'canvas\');
+                        if (canvas.getContext) {
+                            var circle = canvas.getContext(\'2d\');
+                            circle.beginPath();
+                            circle.arc(175, 100, 90, 0, 2 * Math.PI);
+                            circle.stroke() ;
+
+                            var side = canvas.getContext(\'2d\');
+                            side.beginPath();
+                            side.moveTo('.$a[0].','.$a[1].');
+                            side.lineTo('.$b[0].', '.$b[1].');
+                            side.lineTo('.$d[0].', '.$d[1].');
+                            side.lineTo('.$c[0].', '.$c[1].');
+                            side.lineTo('.$a[0].','.$a[1].');
+
+                            side.moveTo('.$a[0].','.$a[1].');
+                            side.lineTo('.$d[0].','.$d[1].');
+
+                            side.moveTo(0,'.$l.'*(0-'.$c[0].')+'.$c[1].');
+                            side.lineTo(350,'.$l.'*(350-'.$c[0].')+'.$c[1].');
+                            side.stroke();
+
+                            var point_A = canvas.getContext(\'2d\');
+                            point_A.beginPath();
+                            point_A.arc('.$c[0].', '.$c[1].', 3, 0, 2 * Math.PI);
+                            point_A.fill() ;
+                            var A = canvas.getContext(\'2d\');
+                            A.fillStyle = \'blue\';
+                            A.font = \'15pt Arial\';
+                            A.fillText(\'A\', '.$c[0].'+5, '.$c[1].'+10);
+
+                            var alpha = canvas.getContext(\'2d\');
+                            alpha.beginPath();
+                            alpha.strokeStyle = \'red\';
+                            alpha.arc('.$b[0].','.$b[1].',10,'.$theta_1.','.($theta_1+$alpha).');
+                            alpha.stroke();
+                            var beta = canvas.getContext(\'2d\');
+                            beta.beginPath();
+                            beta.strokeStyle = \'red\';
+                            beta.arc('.$d[0].','.$d[1].',10,'.$theta_2.','.($theta_2+$beta).');
+                            beta.stroke();
+
+                            var gamma = canvas.getContext(\'2d\');
+                            gamma.beginPath();
+                            gamma.strokeStyle = \'red\';
+                            gamma.arc('.$c[0].','.$c[1].',15,'.$theta_3.','.($theta_3+$gamma).');
+                            gamma.stroke();
+                            var phai = canvas.getContext(\'2d\');
+                            phai.beginPath();
+                            phai.strokeStyle = \'red\';
+                            phai.arc('.$c[0].','.$c[1].',15,'.$theta_4.','.($theta_4+$phai).');
+                            phai.stroke();
+
+                            var a = canvas.getContext(\'2d\');
+                            a.fillStyle = \'red\';
+                            a.font = \'10pt Arial\';
+                            a.fillText(\''.$a_text.'\','.$b[0].'+5,'.$b[1].'+20);
+
+                            var b = canvas.getContext(\'2d\');
+                            b.fillStyle = \'red\';
+                            b.font = \'10pt Arial\';
+                            b.fillText(\''.$b_text.'\','.$d[0].'+10,'.$d[1].'+5);
+
+                            var c = canvas.getContext(\'2d\');
+                            c.fillStyle = \'red\';
+                            c.font = \'10pt Arial\';
+                            c.fillText(\'α\','.$c[0].'-30,'.$c[1].'+5);
+
+                            var d = canvas.getContext(\'2d\');
+                            d.fillStyle = \'red\';
+                            d.font = \'10pt Arial\';
+                            d.fillText(\'β\','.$c[0].'+10,'.$c[1].'-15);
+                        }
+                    }
+                   </script>';
+
+        $text = '$$ 上図において、直線は点Aにおける接線である。\\\\このとき、';
+
+        //空欄テキストの設定
+        $item[0] = '\alpha = \fbox{ア}^\circ、';
+        $item[1] = '\beta = \fbox{イ}^\circ';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/canvas',compact('right_answers','unit_id','question_id','text','blank_text','blanks','canvas','script'));
+    }
+
+    //方べきの定理
+    public function unit402_q09($unit_id){
+        //初期設定
+        $question_id = 40209;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a[0] = rand(85,160);
+        $a[1] = sqrt(8100-pow($a[0]-175,2))+100;
+        $b[0] = rand(85,160); 
+        $b[1] = -sqrt(8100-pow($b[0]-175,2))+100;
+        $c[0] = rand(180,260);
+        $c[1] = sqrt(8100-pow($c[0]-175,2))+100;
+        $d[0] = rand(180,260);
+        $d[1] = -sqrt(8100-pow($d[0]-175,2))+100;
+
+        $a_l = ($a[1]-$d[1])/($a[0]-$d[0]);
+        $b_l = ($a[1]-($a[1]-$d[1])/($a[0]-$d[0])*$a[0]);
+        $c_l = ($c[1]-$b[1])/($c[0]-$b[0]);
+        $d_l = ($c[1]-($c[1]-$b[1])/($c[0]-$b[0])*$c[0]);
+        $o[0] = ($b_l-$d_l)/($c_l-$a_l);
+        $o[1] = ($b_l*$c_l-$a_l*$d_l)/($c_l-$a_l);
+
+        $AO = (int)floor(sqrt(pow($a[0]-$o[0],2)+pow($a[1]-$o[1],2))/10);
+        $OD = (int)floor(sqrt(pow($o[0]-$d[0],2)+pow($o[1]-$d[1],2))/10);
+        $BO = (int)floor(sqrt(pow($b[0]-$o[0],2)+pow($b[1]-$o[1],2))/10);
+
+        //答えの計算
+        $right_answers[0] = $AO*$OD;
+        $right_answers[1] = $BO;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
+        //問題テキストの設定
+        $canvas = '<canvas id="canvas" width="350" height="200">
+                        canvas対応のブラウザでは、ここに図形が表示されます。
+                   </canvas>';
+                   
+        $script = '<script type="text/javascript">
+        　         window.onload = function draw() {
+                        var canvas = document.getElementById(\'canvas\');
+                        if (canvas.getContext) {
+                            var circle = canvas.getContext(\'2d\');
+                            circle.beginPath();
+                            circle.arc(175, 100, 90, 0, 2 * Math.PI);
+                            circle.stroke() ;
+
+                            var side = canvas.getContext(\'2d\');
+                            side.beginPath();
+                            side.moveTo('.$a[0].','.$a[1].');
+                            side.lineTo('.$d[0].', '.$d[1].');
+                            side.moveTo('.$c[0].', '.$c[1].');
+                            side.lineTo('.$b[0].', '.$b[1].');
+                            side.stroke();
+
+                            var a = canvas.getContext(\'2d\');
+                            a.beginPath();
+                            a.arc('.$a[0].','.$a[1].', 3, 0, 2 * Math.PI);
+                            a.fill() ;
+                            var b = canvas.getContext(\'2d\');
+                            b.beginPath();
+                            b.arc('.$b[0].','.$b[1].', 3, 0, 2 * Math.PI);
+                            b.fill() ;
+                            var c = canvas.getContext(\'2d\');
+                            c.beginPath();
+                            c.arc('.$c[0].','.$c[1].', 3, 0, 2 * Math.PI);
+                            c.fill() ;
+                            var d = canvas.getContext(\'2d\');
+                            d.beginPath();
+                            d.arc('.$d[0].','.$d[1].', 3, 0, 2 * Math.PI);
+                            d.fill() ;
+                            var o = canvas.getContext(\'2d\');
+                            o.beginPath();
+                            o.arc('.$o[0].','.$o[1].', 3, 0, 2 * Math.PI);
+                            o.fill() ;
+
+                            var A = canvas.getContext(\'2d\');
+                            A.fillStyle = \'blue\';
+                            A.font = \'13pt Arial\';
+                            A.fillText(\'A\','.$a[0].'+5,'.$a[1].');
+                            var B = canvas.getContext(\'2d\');
+                            B.fillStyle = \'blue\';
+                            B.font = \'13pt Arial\';
+                            B.fillText(\'B\','.$b[0].'+5,'.$b[1].'+10);
+                            var C = canvas.getContext(\'2d\');
+                            C.fillStyle = \'blue\';
+                            C.font = \'13pt Arial\';
+                            C.fillText(\'C\','.$c[0].'+5,'.$c[1].');
+                            var D = canvas.getContext(\'2d\');
+                            D.fillStyle = \'blue\';
+                            D.font = \'13pt Arial\';
+                            D.fillText(\'D\','.$d[0].'+5,'.$d[1].'+10);
+                            var O = canvas.getContext(\'2d\');
+                            O.fillStyle = \'blue\';
+                            O.font = \'13pt Arial\';
+                            O.fillText(\'O\','.$o[0].'+5,'.$o[1].'+5);
+
+                        }
+                    }
+                   </script>';
+
+        $text = '$$ 上図において、AO='.$AO.'、BO='.$BO.'、DO='.$OD.'であるとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'CO = \frac{\fbox{ア}}{\fbox{イ}}';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/canvas',compact('right_answers','unit_id','question_id','text','blank_text','blanks','canvas','script'));
+    }
+
+    //２円の関係
+    public function unit402_q10($unit_id){
+        //初期設定
+        $question_id = 40210;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(3,10);
+        do { $b = rand(2,9); } while( $a==$b );
+
+        //答えの計算
+        $right_answers[0] = abs($a-$b);
+        $right_answers[1] = $a+$b;
+        $right_answers[2] = $a+$b;
+        $right_answers[3] = abs($a-$b);
+
+        //問題テキストの設定
+        $text = '$$ 半径\\ '.$a.'の円O_{1}と半径\\ '.$b.'の円O_{2}がある。\\\\
+                 この2円の位置関係と、中心間の距離dを考える。\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '2円が異なる2点で交わるとき、\fbox{ア} \lt d \lt \fbox{イ}\\\\';
+        $item[1] = '2円が外接するとき、d = \fbox{ウ}\\\\';
+        $item[2] = '2円が内接するとき、d = \fbox{エ}\\\\';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
     
     //整数の性質
     //素因数分解
