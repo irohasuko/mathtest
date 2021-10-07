@@ -5186,6 +5186,7 @@ class QuestionController extends Controller
                             alpha.strokeStyle = \'red\';
                             alpha.arc(175,100,15,'.$theta_1.','.($theta_1+$alpha).');
                             alpha.stroke();
+                            
                             var beta = canvas.getContext(\'2d\');
                             beta.beginPath();
                             beta.strokeStyle = \'red\';
@@ -5215,11 +5216,13 @@ class QuestionController extends Controller
                             var a = canvas.getContext(\'2d\');
                             a.fillStyle = \'red\';
                             a.font = \'10pt Arial\';
+                            a.clearRect(148,90,10,10);
                             a.fillText(\'α\',150,100);
 
                             var b = canvas.getContext(\'2d\');
                             b.fillStyle = \'red\';
                             b.font = \'10pt Arial\';
+                            b.clearRect('.$b[0].','.$b[1].'+20,10,10);
                             b.fillText(\'β\','.$b[0].','.$b[1].'+30);
                         }
                     }
@@ -5389,11 +5392,13 @@ class QuestionController extends Controller
                             var a = canvas.getContext(\'2d\');
                             a.fillStyle = \'red\';
                             a.font = \'10pt Arial\';
+                            a.clearRect('.$b[0].'+3,'.$b[1].'+12,10,10);
                             a.fillText(\'α\','.$b[0].'+5,'.$b[1].'+20);
 
                             var b = canvas.getContext(\'2d\');
                             b.fillStyle = \'red\';
                             b.font = \'10pt Arial\';
+                            b.clearRect('.$c[0].'-22,'.$c[1].'-10,10,10);
                             b.fillText(\'β\','.$c[0].'-20,'.$c[1].');
                         }
                     }
@@ -5565,21 +5570,25 @@ class QuestionController extends Controller
                             var a = canvas.getContext(\'2d\');
                             a.fillStyle = \'red\';
                             a.font = \'10pt Arial\';
+                            a.clearRect('.$b[0].'+6,'.$b[1].'+10,15,10);
                             a.fillText(\''.$a_text.'\','.$b[0].'+5,'.$b[1].'+20);
 
                             var b = canvas.getContext(\'2d\');
                             b.fillStyle = \'red\';
                             b.font = \'10pt Arial\';
+                            b.clearRect('.$d[0].'+8,'.$d[1].'-10,15,15);
                             b.fillText(\''.$b_text.'\','.$d[0].'+10,'.$d[1].'+5);
 
                             var c = canvas.getContext(\'2d\');
                             c.fillStyle = \'red\';
                             c.font = \'10pt Arial\';
+                            c.clearRect('.$c[0].'-32,'.$c[1].'-4,10,10);
                             c.fillText(\'α\','.$c[0].'-30,'.$c[1].'+5);
 
                             var d = canvas.getContext(\'2d\');
                             d.fillStyle = \'red\';
                             d.font = \'10pt Arial\';
+                            d.clearRect('.$c[0].'+7,'.$c[1].'-26,12,12);
                             d.fillText(\'β\','.$c[0].'+10,'.$c[1].'-15);
                         }
                     }
@@ -5909,6 +5918,344 @@ class QuestionController extends Controller
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
     }
+
+    //数学B
+    //ベクトル
+    //分点の位置ベクトル
+    public function unit501_q01($unit_id){
+        //初期設定
+        $question_id = 50101;
+        $blanks = 8;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,7);
+        $b = rand(1,7);
+        $c = rand(1,7);
+        do{ $d = rand(1,7); } while($c==$d);
+
+        list($a,$b) = gcd($a,$b);
+        list($c,$d) = gcd($c,$d);
+
+        //答えの計算
+        $right_answers[0] = $b;
+        $right_answers[1] = $a+$b;
+        $right_answers[2] = $a;
+        $right_answers[3] = $a+$b;
+        $right_answers[4] = -1*$d;
+        $right_answers[5] = $c-$d;
+        $right_answers[6] = $c;
+        $right_answers[7] = $c-$d;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[2],$right_answers[3]) = gcd($right_answers[2],$right_answers[3]);
+        list($right_answers[4],$right_answers[5]) = gcd($right_answers[4],$right_answers[5]);
+        list($right_answers[6],$right_answers[7]) = gcd($right_answers[6],$right_answers[7]);
+
+        //問題テキストの設定
+        $text = '$$ \triangle{ABC}の辺BCを'.$a.':'.$b.'に内分する点をD、\\\\
+                辺BCを'.$c.':'.$d.'に外分する点をEとすると、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '\vec{AD} = \frac{\fbox{ア}}{\fbox{イ}}\vec{AB}+';
+        $item[1] = '\frac{\fbox{ウ}}{\fbox{エ}}\vec{AC}\\\\';
+        $item[2] = '\vec{AE} = '.($right_answers[4]*$right_answers[5]<0?'-':'').'\frac{\fbox{オ}}{\fbox{カ}}\vec{AB}';
+        $item[3] = ($right_answers[6]*$right_answers[7]<0?'-':'+').'\frac{\fbox{キ}}{\fbox{ク}}\vec{AC}\\\\';
+
+        for($i=0;$i<4;$i++){
+            list($right_answers,$option,$blanks,$item[$i]) = l_frac($right_answers,$option,2*$i+1,$blanks,$item[$i]);
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //分点の位置ベクトル
+    public function unit501_q02($unit_id){
+        //初期設定
+        $question_id = 50102;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,7);
+        $b = rand(1,7);
+        $c = rand(1,7);
+        $d = rand(1,7);
+
+        list($a,$b) = gcd($a,$b);
+        list($c,$d) = gcd($c,$d);
+
+        //答えの計算
+        $right_answers[0] = $a*($c+$d) + $d*($a+$b);
+        $right_answers[1] = 3*($a+$b)*($c+$d);
+        $right_answers[2] = $c;
+        $right_answers[3] = 3*($c+$d);
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[2],$right_answers[3]) = gcd($right_answers[2],$right_answers[3]);
+
+        //問題テキストの設定
+        $text = '$$ \triangle{ABC}の辺ABを'.$a.':'.$b.'に内分する点をD、\\\\
+                辺BCを'.$c.':'.$d.'に内分する点をEとする。\\\\
+                \triangle{ADE}の重心をGとすると、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '\vec{AG} = '.($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}\vec{AB}';
+        $item[1] = ($right_answers[2]*$right_answers[3]<0?'-':'+').'\frac{\fbox{ウ}}{\fbox{エ}}\vec{AC}\\\\';
+
+        for($i=0;$i<2;$i++){
+            list($right_answers,$option,$blanks,$item[$i]) = l_frac($right_answers,$option,2*$i+1,$blanks,$item[$i]);
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //ベクトルの成分と大きさ
+    public function unit501_q03($unit_id){
+        //初期設定
+        $question_id = 50103;
+        $blanks = 5;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(-7,7);
+        $b = rand(-7,7);
+        $c = rand(-7,7);
+        $d = rand(-7,7);
+        $e = rand(-7,7);
+        do { $f = rand(1,7); } while($a==$d && $b==$e && $c==$f);
+
+        //答えの計算
+        $right_answers[0] = $d-$a;
+        $right_answers[1] = $e-$b;
+        $right_answers[2] = $f-$c;
+        $right_answers[3] = 1;
+        $right_answers[4] = pow($d-$a,2)+pow($e-$b,2)+pow($f-$c,2);
+
+        list($right_answers[3],$right_answers[4]) = root($right_answers[3],$right_answers[4]);
+
+        //問題テキストの設定
+        $text = '$$ 空間内の点A('.$a.','.$b.','.$c.')、点B('.$d.','.$e.','.$f.')に対して、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '\vec{AB} = (\fbox{ア},\fbox{イ},\fbox{ウ})\\\\';
+        $item[1] = '|\vec{AB}| = \fbox{エ}\sqrt{\fbox{オ}}';
+
+        list($right_answers,$option,$blanks,$item[1]) = l_root($right_answers,$option,3,4,$blanks,$item[1]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //一直線上にある条件
+    public function unit501_q04($unit_id){
+        //初期設定
+        $question_id = 50104;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(-7,7);
+        $b = rand(-7,7);
+        $c = rand(-7,7);
+        do{ $d = rand(-7,7); } while($b==$d);
+        do{ $e = rand(-7,7); } while($d==$e);
+
+        //答えの計算
+        $right_answers[0] = ($c-$a)*($e-$b)+$a*($d-$b);
+        $right_answers[1] = $d-$b;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
+        //問題テキストの設定
+        $text = '$$ ３点A('.$a.','.$b.')、B('.$c.','.$d.')、C(x,'.$e.')が\\\\
+                 同一直線状にあるとき、';
+
+        //空欄テキストの設定
+        $item[0] = 'x = '.($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //交点の位置ベクトル
+    public function unit501_q05($unit_id){
+        //初期設定
+        $question_id = 50105;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,7);
+        $b = rand(1,7);
+        $c = rand(1,7);
+        $d = rand(1,7);
+        list($a,$b) = gcd($a,$b);
+        list($c,$d) = gcd($c,$d);
+
+        //答えの計算
+        $right_answers[0] = $a*$d;
+        $right_answers[1] = ($a+$b)*($c+$d)-$a*$c;
+        $right_answers[2] = $b*$c;
+        $right_answers[3] = ($a+$b)*($c+$d)-$a*$c;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[2],$right_answers[3]) = gcd($right_answers[2],$right_answers[3]);
+
+        //問題テキストの設定
+        $text = '$$ \triangle{ABC}の辺ABを'.$a.':'.$b.'に内分する点をD、\\\\
+                辺ACを'.$c.':'.$d.'に内分する点をEとする。\\\\
+                CDとBEの交点をFとすると、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '\vec{AF} = '.($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}\vec{AB}';
+        $item[1] = ($right_answers[2]*$right_answers[3]<0?'-':'+').'\frac{\fbox{ウ}}{\fbox{エ}}\vec{AC}\\\\';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+        list($right_answers,$option,$blanks,$item[1]) = l_frac($right_answers,$option,3,$blanks,$item[1]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //内積と角の大きさ
+    public function unit501_q06($unit_id){
+        //初期設定
+        $question_id = 50106;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        list($a,$b,$c) = make_tri();
+        $cos[0] = $a*$a+$b*$b-$c*$c;
+        $cos[1] = 2*$a*$b;
+
+        $in[0] = $cos[0]*$a*$b;
+        $in[1] =  $cos[1];
+        list($in[0],$in[1]) = gcd($in[0],$in[1]);
+
+        do{ $d=rand(-3,3); } while($d==0);
+        do{ $e=rand(-3,3); } while($e==0 || $d==$e);
+
+        //答えの計算
+        $right_answers[0] = $cos[0];
+        $right_answers[1] = $cos[1];
+        $right_answers[2] = 1;
+        $right_answers[3] = $a*$a*$d*$d + $d*$e*($a*$a+$b*$b-$c*$c) + $b*$b*$e*$e;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[2],$right_answers[3]) = root($right_answers[2],$right_answers[3]);
+
+        //問題テキストの設定
+        $text = '$$ ３点O,A,Bについて、\\\\ 
+                |\vec{OA}|='.$a.'、|\vec{OB}|='.$b.'、';
+        if(abs($in[1]) == 1){
+            $text .= '\vec{OA} \cdot \vec{OB}='.$in[0].'のとき、\\\\';
+        }else{
+            $text .= '\vec{OA} \cdot \vec{OB}='.($in[0]*$in[1]<0?'-':'').'\frac{'.abs($in[0]).'}{'.$in[1].'}のとき、\\\\';
+        }
+
+        //空欄テキストの設定
+        $item[0] = 'cos{\angle{AOB}} = '.($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}\\\\';
+        $item[1] = '|'.d1($d,'\vec{OA}').d2($e,'\vec{OB}').'|=\fbox{ウ}\sqrt{\fbox{エ}}';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+        list($right_answers,$option,$blanks,$item[1]) = l_root($right_answers,$option,2,3,$blanks,$item[1]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //成分と内積
+    public function unit501_q07($unit_id){
+        //初期設定
+        $question_id = 50107;
+        $blanks = 3;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(-7,7);
+        $b = rand(-7,7);
+        $c = rand(-7,7);
+        do{ $d=rand(-7,7); } while($c==$d);
+
+        //答えの計算
+        $right_answers[0] = $a*$c + $b*$d;
+        $right_answers[1] = -1*$a*$a - $b*$b;
+        $right_answers[2] = $a*$c + $b*$d;
+
+        list($right_answers[1],$right_answers[2]) = gcd($right_answers[1],$right_answers[2]);
+
+        //問題テキストの設定
+        $text = '$$ \vec{a}=('.$a.','.$b.')、\vec{b}=('.$c.','.$d.')とする。\\\\ また、\vec{p} = \vec{a}+t\vec{b}\\ とおく。\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'このとき、\vec{a}\cdot\vec{b} = '.($right_answers[0]<0?'-':'').'\fbox{ア}\\\\';
+        $item[1] = 'また、\vec{a}と\vec{p}が垂直であるとき、t='.($right_answers[1]*$right_answers[2]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}';
+
+        list($right_answers,$option,$blanks,$item[1]) = l_frac($right_answers,$option,2,$blanks,$item[1]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //数列
+
 
     /*テンプレ
     public function unit000_q00($unit_id){
