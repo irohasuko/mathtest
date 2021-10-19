@@ -358,6 +358,50 @@ if (! function_exists('n_ary')) {
     }
 }
 
+//問題での√の表示処理
+if (! function_exists('complex')) {
+    function complex($a,$b,$c,$d) //$a√$b + $c√$diを想定
+    {
+        //$a√$b部分
+        if($b == 1){
+            $literal[0] = $a;
+        }else{
+            if(abs($a)==1){
+                $literal[0] = ($a<0?'-':'').'\sqrt{'.$b.'}';
+            }else{
+                $literal[0] = $a.'\sqrt{'.$b.'}';
+            }
+        }
+        if($a == 0 || $b == 0){
+            $literal[0] = '';
+        }
+
+        //間の符号
+        if($c>0){
+            $literal[1] = '';
+        }
+
+        //$c√$di部分
+        if($d == 1){
+            if(abs($c)==1){
+                $literal[2] = ($c<0?'-':'+').'i';
+            }else{
+                $literal[2] = ($c<0?'':'+').$c.'i';
+            }
+        }else{
+            if(abs($c)==1){
+                $literal[2] = ($c<0?'-':'+').'\sqrt{'.$d.'}i';
+            }else{
+                $literal[2] = ($c<0?'':'+').$c.'\sqrt{'.$d.'}i';
+            }
+        }
+        if($c == 0 || $d == 0){
+            $literal[2] = '';
+        }
+
+        return implode($literal);
+    }
+}
 
 
 
