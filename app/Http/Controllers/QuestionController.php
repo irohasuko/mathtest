@@ -5641,6 +5641,1303 @@ class QuestionController extends Controller
         return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
     }
 
+    //極限
+    //数列の極限
+    public function unit304_q01($unit_id){
+        //初期設定
+        $question_id = 30401;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,7);
+        do { $b = rand(-5,5); } while( $b==0 || gmp_gcd($a,$b)!=1);
+        $c = rand(1,7);
+        do { $d = rand(-5,5); } while( $d==0 || gmp_gcd($c,$d)!=1);
+
+        //答えの計算
+        $right_answers[0] = $a;
+        $right_answers[1] = $c;
+
+        //問題テキストの設定
+        $text = '$$ \lim_{n \to \infty} \frac{'.d1($a,'n').d4($b).'}{'.d1($c,'n').d4($d).'}= ';
+
+        //空欄テキストの設定
+        $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //無限等比数列の極限
+    public function unit304_q02($unit_id){
+        //初期設定
+        $question_id = 30402;
+        $blanks = 1;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(3,7);
+        do { $b = rand(2,7); } while( $a<=$b );
+
+        //答えの計算
+        $right_answers[0] = $a;
+
+        //問題テキストの設定
+        $text = '$$ \lim_{n \to \infty} \frac{'.$a.'^{n+1} - '.$b.'^{n}}{'.$a.'^{n} + '.$b.'^{n}} =';
+
+        //空欄テキストの設定
+        $item[0] = '\fbox{ア}';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //漸化式で定められる数列の極限
+    public function unit304_q03($unit_id){
+        //初期設定
+        $question_id = 30403;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(-7,7);
+        $b = rand(1,5);
+        do{ $c = rand(2,7); } while($b>=$c);
+        $d = rand(-7,7);
+
+        list($b,$c) = gcd($b,$c);
+
+        //答えの計算
+        $right_answers[0] = $c*$d;
+        $right_answers[1] = $c-$b;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
+        //問題テキストの設定
+        $text = '$$ a_1 = '.$a.'、a_{n+1} = \frac{'.$b.'}{'.$c.'}a_{n}'.d4($d).'\\\\
+                で定められた数列\{a_{n}\}の極限は、\\\\
+                \lim_{n \to \infty} a_{n} =';
+
+        //空欄テキストの設定
+        $item[0] = ($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //無限等比数列
+    public function unit304_q04($unit_id){
+        //初期設定
+        $question_id = 30404;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(-7,7);
+        $b = rand(1,5);
+        do{ $c = rand(2,7); } while($b>=$c);
+
+        list($b,$c) = gcd($b,$c);
+
+        //答えの計算
+        $right_answers[0] = $a*$c;
+        $right_answers[1] = $c-$b;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
+        //問題テキストの設定
+        $text = '$$ 初項\\ '.$a.'、公比\\ \frac{'.$b.'}{'.$c.'}\\\\
+                の等比数列\{a_{n}\}の無限級数は、\\\\
+                \sum_{n=1}^{\infty} a_{n} = ';
+
+        //空欄テキストの設定
+        $item[0] = ($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //関数の極限
+    public function unit304_q05($unit_id){
+        //初期設定
+        $question_id = 30405;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $p = rand(1,7);
+        do{ $q = rand(-7,7); } while(gmp_gcd($p,$q)!=1);
+        $r = rand(1,7);
+        do{ $s = rand(-7,7); } while(gmp_gcd($r,$s)!=1);
+        $t = rand(1,7);
+        do{ $u = rand(-7,7); } while(gmp_gcd($t,$u)!=1);
+
+        $a = $p*$r;
+        $b = $p*$s + $q*$r;
+        $c = $q*$s;
+        $d = $p*$t;
+        $e = $p*$u + $q*$t;
+        $f = $q*$u;
+
+        //答えの計算
+        $right_answers[0] = $r;
+        $right_answers[1] = $t;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
+        //問題テキストの設定
+        $text = '$$ \lim_{x \to \infty} \frac{'.d1($a,'x^{2}').d2($b,'x').d4($c).'}{'.d1($d,'x^{2}').d2($e,'x').d4($f).'}= ';
+
+        //空欄テキストの設定
+        $item[0] = ($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //三角関数と極限
+    public function unit304_q06($unit_id){
+        //初期設定
+        $question_id = 30406;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,7);
+        do{ $b = rand(1,7); } while($a==$b);
+
+        //答えの計算
+        $right_answers[0] = $a;
+        $right_answers[1] = $b;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
+        //問題テキストの設定
+        $text = '$$ \lim_{x \to 0} \frac{\sin{'.d1($a,'x').'}}{\sin{'.d1($b,'x').'}}= ';
+
+        //空欄テキストの設定
+        $item[0] = ($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //微分法
+    //積の微分法
+    public function unit305_q01($unit_id){
+        //初期設定
+        $question_id = 30501;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,7);
+        do{ $b = rand(-7,7); } while($b==0);
+        $c = rand(1,7);
+        do{ $d = rand(-7,7); } while($d==0);
+
+        list($a,$b) = gcd($a,$b);
+        list($c,$d) = gcd($c,$d);
+
+        //答えの計算
+        $right_answers[0] = 7*$a*$c;
+        $right_answers[1] = 5*$b*$c;
+        $right_answers[2] = 3*$a*$d;
+        $right_answers[3] = $b*$d;
+
+        //問題テキストの設定
+        $text = '$$ f(x)=('.d1($a,'x^{3}').d2($b,'x').')('.d1($c,'x^{4}').d4($d).')\\ のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'f\'(x) = ';
+        $item[1] = ($right_answers[0]<0?'-':'').'\fbox{ア}x^{6}';
+        $item[2] = ($right_answers[1]<0?'-':'+').'\fbox{イ}x^{4}';
+        $item[3] = ($right_answers[2]<0?'-':'+').'\fbox{ウ}x^{2}';
+        $item[4] = ($right_answers[3]<0?'-':'+').'\fbox{エ}';
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //商の微分法
+    public function unit305_q02($unit_id){
+        //初期設定
+        $question_id = 30502;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,7);
+        do{ $b = rand(-7,7); } while($b==0);
+        do{ $c = rand(-7,7); } while($c==0);
+
+        list($a,$b) = gcd($a,$b);
+
+        //答えの計算
+        $right_answers[0] = -1*$a;
+        $right_answers[1] = -2*$b;
+        $right_answers[2] = $a*$c;
+        $right_answers[3] = $c;
+
+        //問題テキストの設定
+        $text = '$$ f(x)=\frac{'.d1($a,'x').d4($b).'}{x^{2}'.d4($c).'}\\ のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'f\'(x) = \frac{';
+        $item[1] = ($right_answers[0]<0?'-':'').'\fbox{ア}x^2';
+        $item[2] = ($right_answers[1]<0?'-':'+').'\fbox{イ}x';
+        $item[3] = ($right_answers[2]<0?'-':'+').'\fbox{ウ}x}{';
+        $item[4] = '(x^{2}';
+        $item[5] = ($right_answers[3]<0?'-':'+').'\fbox{エ})^{2}}';
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //合成関数の微分 その１
+    public function unit305_q03($unit_id){
+        //初期設定
+        $question_id = 30503;
+        $blanks = 7;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,7);
+        do{ $b = rand(-7,7); } while($b==0);
+        do{ $c = rand(-7,7); } while($c==0);
+        $d = rand(3,7);
+
+        $s = gmp_gcd($a,gmp_gcd($b,$c));
+        list($a,$b,$c) = array($a/$s,$b/$s,$c/$s);
+
+        //答えの計算
+        $right_answers[0] = $d;
+        $right_answers[1] = 2*$a;
+        $right_answers[2] = $b;
+        $right_answers[3] = $a;
+        $right_answers[4] = $b;
+        $right_answers[5] = $c;
+        $right_answers[6] = $d-1;
+
+        $t = gmp_gcd($right_answers[1],$right_answers[2]);
+        $right_answers[0] *= $t;
+        list($right_answers[1],$right_answers[2]) = gcd($right_answers[1],$right_answers[2]);
+
+        //問題テキストの設定
+        $text = '$$ f(x)=('.d1($a,'x^{2}').d2($b,'x').d4($c).')^{'.$d.'}\\ のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'f\'(x) = \fbox{ア}(';
+        $item[1] = ($right_answers[1]<0?'-':'').'\fbox{イ}x';
+        $item[2] = ($right_answers[2]<0?'-':'+').'\fbox{ウ})(';
+        $item[3] = ($right_answers[3]<0?'-':'').'\fbox{エ}x^{2}';
+        $item[4] = ($right_answers[4]<0?'-':'+').'\fbox{オ}x';
+        $item[5] = ($right_answers[5]<0?'-':'+').'\fbox{カ})';
+        $item[6] = '^{\fbox{キ}}';
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //合成関数の微分 その２
+    public function unit305_q04($unit_id){
+        //初期設定
+        $question_id = 30504;
+        $blanks = 8;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(3,5);
+        $b = rand(1,7);
+        do{ $c = rand(-7,7); } while($c==0);
+        do{ $d = rand(-7,7); } while($d==0);
+
+        $s = gmp_gcd($b,gmp_gcd($c,$d));
+        list($b,$c,$d) = array($b/$s,$c/$s,$d/$s);
+
+        //答えの計算
+        $right_answers[0] = 2*$b;
+        $right_answers[1] = $c;
+        $right_answers[2] = $a;
+        $right_answers[3] = $a;
+        $right_answers[4] = $b;
+        $right_answers[5] = $c;
+        $right_answers[6] = $d;
+        $right_answers[7] = $a-1;
+
+        $t = gmp_gcd($right_answers[0],gmp_gcd($right_answers[1],$right_answers[2]));
+        list($right_answers[0],$right_answers[1],$right_answers[2]) = array($right_answers[0]/$t,$right_answers[1]/$t,$right_answers[2]/$t);
+
+        //問題テキストの設定
+        $text = '$$ f(x)=\sqrt['.$a.']{'.d1($b,'x^{2}').d2($c,'x').d4($d).'}\\ のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'f\'(x) = \frac{';
+        $item[1] = ($right_answers[0]<0?'-':'').'\fbox{ア}x';
+        $item[2] = ($right_answers[1]<0?'-':'+').'\fbox{イ}}{';
+        $item[3] = '\fbox{ウ}\cdot ';
+        $item[4] = '{}^{\fbox{エ}}\sqrt{';
+        $item[5] = ($right_answers[4]<0?'-':'').'(\fbox{オ}x^{2}';
+        $item[6] = ($right_answers[5]<0?'-':'+').'\fbox{カ}x';
+        $item[7] = ($right_answers[6]<0?'-':'+').'\fbox{キ})';
+        $item[8] = '^{\fbox{ク}}}}';
+
+        if($right_answers[2]==1){
+            $item[3] = '';
+            unset($right_answers[2]);
+            unset($option[3]);
+            $blanks -= 1;
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //三角関数の微分 その１
+    public function unit305_q05($unit_id){
+        //初期設定
+        $question_id = 30505;
+        $blanks = 3;
+        $option = $this->option;
+        $pattern = rand(1,3);
+
+        //変数の設定
+        $a = rand(1,7);
+        do{ $b = rand(-7,7); } while($b==0);
+
+        list($a,$b) = gcd($a,$b);
+
+        //答えの計算
+        $right_answers[0] = ($pattern==2 ? -1*$a : $a);
+        $right_answers[1] = $a;
+        $right_answers[2] = $b;
+
+        //問題テキストの設定
+        switch($pattern){
+            case 1:
+                $text = '$$ f(x)=\sin{('.d1($a,'x').d4($b).')}\\ のとき、\\\\';
+                break;
+            case 2:
+                $text = '$$ f(x)=\cos{('.d1($a,'x').d4($b).')}\\ のとき、\\\\';
+                break;
+            case 3:
+                $text = '$$ f(x)=\tan{('.d1($a,'x').d4($b).')}\\ のとき、\\\\';
+                break;
+        }
+
+        //空欄テキストの設定
+        switch($pattern){
+            case 1:
+                $item[0] = 'f\'(x) = \fbox{ア}';
+                $item[1] = '\cos{(\fbox{イ}x';
+                $item[2] = ($right_answers[2]<0?'-':'+').'\fbox{ウ})}';
+                if($right_answers[0] == 1){
+                    $item[0] =  'f\'(x) = ';
+                    unset($right_answers[0]);
+                    unset($option[0]);
+                    $blanks -= 1;
+                }
+                break;
+            case 2:
+                $item[0] = 'f\'(x) = '.($right_answers[0]<0?'-':'').'\fbox{ア}';
+                $item[1] = '\sin{(\fbox{イ}x';
+                $item[2] = ($right_answers[2]<0?'-':'+').'\fbox{ウ})}';
+                if(abs($right_answers[0]) == 1){
+                    $item[0] =  'f\'(x) = '.($right_answers[0]<0?'-':'');
+                    unset($right_answers[0]);
+                    unset($option[0]);
+                    $blanks -= 1;
+                }
+                break;
+            case 3:
+                $item[0] = 'f\'(x) = \frac{\fbox{ア}}';
+                $item[1] = '{\cos^{2}{(\fbox{イ}x';
+                $item[2] = ($right_answers[2]<0?'-':'+').'\fbox{ウ})}}';
+                break;
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //三角関数の微分 その２
+    public function unit305_q06($unit_id){
+        //初期設定
+        $question_id = 30506;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,7);
+        do{ $b = rand(-7,7); } while($b==0);
+
+        //答えの計算
+        $right_answers[0] = $a;
+        $right_answers[1] = $a-$b;
+
+        //問題テキストの設定
+        $text = '$$ f(x)='.d1($a,'x\sin{x}').d2($b,'\cos{x}').'\\ のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'f\'(x) =';
+        $item[1] = ($right_answers[0]<0?'-':'').'\fbox{ア}x\cos{x}';
+        $item[2] = ($right_answers[1]<0?'-':'+').'\fbox{イ}\sin{x}';
+
+        if($right_answers[1]==0){
+            $item[2] = '';
+            unset($right_answers[1]);
+            unset($option[1]);
+            $blanks -= 1;
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //対数関数の微分 その１
+    public function unit305_q07($unit_id){
+        //初期設定
+        $question_id = 30507;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(2,7);
+        $b = rand(1,7);
+        do{ $c = rand(-7,7); } while($c==0);
+
+        list($b,$c) = gcd($b,$c);
+
+        //答えの計算
+        $right_answers[0] = $b;
+        $right_answers[1] = $b;
+        $right_answers[2] = $c;
+        $right_answers[3] = $a;
+
+        //問題テキストの設定
+        $text = '$$ f(x)= \log_{'.$a.'} {('.d1($b,'x').d4($c).')}\\ のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'f\'(x) =';
+        $item[1] = '\frac{\fbox{ア}}';
+        $item[2] = '{(\fbox{イ}x';
+        $item[3] = ($right_answers[2]<0?'-':'+').'\fbox{ウ})';
+        $item[4] = 'log{\fbox{エ}}}';
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //対数関数の微分 その２
+    public function unit305_q08($unit_id){
+        //初期設定
+        $question_id = 30508;
+        $blanks = 3;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,7);
+        $b = rand(2,7);
+
+        //答えの計算
+        $right_answers[0] = $b;
+        $right_answers[1] = $b;
+        $right_answers[2] = $b;
+
+        //問題テキストの設定
+        $text = '$$ f(x)= \log{|'.d1($a,'\sin{'.$b.'}x').'|}\\ のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'f\'(x) =';
+        $item[1] = '\frac{\fbox{ア}';
+        $item[2] = '\cos{\fbox{イ}x}}';
+        $item[3] = '{\sin{\fbox{ウ}x}}';
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //指数関数の微分
+    public function unit305_q09($unit_id){
+        //初期設定
+        $question_id = 30509;
+        $blanks = 3;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,7);
+        do{ $b = rand(-7,7); } while($b==0);
+
+        list($a,$b) = gcd($a,$b);
+
+        //答えの計算
+        $right_answers[0] = $a;
+        $right_answers[1] = $a;
+        $right_answers[2] = $b;
+
+        //問題テキストの設定
+        $text = '$$ f(x)= e^{'.d1($a,'x').d4($b).'}\\ のとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = 'f\'(x) =';
+        $item[1] = '\fbox{ア}';
+        $item[2] = 'e^{\fbox{イ}x';
+        $item[3] = ($right_answers[2]<0?'-':'+').'\fbox{ウ}}';
+
+        if($right_answers[0]==1){
+            $item[1] = '';
+            unset($right_answers[0]);
+            unset($option[0]);
+            $blanks -= 1;
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //媒介変数表示と微分
+    public function unit305_q10($unit_id){
+        //初期設定
+        $question_id = 30510;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,7);
+        do{ $b = rand(-7,7); } while($b==0);
+        $c = rand(1,7);
+        do{ $d = rand(-7,7); } while($d==0);
+        do{ $e = rand(-7,7); } while($e==0);
+
+        list($a,$b) = gcd($a,$b);
+
+        //答えの計算
+        $right_answers[0] = 2*$c;
+        $right_answers[1] = $a;
+        $right_answers[2] = $d;
+        $right_answers[3] = $a;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[2],$right_answers[3]) = gcd($right_answers[2],$right_answers[3]);
+
+        //問題テキストの設定
+        $text = '$$ xの関数yが、tを媒介変数として、\\\\
+                x='.d1($a,'t').d4($b).'、y='.d1($c,'t^{2}').d2($d,'t').d4($e).'\\\\
+                とあらわされるとき、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '\frac{dy}{dx} =';
+        $item[1] = ($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}t';
+        $item[2] = ($right_answers[2]*$right_answers[3]<0?'-':'+').'\frac{\fbox{ウ}}{\fbox{エ}}';
+
+        list($right_answers,$option,$blanks,$item[1]) = l_frac($right_answers,$option,1,$blanks,$item[1]);
+        list($right_answers,$option,$blanks,$item[2]) = l_frac($right_answers,$option,3,$blanks,$item[2]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //曲線の凹凸と変曲点
+    public function unit305_q11($unit_id){
+        //初期設定
+        $question_id = 30511;
+        $blanks = 6;
+        $option = $this->option;
+
+        //変数の設定
+        do{ $p = rand(-5,5); } while($p==0);
+        do{ $q = rand(-5,7); } while($q==0 || $p >= $q);
+
+        $a = -2*($p+$q);
+        $b = 6*$p*$q;
+        $c = rand(-4,4);
+        $d = rand(-5,5);
+
+        //答えの計算
+        $right_answers[0] = $p;
+        $right_answers[1] = $p*$p*$p*$p + $a*$p*$p*$p + $b*$p*$p + $c*$p + $d;
+        $right_answers[2] = $q;
+        $right_answers[3] = $q*$q*$q*$q + $a*$q*$q*$q + $b*$q*$q + $c*$q + $d;
+        $right_answers[4] = $p;
+        $right_answers[5] = $q;
+
+        //問題テキストの設定
+        $text = '$$ y = x^{4}'.d2($a,'x^{3}').d2($b,'x^{2}').d2($c,'x').d4($d).'\\ のグラフの\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '変曲点は、x座標の小さい順に\\\\(\fbox{ア},\fbox{イ}),(\fbox{ウ},\fbox{エ})\\ であり、\\\\';
+        $item[1] = 'x \lt \fbox{オ}\\ で下に凸\\\\'; 
+        $item[2] = '\fbox{オ} \lt x \lt \fbox{カ}\\ で上に凸\\\\'; 
+        $item[3] = '\fbox{カ} \lt x\\ で下に凸'; 
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //速度と加速度
+    public function unit305_q12($unit_id){
+        //初期設定
+        $question_id = 30512;
+        $blanks = 3;
+        $option = $this->option;
+
+        //変数の設定
+        do{ $a = rand(-5,5); } while($a==0);
+        do{ $b = rand(-5,5); } while($b==0);
+        $c = rand(-5,5);
+        $d = rand(1,5);
+
+        //答えの計算
+        $right_answers[0] = 1;
+        $right_answers[1] = $a*$a + 4*$b*$b*$d*$d;
+        $right_answers[2] = 2*abs($b);
+
+        //問題テキストの設定
+        $text = '$$ 座標平面上を運動する点Pの\\\\時刻\\ t\\ における座標(x,y)が\\\\
+                x = '.d1($a,'t').'、y='.d1($b,'t^{2}').d4($c).'\\\\で表されるとき、
+                t='.$d.'における\\\\';
+
+        //空欄テキストの設定
+        $item[0] = '点Pの速さは、\fbox{ア}\sqrt{\fbox{イ}}\\\\';
+        $item[1] = '点Pの加速度の大きさは、\fbox{ウ}'; 
+
+        list($right_answers,$option,$blanks,$item[0]) = l_root($right_answers,$option,0,1,$blanks,$item[0]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //積分法
+    //不定積分の基本
+    public function unit306_q01($unit_id){
+        //初期設定
+        $question_id = 30601;
+        $blanks = 5;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(3,5);
+        do { $b = rand(-5,5); } while( $b==0 );
+
+        //答えの計算
+        $right_answers[0] = $a;
+        $right_answers[1] = $a+1;
+        $right_answers[2] = $a+1;
+        $right_answers[3] = $a;
+        $right_answers[4] = $b;
+
+        //問題テキストの設定
+        $text = '$$ \int{(\sqrt['.$a.']{x}'.($b<0?'-':'+').'\frac{'.abs($b).'}{x})}dx = ';
+
+        //空欄テキストの設定
+        $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}';
+        $item[1] = 'x^{\frac{\fbox{ウ}}{\fbox{エ}}}';
+        $item[2] = ($right_answers[4]<0?'-':'+').'\fbox{オ}log{|x|}';
+        $item[3] = '+C';
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //三角関数の不定積分
+    public function unit306_q02($unit_id){
+        //初期設定
+        $question_id = 30602;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,5);
+        do { $b = rand(-5,5); } while( $b==0 );
+
+        //答えの計算
+        $right_answers[0] = -1*$a;
+        $right_answers[1] = $b;
+
+        //問題テキストの設定
+        $text = '$$ \int{('.d1($a,'\sin{x}').d2($b,'\cos{x}').')}dx \\\\ =';
+
+        //空欄テキストの設定
+        $item[0] = ($right_answers[0]<0?'-':'').'\fbox{ア}\cos{x}';
+        $item[1] = ($right_answers[1]<0?'-':'+').'\fbox{イ}\sin{x}';
+        $item[2] = '+C';
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //指数関数の不定積分
+    public function unit306_q03($unit_id){
+        //初期設定
+        $question_id = 30603;
+        $blanks = 3;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,5);
+        $b = rand(2,6);
+
+        //答えの計算
+        $right_answers[0] = $a;
+        $right_answers[1] = $b;
+        $right_answers[2] = $b;
+
+        //問題テキストの設定
+        $text = '$$ \int{('.d1($a,'e^{x}').'+'.$b.'^{x})}dx = \\\\';
+
+        //空欄テキストの設定
+        $item[0] = '\fbox{ア}e^{x}';
+        $item[1] = '+\frac{\fbox{イ}^{x}}{\log{\fbox{ウ}}}';
+        $item[2] = '+C';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //置換積分法　その１
+    public function unit306_q04($unit_id){
+        //初期設定
+        $question_id = 30604;
+        $blanks = 6;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,5);
+        $b = rand(1,5);
+
+        //答えの計算
+        $right_answers[0] = -2*$a;
+        $right_answers[1] = 15;
+        $right_answers[2] = 2*$b;
+        $right_answers[3] = 3;
+        $right_answers[4] = $b;
+        $right_answers[5] = $b;
+
+        $s = gmp_gcd($right_answers[2],$right_answers[3]);
+        $right_answers[0] *= (int)$s;
+        list($right_answers[2],$right_answers[3]) = gcd($right_answers[2],$right_answers[3]);
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
+        //問題テキストの設定
+        $text = '$$ \int{'.d1($a,'x').'\sqrt{'.$b.'-x}}\\ dx \\\\ =';
+
+        //空欄テキストの設定
+        $item[0] = ($right_answers[0]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}';
+        $item[1] = '(\fbox{ウ} + \fbox{エ}x)';
+        $item[2] = '(\fbox{オ}-x)';
+        $item[3] = '\sqrt{\fbox{カ}-x}';
+        $item[4] = '+C';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //置換積分法　その２
+    public function unit306_q05($unit_id){
+        //初期設定
+        $question_id = 30605;
+        $blanks = 7;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,5);
+        do { $b = rand(-5,5); } while($b==0);
+        do { $c = rand(-5,5); } while($c==0);
+
+        $s = gmp_gcd($a,gmp_gcd($b,$c));
+        list($a,$b,$c) = array($a/$s,$b/$s,$c/$s);
+
+        //答えの計算
+        $right_answers[0] = 2;
+        $right_answers[1] = 3;
+        $right_answers[2] = $a;
+        $right_answers[3] = $b;
+        $right_answers[4] = $c;
+        $right_answers[5] = 3;
+        $right_answers[6] = 2;
+
+        //問題テキストの設定
+        $text = '$$ \int{('.d1(2*$a,'x').d4($b).')\sqrt{'.d1($a,'x^{2}').d2($b,'x').d4($c).'}}\\ dx \\\\ =';
+
+        //空欄テキストの設定
+        $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}';
+        $item[1] = '('.($right_answers[2]<0?'-':'').'\fbox{ウ}x^{2}';
+        $item[2] = ($right_answers[3]<0?'-':'+').'\fbox{エ}x';
+        $item[3] = ($right_answers[4]<0?'-':'+').'\fbox{オ})';
+        $item[4] = '^{\frac{\fbox{カ}}{\fbox{キ}}}';
+        $item[5] = '+C';
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //置換積分法　その３
+    public function unit306_q06($unit_id){
+        //初期設定
+        $question_id = 30606;
+        $blanks = 4;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,5);
+        do { $b = rand(-5,5); } while($b==0);
+
+        list($a,$b) = gcd($a,$b);
+
+        //答えの計算
+        $right_answers[0] = 1;
+        $right_answers[1] = 2*$a;
+        $right_answers[2] = $a;
+        $right_answers[3] = $b;
+
+        //問題テキストの設定
+        $text = '$$ \int{\frac{x}{'.d1($a,'x^{2}').d4($b).'}}\\ dx \\\\ =';
+
+        //空欄テキストの設定
+        $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}';
+        $item[1] = '\log{|\fbox{ウ}x^{2}'.($right_answers[3]<0?'-':'+').'\fbox{エ}|}';
+        $item[2] = '+C';
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //部分積分法
+    public function unit306_q07($unit_id){
+        //初期設定
+        $question_id = 30607;
+        $blanks = 6;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,5);
+        $b = rand(1,5);
+
+        //答えの計算
+        $right_answers[0] = $a;
+        $right_answers[1] = 2;
+        $right_answers[2] = $b;
+        $right_answers[3] = $b;
+        $right_answers[4] = $a;
+        $right_answers[5] = 2;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[4],$right_answers[5]) = gcd($right_answers[4],$right_answers[5]);
+
+        //問題テキストの設定
+        $text = '$$ \int{'.d1($a,'x').'\log{(x^{2}+'.$b.')}}\\ dx \\\\ =';
+
+        //空欄テキストの設定
+        $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}';
+        $item[1] = '(x^{2}+\fbox{ウ})';
+        $item[2] = '\log(x^{2}+\fbox{エ})';
+        $item[3] = '-\frac{\fbox{オ}}{\fbox{カ}}x^{2}';
+        $item[4] = '+C';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+        list($right_answers,$option,$blanks,$item[3]) = l_frac($right_answers,$option,5,$blanks,$item[3]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //分数関数の不定積分
+    public function unit306_q08($unit_id){
+        //初期設定
+        $question_id = 30608;
+        $blanks = 5;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(1,5);
+        do{ $b = rand(-5,5); }while($b==0);
+        do{ $c = rand(-5,5); }while($c==0);
+
+        list($a,$b) = gcd($a,$b);
+
+        //答えの計算
+        $right_answers[0] = $a;
+        $right_answers[1] = 2;
+        $right_answers[2] = -1*$a*$c;
+        $right_answers[3] = $b + $a*$c*$c;
+        $right_answers[4] = $c;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
+        //問題テキストの設定
+        $text = '$$ \int{\frac{'.d1($a,'x^{2}').d4($b).'}{x'.d4($c).'}}\\ dx \\\\ =';
+
+        //空欄テキストの設定
+        $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}x^{2}';
+        $item[1] = ($right_answers[2]<0?'-':'+').'\fbox{ウ}x';
+        $item[2] = ($right_answers[3]<0?'-':'+').'\fbox{エ}';
+        $item[3] = '\log{|x'.($right_answers[4]<0?'-':'+').'\fbox{オ}|}';
+        $item[4] = '+C';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+
+        if($right_answers[3]==0){
+            $item[2] = '';
+            $item[3] = '';
+            unset($right_answers[3]);
+            unset($right_answers[4]);
+            unset($option[3]);
+            unset($option[4]);
+            $blanks -= 2;
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //三角関数に関する不定積分
+    public function unit306_q09($unit_id){
+        //初期設定
+        $question_id = 30609;
+        $blanks = 6;
+        $option = $this->option;
+
+        //変数の設定
+        $a = rand(2,5);
+        do{ $b = rand(1,4); }while($a<=$b);
+
+        //答えの計算
+        $right_answers[0] = -1;
+        $right_answers[1] = 2*$a + 2*$b;
+        $right_answers[2] = $a + $b;
+        $right_answers[3] = -1;
+        $right_answers[4] = 2*$a - 2*$b;
+        $right_answers[5] = $a - $b;
+
+        //問題テキストの設定
+        $text = '$$ \int{\sin{'.d1($a,'x').'}\cos{'.d1($b,'x').'}}\\ dx \\\\ =';
+
+        //空欄テキストの設定
+        $item[0] = '-\frac{\fbox{ア}}{\fbox{イ}}\cos{\fbox{ウ}x}';
+        $item[1] = '-\frac{\fbox{エ}}{\fbox{オ}}\sin{\fbox{カ}x}';
+        $item[2] = '+C';
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //定積分の置換積分法
+    public function unit306_q10($unit_id){
+        //初期設定
+        $question_id = 30610;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $k_1 = rand(0,3);
+        do{ $k_2 = rand(2,4); }while($k_1>=$k_2);
+
+        $c = rand(1,6);
+
+        $a = $c - $k_1*$k_1;
+        $b = $c - $k_2*$k_2;
+
+        //答えの計算
+        $right_answers[0] = 2*(pow($k_1,3)-pow($k_2,3)) - 6*$c*($k_1-$k_2);
+        $right_answers[1] = 3;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
+        //問題テキストの設定
+        $text = '$$ \int_{'.$b.'}^{'.$a.'}{\frac{x}{\sqrt{'.$c.'-x}}}\\ dx \\\\ =';
+
+        //空欄テキストの設定
+        $item[0] = ($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}';
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //定積分の部分積分法
+    public function unit306_q11($unit_id){
+        //初期設定
+        $question_id = 30611;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $b = rand(1,5);
+        $c = rand(1,4);
+
+        //答えの計算
+        switch($c%4){
+            case 0:
+                $right_answers[0] = -1*$b;
+                $right_answers[1] = 2*$c;
+                list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+                break;
+            case 1:
+                $right_answers[0] = $b;
+                $right_answers[1] = $c*$c;
+                list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+                break;
+            case 2:
+                $right_answers[0] = $b;
+                $right_answers[1] = 2*$c;
+                list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+                break;
+            case 3:
+                $right_answers[0] = -1*$b;
+                $right_answers[1] = $c*$c;
+                list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+                break;
+        }
+
+        //問題テキストの設定
+        $text = '$$ \int_{0}^{\frac{\pi}{2}}{'.d1($b,'x').'\sin{'.d1($c,'x').'}}\\ dx \\\\ =';
+
+        //空欄テキストの設定
+        switch($c%2){
+            case 0:
+                $item[0] = ($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}\pi';
+                list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+                break;
+            case 1:
+                $item[0] = ($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}';
+                list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+                break;
+        }
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
+    //回転体の体積
+    public function unit306_q12($unit_id){
+        //初期設定
+        $question_id = 30612;
+        $blanks = 2;
+        $option = $this->option;
+
+        //変数の設定
+        $p = rand(-1,0);
+        do { $q = rand(0,3); }while($p==$q);
+
+        $a = -1*($p+$q);
+        $b = $p*$q;
+
+        //答えの計算
+        $right_answers[0] = 6*(pow($q,5)-pow($p,5)) + 15*$a*(pow($q,4)-pow($p,4)) + 10*($a*$a+2*$b)*(pow($q,3)-pow($p,3)) + 30*$a*$b*(pow($q,2)-pow($p,2)) + 30*$b*$b*($q-$p);
+        $right_answers[1] = 30;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
+        //問題テキストの設定
+        $text = '$$ y=x^{2}'.d2($a,'x').d4($b).'\\ と、x軸で囲まれた部分を\\\\
+                x軸の周りに１回転させてできる立体の体積は、\\\\';
+
+        //空欄テキストの設定
+        $item[0] = ($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}\pi';
+
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
+
+        for($i=0;$i<$blanks;$i++)
+        {
+            $right_answers[$i] = abs($right_answers[$i]);
+        }
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        return view('question/sentence',compact('right_answers','unit_id','question_id','text','blank_text','blanks'));
+    }
+
 
     //数学A
     //場合の数と確率
