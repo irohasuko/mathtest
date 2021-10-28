@@ -17,6 +17,12 @@ class AnswerController extends Controller
         return $result;
     }
 
+    public function answer(Request $request,$unit_id,$q_id)
+    {
+        $func = 'unit'.$unit_id.'_a'.substr($q_id, 3);
+        echo $this->$func($request,$unit_id);
+    }
+
     public $option = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ'];
 
     //因数分解の答え判定
@@ -529,8 +535,8 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($unit_id,$question_id,$result);
 
-        $text = $request->text.$request->options[($request->right_answer-1)].'$$';
-        $answer_text = '$$'.$request->options[($request->answer-1)].'$$';
+        $text = $request->text.'\\\\'.$request->options[$request->answers[0]-1].'$$';
+        $answer_text = '$$'.$request->options[$request->right_answers[0]-1].'$$';
         $next_id = 20101;         
         return view('answer/select',compact('text','answer_text','question_id','unit_id','next_id','result'));
     }

@@ -21,8 +21,8 @@
         </div>
 
         <div class="col-md-8">
-            <a class="btn btn-primary btn-block" href="{{route('Q'.$question_id, $unit_id)}}" role="button">もう一度同じ問題を解く</a>
-            <a class="btn btn-primary btn-block" href="{{route('Q'.$next_id, $unit_id)}}" role="button">次のパターンの問題を解く</a>
+            <a class="btn btn-primary btn-block" href="{{route('answer',[$unit_id, $question_id])}}" role="button">もう一度同じ問題を解く</a>
+            <a class="btn btn-primary btn-block" href="{{route('answer',[$unit_id, $next_id])}}" role="button">次のパターンの問題を解く</a>
             <a class="btn btn-primary btn-block" href="{{route('question_select', $unit_id)}}" role="button">問題選択画面に戻る</a>
         </div>
     </div>

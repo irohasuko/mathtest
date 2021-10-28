@@ -41,4 +41,10 @@ class SortController extends Controller
         }
         return view('select/item_select',compact('items','success'));
     }
+
+    public function q_route($q_id){
+        $unit_id = floor($q_id / 100);
+        return redirect(route('question',['unit_id' => $unit_id,'q_id' => $q_id]));
+    }
 }
+

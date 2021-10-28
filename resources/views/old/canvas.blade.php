@@ -6,14 +6,22 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
-                    @yield('question')
+                    <div class="text-center">
+                        {!!$canvas!!}
+                    </div>
+                    <p>{{$text}}{{$blank_text}}</p>
                 </div>
             </div>
             <br>
 
             <form method="post" action="{{route('answer',[$unit_id, $question_id])}}">
                 @csrf
-                @yield('submit')
+                @for($i=0 ; $i<$blanks ; $i++)
+                    <div class="form-group">
+                        <input type="number" required name="answers[]" class="form-control" placeholder="{{$option[$i]}}">
+                    </div>
+                @endfor
+
                 @foreach($right_answers as $right_answer)
                     <input type="hidden" name="right_answers[]" value="{{$right_answer}}">
                 @endforeach
@@ -24,5 +32,8 @@
         </div>
     </div>
 </div>
+@endsection
 
+@section('script')
+{!!$script!!}
 @endsection

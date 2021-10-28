@@ -28,6 +28,12 @@ Route::get('/unit_select', [App\Http\Controllers\SortController::class, 'unit_se
 Route::get('/q_select/{id}', [App\Http\Controllers\SortController::class, 'q_select'])->name('question_select');
 
 //問題画面
+
+Route::get('/q_select/{unit_id}/{q_id}',[App\Http\Controllers\QuestionController::class, 'question'])->name('question');
+Route::get('/redirect/{q_id}',[App\Http\Controllers\SortController::class, 'q_route'])->name('q_route');
+Route::post('/q_select/{unit_id}/{q_id}',[App\Http\Controllers\AnswerController::class, 'answer'])->name('answer');
+
+/*
 //数学Ⅰ
 Route::get('/q_select/{unit_id}/10101',[App\Http\Controllers\QuestionController::class, 'unit101_q01'])->name('Q10101');
 Route::get('/q_select/{unit_id}/10102',[App\Http\Controllers\QuestionController::class, 'unit101_q02'])->name('Q10102');
@@ -233,7 +239,6 @@ Route::get('/q_select/{unit_id}/50206',[App\Http\Controllers\QuestionController:
 Route::get('/q_select/{unit_id}/50207',[App\Http\Controllers\QuestionController::class, 'unit502_q07'])->name('Q50207');
 Route::get('/q_select/{unit_id}/50208',[App\Http\Controllers\QuestionController::class, 'unit502_q08'])->name('Q50208');
 Route::get('/q_select/{unit_id}/50209',[App\Http\Controllers\QuestionController::class, 'unit502_q09'])->name('Q50209');
-
 
 
 
@@ -447,3 +452,6 @@ Route::post('/q_select/{unit_id}/50206',[App\Http\Controllers\AnswerController::
 Route::post('/q_select/{unit_id}/50207',[App\Http\Controllers\AnswerController::class, 'unit502_a07'])->name('A50207');
 Route::post('/q_select/{unit_id}/50208',[App\Http\Controllers\AnswerController::class, 'unit502_a08'])->name('A50208');
 Route::post('/q_select/{unit_id}/50209',[App\Http\Controllers\AnswerController::class, 'unit502_a09'])->name('A50209');
+
+
+*/

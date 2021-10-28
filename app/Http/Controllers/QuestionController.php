@@ -14,6 +14,12 @@ class QuestionController extends Controller
         $this->middleware('auth');
     }
 
+    public function question($unit_id,$q_id)
+    {
+        $func = 'unit'.substr($q_id, 0,3).'_q'.substr($q_id, 3);
+        echo $this->$func($unit_id);
+    }
+
     public $option = ['ア','イ','ウ','エ','オ','カ','キ','ク','ケ','コ'];
 
     //数学Ⅰ
@@ -2026,23 +2032,24 @@ class QuestionController extends Controller
         //初期設定
         $question_id = 10404;
         $blanks = 4;
+        $option = $this->option;
         $pattern = rand(1,2);
 
         //変数の設定
         $x = array();
         $y = array();
         for($j=0;$j<10;$j++){
-            array_push($x,rand(1,100)/10);
+            array_push($x,rand(100,250));
         }
         switch($pattern){
             case 1:
                 for($j=0;$j<10;$j++){
-                    array_push($y,round($x[$j]/2+rand(-5,5)*0.1,1));
+                    array_push($y,-1*$x[$j]+275+rand(-20,20));
                 }
                 break;
             case 2:
                 for($j=0;$j<10;$j++){
-                    array_push($y,round(-1*$x[$j]/2+rand(-5,5)*0.1+10,1));
+                    array_push($y,$x[$j]-75+rand(-20,20));
                 }
                 break;
         }
@@ -2050,23 +2057,92 @@ class QuestionController extends Controller
         //答えの設定
         switch($pattern){
             case 1:
-                $right_answer = 4;
+                $right_answers[0] = 4;
                 break;
             case 2:
-                $right_answer = 1;
+                $right_answers[0] = 1;
                 break;
         }
 
         //正解テキストの設定
+        $canvas = '<canvas id="canvas" width="350" height="200">
+                        canvas対応のブラウザでは、ここに図形が表示されます。
+                   </canvas>';
+                   
+        $script = '<script type="text/javascript">
+        　         window.onload = function draw() {
+                        var canvas = document.getElementById(\'canvas\');
+                        if (canvas.getContext) {
+                            var y_axis = canvas.getContext(\'2d\');
+                            y_axis.beginPath();
+                            y_axis.moveTo(85,190);
+                            y_axis.lineTo(85,10);
+                            y_axis.lineTo(80,15);
+                            y_axis.moveTo(85,10);
+                            y_axis.lineTo(90,15);
+                            y_axis.stroke();
+
+                            var x_axis = canvas.getContext(\'2d\');
+                            x_axis.beginPath();
+                            x_axis.moveTo(85,190);
+                            x_axis.lineTo(265,190);
+                            x_axis.lineTo(260,195);
+                            x_axis.moveTo(265,190);
+                            x_axis.lineTo(260,185);
+                            x_axis.stroke();
+
+                            var a = canvas.getContext(\'2d\');
+                            a.beginPath();
+                            a.arc('.$x[0].','.$y[0].',3, 0, 2 * Math.PI);
+                            a.fill();
+                            a.beginPath();
+                            a.arc('.$x[1].','.$y[1].',3, 0, 2 * Math.PI);
+                            a.fill();
+                            a.beginPath();
+                            a.arc('.$x[2].','.$y[2].',3, 0, 2 * Math.PI);
+                            a.fill();
+                            a.beginPath();
+                            a.arc('.$x[3].','.$y[3].',3, 0, 2 * Math.PI);
+                            a.fill();
+                            a.beginPath();
+                            a.arc('.$x[4].','.$y[4].',3, 0, 2 * Math.PI);
+                            a.fill();
+                            a.beginPath();
+                            a.arc('.$x[5].','.$y[5].',3, 0, 2 * Math.PI);
+                            a.fill();
+                            a.beginPath();
+                            a.arc('.$x[6].','.$y[6].',3, 0, 2 * Math.PI);
+                            a.fill();
+                            a.beginPath();
+                            a.arc('.$x[7].','.$y[7].',3, 0, 2 * Math.PI);
+                            a.fill();
+                            a.beginPath();
+                            a.arc('.$x[8].','.$y[8].',3, 0, 2 * Math.PI);
+                            a.fill();
+                            a.beginPath();
+                            a.arc('.$x[9].','.$y[9].',3, 0, 2 * Math.PI);
+                            a.fill();
+                        }
+                    }
+                   </script>';
+
         $text = '$$ 以上のデータがある。\\\\';
         $text .= 'このデータの相関係数に一番近いのは、\\\\';
 
+        $item[0] = '①　-0.9\\\\';
+        $item[1] = '②　-0.2\\\\';
+        $item[2] = '③　\\ \\ \\ \\ \\ 0.2\\\\';
+        $item[3] = '④　\\ \\ \\ \\ \\ 0.9\\\\';
+
         $options[0] = '①　-0.9';
         $options[1] = '②　-0.2';
-        $options[2] = '③　0.2';
-        $options[3] = '④　0.9';
+        $options[2] = '③　 0.2';
+        $options[3] = '④　 0.9';
 
-        return view('question/data_select',compact('x','y','right_answer','unit_id','question_id','text','options','blanks'));
+        $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
+        return view('question/data_select',compact('right_answers','unit_id','question_id','text','blank_text','blanks','canvas','script','options'));
+
+        //return view('question/data_select',compact('x','y','right_answer','unit_id','question_id','text','options','blanks'));
     }
 
     //数学Ⅱ
@@ -8547,7 +8623,7 @@ class QuestionController extends Controller
 
         //空欄テキストの設定
         $item[0] = 'このとき、\vec{a}\cdot\vec{b} = '.($right_answers[0]<0?'-':'').'\fbox{ア}\\\\';
-        $item[1] = 'また、\vec{a}と\vec{p}が垂直であるとき、t='.($right_answers[1]*$right_answers[2]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}';
+        $item[1] = 'また、\vec{a}と\vec{p}が垂直であるとき、t='.($right_answers[1]*$right_answers[2]<0?'-':'').'\frac{\fbox{イ}}{\fbox{ウ}}';
 
         list($right_answers,$option,$blanks,$item[1]) = l_frac($right_answers,$option,2,$blanks,$item[1]);
 
