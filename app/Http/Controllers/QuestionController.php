@@ -1314,16 +1314,16 @@ class QuestionController extends Controller
         switch($pattern){
             case 1:
                 if($a > 0){
-                    $right_answer = 2;
+                    $right_answers[0] = 2;
                 } else {
-                    $right_answer = 1;
+                    $right_answers[0] = 1;
                 }
                 break;
             case 2:
                 if($a > 0){
-                    $right_answer = 1;
+                    $right_answers[0] = 1;
                 } else {
-                    $right_answer = 2;
+                    $right_answers[0] = 2;
                 }
                 break;
         }
@@ -1339,10 +1339,14 @@ class QuestionController extends Controller
                 break;
         }
 
+        $item[0] = '①　なし\\\\';
+        $item[1] = '②　すべての実数';
+
         $options[0] = '①　なし';
         $options[1] = '②　すべての実数';
 
-        return view('question/select',compact('right_answer','unit_id','question_id','text','options','blanks'));
+        $blank_text = implode($item).'$$';
+        return view('question/select',compact('right_answers','unit_id','question_id','text','options','blanks','blank_text'));
     }
 
     //放物線と軸の関係
@@ -2441,7 +2445,7 @@ class QuestionController extends Controller
 
         //変数の設定
         do { $b = rand(-5,5); } while( $b==0 );
-        do { $c = rand(-5,5); } while( $c==0 || $b*$b+$c == 0);
+        do { $c = rand(-5,5); } while( $c==0 || $b*$b+$c <= 0);
 
         //答えの設定
         $right_answers[0] = 2*$b;
@@ -2453,6 +2457,8 @@ class QuestionController extends Controller
 
         list($right_answers[1],$right_answers[2]) = root($right_answers[1],$right_answers[2]);
         list($right_answers[4],$right_answers[5]) = root($right_answers[4],$right_answers[5]);
+
+        var_dump($right_answers);
 
         //問題テキストの設定
         $text = '$$ aは実数とする。２次方程式\\ x^{2} + ax '.d2($b,'a').d3($c).'=0\\ が\\\\'
@@ -4725,8 +4731,6 @@ class QuestionController extends Controller
 
         list($t,$u) = root($r,$a[$s]);
         list($v,$w) = root($r,$b[$s]);
-
-        var_dump($t,$u,$v,$w);
 
         //答えの計算
         $right_answers[0] = $r;

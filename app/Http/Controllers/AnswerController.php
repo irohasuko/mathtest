@@ -350,11 +350,11 @@ class AnswerController extends Controller
     public function unit102_a10(Request $request, $unit_id)
     {
         $question_id = 10210;
-        $result = $this->check_answer($request->answer,$request->right_answer);
+        $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($unit_id,$question_id,$result);
 
-        $text = $request->text.$request->options[($request->right_answer-1)].'$$';
-        $answer_text = '$$'.$request->options[($request->answer-1)].'$$';
+        $text = $request->text.'\\\\'.$request->options[$request->right_answers[0]-1].'$$';
+        $answer_text = '$$'.$request->options[$request->answers[0]-1].'$$';
         $next_id = 10211;         
         return view('answer/select',compact('text','answer_text','question_id','unit_id','next_id','result'));
     }
@@ -535,8 +535,8 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($unit_id,$question_id,$result);
 
-        $text = $request->text.'\\\\'.$request->options[$request->answers[0]-1].'$$';
-        $answer_text = '$$'.$request->options[$request->right_answers[0]-1].'$$';
+        $text = $request->text.'\\\\'.$request->options[$request->right_answers[0]-1].'$$';
+        $answer_text = '$$'.$request->options[$request->answers[0]-1].'$$';
         $next_id = 20101;         
         return view('answer/select',compact('text','answer_text','question_id','unit_id','next_id','result'));
     }
