@@ -24,6 +24,7 @@ class SortController extends Controller
     }
 
     public function q_select($id){
+        $unit = Unit::where('id',$id)->first();
         $items = Question::where('unit_id', $id)->get();
         $records = \App\Models\User::find(auth()->user()->id)->records()
                                         ->where('unit_id',$id)
@@ -39,7 +40,7 @@ class SortController extends Controller
         foreach($records as $record){
             $success[$record->question_id] = 1;
         }
-        return view('select/item_select',compact('items','success'));
+        return view('select/item_select',compact('items','success','unit'));
     }
 
     public function q_route($q_id){

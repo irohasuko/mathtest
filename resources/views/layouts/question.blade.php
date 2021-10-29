@@ -1,4 +1,7 @@
 @extends('layouts.app')
+
+@section('breadcrumbs', Breadcrumbs::render('question',$unit,$question))
+
 @section('content')
 
 <div class="container">
@@ -11,7 +14,7 @@
             </div>
             <br>
 
-            <form method="post" action="{{route('answer',[$unit_id, $question_id])}}">
+            <form method="post" action="{{route('answer',[$unit->id, $question->q_id])}}">
                 @csrf
                 @yield('submit')
                 @foreach($right_answers as $right_answer)

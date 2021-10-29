@@ -1,4 +1,7 @@
 @extends('layouts.app')
+
+@section('breadcrumbs', Breadcrumbs::render('question',$unit,$question))
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -24,9 +27,9 @@
         </div>
 
         <div class="col-md-8">
-            <a class="btn btn-primary btn-block" href="{{route('question',[$unit_id, $question_id])}}" role="button">もう一度同じ問題を解く</a>
+            <a class="btn btn-primary btn-block" href="{{route('question',[$question->unit_id, $question->q_id])}}" role="button">もう一度同じ問題を解く</a>
             <a class="btn btn-primary btn-block" href="{{route('q_route',$next_id)}}" role="button">次のパターンの問題を解く</a>
-            <a class="btn btn-primary btn-block" href="{{route('question_select', $unit_id)}}" role="button">問題選択画面に戻る</a>
+            <a class="btn btn-primary btn-block" href="{{route('question_select', $unit->id)}}" role="button">問題選択画面に戻る</a>
         </div>
     </div>
 </div>
