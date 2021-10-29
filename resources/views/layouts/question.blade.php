@@ -3,17 +3,19 @@
 @section('breadcrumbs', Breadcrumbs::render('question',$unit,$question))
 
 @section('content')
-
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10 col-lg-9">
             <div class="card">
                 <div class="card-body">
-                    @yield('question')
+                    <div id="question">
+                        @yield('question')
+                    </div>
                 </div>
             </div>
             <br>
-
+        </div>
+        <div class="col-md-10 col-lg-3">
             <form method="post" action="{{route('answer',[$unit->id, $question->q_id])}}">
                 @csrf
                 @yield('submit')
@@ -28,4 +30,15 @@
     </div>
 </div>
 
+@endsection
+
+@section('script')
+<script type="text/javascript">
+    window.addEventListener('load',function(){
+        setTimeout('display()',300);
+    });
+    function display(){
+        document.getElementById('question').style.display = 'block';
+    }
+</script>
 @endsection

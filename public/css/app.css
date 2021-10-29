@@ -10002,3 +10002,16 @@ h3 {
     border-color: #dee2e6;
   }
 }
+
+#question{
+	width: 100%;
+	text-align: center;
+	display: none;
+  overflow-x: auto;
+}
+
+#answer{
+	width: 100%;
+	display: none;
+  overflow-x: auto;
+}

@@ -15,7 +15,7 @@
 @endfor
 @endsection
 
-@section('script')
+@section('canvas')
 {!!$script!!}
 @endsection
 
