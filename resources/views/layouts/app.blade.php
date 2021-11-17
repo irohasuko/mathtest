@@ -27,10 +27,11 @@
 
 
 </head>
-<body>
+<body style="padding-top: 5rem">
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm fixed-top">
             <div class="container">
+                
                 <a class="navbar-brand" href="{{ url('/home') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
@@ -38,10 +39,14 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
+                
+
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
-
+                    <ul class="navbar-nav ml-auto">
+                        <div>
+                            @yield('breadcrumbs')
+                        </div>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -62,11 +67,13 @@
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
+                                    {{ Auth::user()->name }}さん
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{route('home')}}">ホーム画面へ</a>
+                                    <a class="dropdown-item" href="{{route('random_list')}}">弱点演習</a>
+                                    <a class="dropdown-item" href="{{route('home')}}">公式一覧</a>
                                     
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
@@ -86,7 +93,7 @@
             </div>
         </nav>
 
-        @yield('breadcrumbs')
+
 
         <main class="py-4">
             @yield('content')

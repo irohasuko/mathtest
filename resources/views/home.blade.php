@@ -5,27 +5,43 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10 col-lg-4">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">演習選択モード</h4>
-                    <p class="card-text">各単元の問題を自分で選択して演習できます</p>
+                    <h4 class="card-title">演習選択</h4>
+                    <p class="card-text">各単元の問題を自分で選択して演習できます<br><br></p>
                     <div class="text-right">
-                        <a href="{{route('unit_select')}}" class="btn btn-primary">このモードで学習する</a>
+                        <a href="{{route('unit_select')}}" class="btn btn-primary">学習する</a>
                     </div>
                 </div>
             </div>
+        </div>
 
+        <div class="col-md-10 col-lg-4">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">ランダム演習モード</h4>
+                    <h4 class="card-title">弱点演習</h4>
                     <p class="card-text">あなたが苦手な問題をランダムで抽出して演習できます</p>
                     <div class="text-right">
-                        <a href="#" class="btn btn-primary">このモードで学習する</a>
+                        <a href="random_list" class="btn btn-primary">学習する</a>
                     </div>
                 </div>
             </div>
+        </div>
 
+        <div class="col-md-10 col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">公式一覧</h4>
+                    <p class="card-text">わからない問題があれば、ここで公式を確認しましょう</p>
+                    <div class="text-right">
+                        <a href="#" class="btn btn-primary">学習する</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-10 col-lg-12">
             <div class="card">
                 <div class="card-header">{{'演習の進捗状況'}}</div>
                 <div class="card-body">

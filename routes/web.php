@@ -21,6 +21,8 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::get('/random_list', [App\Http\Controllers\RandomController::class, 'list'])->name('random_list');
+
 //ユニットの選択ページ
 Route::get('/unit_select', [App\Http\Controllers\SortController::class, 'unit_select'])->name('unit_select');
 

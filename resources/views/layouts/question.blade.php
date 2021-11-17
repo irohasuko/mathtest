@@ -24,7 +24,10 @@
                 @endforeach
                 <input type="hidden" name="text" value="{{$text}}">
                 <input type="hidden" name="blank_text" value="{{$blank_text}}">
-                <button type="submit" class="btn btn-primary">解答</button>
+                <input type="hidden" name="start" value="{{$start}}">
+                <div class="text-right">
+                    <button type="submit" class="btn btn-primary">解答</button>
+                </div>
             </form>        
         </div>
     </div>

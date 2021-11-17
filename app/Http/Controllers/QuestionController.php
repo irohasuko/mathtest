@@ -67,7 +67,8 @@ class QuestionController extends Controller
         $text = '$$ ('.d1($a,'x') .d3($b).')('.d1($c,'x').d3($d).')';
         $blank_text = implode($item).'$$';
 
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //式の展開　その２
@@ -113,7 +114,8 @@ class QuestionController extends Controller
         $text = '$$ ('.li($a,'x') .li(sign($b),'y').')('.li($c,'x').li(sign($d),'y').') - ('.li($e,'x') .li(sign($f),'y').')('.li($g,'x').li(sign($h),'y').')';
         $blank_text = fo(implode($item)).'$$';
 
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //係数が分数の場合の展開
@@ -192,7 +194,8 @@ class QuestionController extends Controller
         $text = '$$ ('.fo(li(frac($a,$b),'x').li(frac($c,$d),'y')).')('.fo(li(frac($e,$f),'x').li(frac($g,$h),'y')).')';
         $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
 
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //３項の展開
@@ -228,7 +231,8 @@ class QuestionController extends Controller
         $text = '$$ ('.fo(li($a,'x')).li(sign($b),'y').li(sign($c),'z').')^{2}';
         $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
 
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //３乗の展開
@@ -259,7 +263,8 @@ class QuestionController extends Controller
         $text = '$$ ('.fo(li($a,'x')).li(sign($b),'y').')^{3}';
         $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
 
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //因数分解　その１
@@ -303,7 +308,8 @@ class QuestionController extends Controller
 
         $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
 
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //因数分解　その２
@@ -349,7 +355,8 @@ class QuestionController extends Controller
 
         $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
 
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //３乗の因数分解
@@ -416,7 +423,8 @@ class QuestionController extends Controller
 
         $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
 
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
     
     //分母の有理化
@@ -487,7 +495,8 @@ class QuestionController extends Controller
 
         $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
 
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //対称式
@@ -512,7 +521,8 @@ class QuestionController extends Controller
         //解答テキストの設定
         $blank_text = 'x^{2}y+xy^{2}=\fbox{ア}、x^{2}+y^{2}=\fbox{イ}'.'$$';
 
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //絶対値を含む1次不等式
@@ -543,7 +553,8 @@ class QuestionController extends Controller
                 break;
         }
 
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //連立1次不等式
@@ -620,7 +631,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //２次関数（102）
@@ -675,7 +687,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //平行移動
@@ -728,7 +741,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //対称移動
@@ -806,7 +820,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //２次関数の最大・最小　その１
@@ -864,7 +879,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //２次関数の最大・最小　その２
@@ -967,7 +983,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //２次関数の決定
@@ -1049,7 +1066,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //２次方程式
@@ -1107,7 +1125,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //判別式
@@ -1172,7 +1191,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //２次不等式　その１
@@ -1296,7 +1316,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //２次不等式　その２
@@ -1348,7 +1369,8 @@ class QuestionController extends Controller
         $options[1] = '②　すべての実数';
 
         $blank_text = implode($item).'$$';
-        return view('question/select',compact('right_answers','unit','question','text','options','blanks','blank_text'));
+        $start = time();
+        return view('question/select',compact('right_answers','unit','question','text','options','blanks','start','blank_text'));
     }
 
     //放物線と軸の関係
@@ -1446,7 +1468,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //図形と計量（103）
@@ -1513,7 +1536,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角方程式
@@ -1544,8 +1568,8 @@ class QuestionController extends Controller
 
         //空欄テキストの設定
         $blank_text = '\theta = \fbox{ア}° $$';
-
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //特別な角度の三角比
@@ -1617,7 +1641,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //正弦定理　その１
@@ -1679,7 +1704,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //正弦定理　その２
@@ -1740,7 +1766,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //余弦定理　その１
@@ -1793,7 +1820,8 @@ class QuestionController extends Controller
         $option = array_values($option);
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //余弦定理　その２
@@ -1834,7 +1862,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角形の面積
@@ -1885,7 +1914,8 @@ class QuestionController extends Controller
         $option = array_values($option);
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //内接円の半径
@@ -1936,7 +1966,8 @@ class QuestionController extends Controller
         $option = array_values($option);
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //データの分析(104)
@@ -1967,7 +1998,8 @@ class QuestionController extends Controller
         $item[2] = 'データの範囲は\fbox{ウ}である。\\\\';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/data',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/data',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //四分位数(と箱ひげ図)
@@ -1999,7 +2031,8 @@ class QuestionController extends Controller
         $item[3] = '四分位偏差は\fbox{エ}である。';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/data',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/data',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //分散・標準偏差
@@ -2030,7 +2063,8 @@ class QuestionController extends Controller
         $item[0] = 'このデータの分散は\fbox{ア}である。';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/data',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/data',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //相関係数の読み取り
@@ -2146,7 +2180,8 @@ class QuestionController extends Controller
         $options[3] = '④　 0.9';
 
         $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
-        return view('question/data_select',compact('right_answers','unit','question','text','blank_text','blanks','canvas','script','options'));
+        $start = time();
+        return view('question/data_select',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script','options'));
 
         //return view('question/data_select',compact('x','y','right_answer','unit','question','text','options','blanks'));
     }
@@ -2178,7 +2213,8 @@ class QuestionController extends Controller
 
         $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
 
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //整式の割り算
@@ -2237,7 +2273,8 @@ class QuestionController extends Controller
 
         $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
 
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //割り算の基本公式
@@ -2295,7 +2332,8 @@ class QuestionController extends Controller
 
         $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
 
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //恒等式
@@ -2332,7 +2370,8 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
 
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //相加平均、相乗平均の大小関係
@@ -2381,7 +2420,8 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
 
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //複素数と方程式(202)
@@ -2435,7 +2475,8 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
 
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //虚数解をもつ条件
@@ -2490,7 +2531,8 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
 
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //解と係数の関係　その１
@@ -2545,7 +2587,8 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
 
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //解と係数の関係　その２
@@ -2578,7 +2621,8 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
 
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //剰余の定理
@@ -2605,7 +2649,8 @@ class QuestionController extends Controller
         $item[0] = '\fbox{ア}である。';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
     
     //因数定理
@@ -2646,7 +2691,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //３次方程式
@@ -2741,7 +2787,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //図形と方程式(203)
@@ -2817,7 +2864,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //重心の座標
@@ -2873,7 +2921,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //直線の方程式
@@ -2925,7 +2974,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //対称な点
@@ -2982,7 +3032,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //点と直線の距離
@@ -3038,7 +3089,8 @@ class QuestionController extends Controller
         $option = array_values($option);
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //円の方程式　その１
@@ -3087,7 +3139,8 @@ class QuestionController extends Controller
         $option = array_values($option);
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //円の方程式　その２
@@ -3158,7 +3211,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //円の接線
@@ -3213,7 +3267,8 @@ class QuestionController extends Controller
         $option = array_values($option);
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //弧度法
@@ -3291,7 +3346,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角関数のグラフ
@@ -3337,7 +3393,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //加法定理
@@ -3421,7 +3478,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //2倍角の公式
@@ -3465,7 +3523,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角不等式　その１
@@ -3559,7 +3618,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角不等式　その２
@@ -3609,7 +3669,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //半角の公式
@@ -3658,7 +3719,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角関数の合成
@@ -3715,7 +3777,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
     
     //指数関数・対数関数
@@ -3754,7 +3817,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //指数の式の値
@@ -3779,7 +3843,8 @@ class QuestionController extends Controller
         $item[1] = 'a^{3x} - a^{-3x} = \fbox{イ}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //指数方程式
@@ -3830,7 +3895,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //指数不等式
@@ -3900,7 +3966,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //対数の計算
@@ -3928,7 +3995,8 @@ class QuestionController extends Controller
         $item[0] = '\fbox{ア}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //対数の式の値
@@ -3960,7 +4028,8 @@ class QuestionController extends Controller
         $item[1] = '\fbox{イ}a';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //対数方程式
@@ -3985,7 +4054,8 @@ class QuestionController extends Controller
         $item[0] = 'x= \fbox{ア}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //対数不等式
@@ -4011,7 +4081,8 @@ class QuestionController extends Controller
         $item[0] = '\fbox{ア} \lt x \lt \fbox{イ}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //大小関係
@@ -4048,7 +4119,8 @@ class QuestionController extends Controller
         $item[0] = '\fbox{ア} \lt \fbox{イ} \lt \fbox{ウ}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/alphabet',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/alphabet',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //桁数
@@ -4071,7 +4143,8 @@ class QuestionController extends Controller
         $item[0] = '\fbox{ア}桁の整数である。';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //微分法
@@ -4102,7 +4175,8 @@ class QuestionController extends Controller
         $item[0] = '\fbox{ア}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //公式による微分
@@ -4150,7 +4224,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //接線の方程式
@@ -4199,7 +4274,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //曲線上にない点から引いた接線
@@ -4268,7 +4344,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //極値
@@ -4311,7 +4388,8 @@ class QuestionController extends Controller
         $item[3] = '極大値\fbox{エ}をとる。';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //極値から係数の決定
@@ -4358,7 +4436,8 @@ class QuestionController extends Controller
 
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //方程式の解の個数
@@ -4397,7 +4476,8 @@ class QuestionController extends Controller
         $item[0] = '\fbox{ア}個である。';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //積分法
@@ -4445,7 +4525,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //定積分
@@ -4485,7 +4566,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //定積分と微分
@@ -4538,7 +4620,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //絶対値を含む関数の定積分
@@ -4576,7 +4659,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //曲線とx軸で囲まれた図形の面積
@@ -4619,7 +4703,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //直線と曲線で囲まれた図形の面積
@@ -4664,7 +4749,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //３次関数ととx軸で囲まれた図形の面積
@@ -4707,7 +4793,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //数学Ⅲ
@@ -4759,7 +4846,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //複素数の積と商
@@ -4829,7 +4917,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //複素数の回転
@@ -4913,7 +5002,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //ド・モアブルの定理
@@ -4993,7 +5083,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //方程式の表す図形
@@ -5032,7 +5123,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //なす角
@@ -5078,7 +5170,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //式と曲線
@@ -5105,7 +5198,8 @@ class QuestionController extends Controller
         $item[1] = '準線\\ x = \fbox{ウ}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //楕円
@@ -5170,7 +5264,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //双曲線
@@ -5217,7 +5312,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //２次曲線の平行移動
@@ -5254,7 +5350,8 @@ class QuestionController extends Controller
         $item[2] = '平行移動したものである。';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //２次曲線と直線の共有点
@@ -5316,7 +5413,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //２次曲線と接線の方程式
@@ -5363,7 +5461,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //媒介変数表示
@@ -5396,7 +5495,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //極座標と直交座標
@@ -5473,7 +5573,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //関数
@@ -5512,7 +5613,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //分数関数と直線の共有点
@@ -5574,7 +5676,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //無理関数
@@ -5611,7 +5714,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //逆関数
@@ -5652,7 +5756,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //合成関数
@@ -5718,7 +5823,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //極限
@@ -5756,7 +5862,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //無限等比数列の極限
@@ -5780,7 +5887,8 @@ class QuestionController extends Controller
         $item[0] = '\fbox{ア}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //漸化式で定められる数列の極限
@@ -5823,7 +5931,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //無限等比数列
@@ -5865,7 +5974,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //関数の極限
@@ -5913,7 +6023,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角関数と極限
@@ -5945,7 +6056,8 @@ class QuestionController extends Controller
         $option = array_values($option);
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //微分法
@@ -5987,7 +6099,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //商の微分法
@@ -6027,7 +6140,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //合成関数の微分 その１
@@ -6077,7 +6191,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //合成関数の微分 その２
@@ -6139,7 +6254,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角関数の微分 その１
@@ -6214,7 +6330,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角関数の微分 その２
@@ -6256,7 +6373,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //対数関数の微分 その１
@@ -6295,7 +6413,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //対数関数の微分 その２
@@ -6329,7 +6448,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //指数関数の微分
@@ -6375,7 +6495,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //媒介変数表示と微分
@@ -6425,7 +6546,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //曲線の凹凸と変曲点
@@ -6462,7 +6584,8 @@ class QuestionController extends Controller
         $item[3] = '\fbox{カ} \lt x\\ で下に凸'; 
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //速度と加速度
@@ -6503,7 +6626,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //積分法
@@ -6540,7 +6664,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角関数の不定積分
@@ -6572,7 +6697,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //指数関数の不定積分
@@ -6600,7 +6726,8 @@ class QuestionController extends Controller
         $item[2] = '+C';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //置換積分法　その１
@@ -6649,7 +6776,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //置換積分法　その２
@@ -6693,7 +6821,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //置換積分法　その３
@@ -6729,7 +6858,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //部分積分法
@@ -6776,7 +6906,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //分数関数の不定積分
@@ -6833,7 +6964,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角関数に関する不定積分
@@ -6872,7 +7004,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //定積分の置換積分法
@@ -6912,7 +7045,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //定積分の部分積分法
@@ -6974,7 +7108,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //回転体の体積
@@ -7015,7 +7150,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
 
@@ -7054,7 +7190,8 @@ class QuestionController extends Controller
         $item[1] = 'その和は、\fbox{イ}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //順列、組み合わせ、階乗の記号
@@ -7085,7 +7222,8 @@ class QuestionController extends Controller
         $item[2] = $e.'! = \fbox{ウ}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //順列
@@ -7111,7 +7249,8 @@ class QuestionController extends Controller
         $item[1] = '両端が女子になる並び方は、\fbox{イ}通り';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //円順列
@@ -7134,7 +7273,8 @@ class QuestionController extends Controller
         $item[0] = '\fbox{ア}通り';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //重複順列
@@ -7159,7 +7299,8 @@ class QuestionController extends Controller
         $item[1] = '１冊以上取る場合、取り方は\fbox{イ}通り';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //組み合わせ
@@ -7188,7 +7329,8 @@ class QuestionController extends Controller
         $item[1] = '男子'.$d.'人、女子'.$e.'人選ぶ方法は\fbox{イ}通り';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //同じものを含む順列
@@ -7261,7 +7403,8 @@ class QuestionController extends Controller
         $item[1] = 'A点からB点を通ってC点に向かう経路数は\fbox{イ}通り';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','canvas','script'));
+        $start = time();
+        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script'));
     }
 
     //確率の基本
@@ -7311,7 +7454,8 @@ class QuestionController extends Controller
         $item[2] = '積が'.$b.'の倍数または'.$a.'になる確率は、\frac{\fbox{オ}}{\fbox{カ}}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //余事象の確率
@@ -7340,7 +7484,8 @@ class QuestionController extends Controller
         $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}\\\\';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //反復試行の確率
@@ -7371,7 +7516,8 @@ class QuestionController extends Controller
         $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}\\\\';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //条件付き確率
@@ -7400,7 +7546,8 @@ class QuestionController extends Controller
         $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}\\\\';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //図形の性質
@@ -7445,7 +7592,8 @@ class QuestionController extends Controller
         $option = array_values($option);
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角形の内心
@@ -7482,7 +7630,8 @@ class QuestionController extends Controller
         $option = array_values($option);
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角形の外心
@@ -7624,7 +7773,8 @@ class QuestionController extends Controller
         $item[0] = '\angle{OCA} = \fbox{ア}^\circである。';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','canvas','script'));
+        $start = time();
+        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script'));
     }
 
     //チェバ、メネラウスの定理
@@ -7662,7 +7812,8 @@ class QuestionController extends Controller
         $item[1] = 'AO:OR=\fbox{ウ}:\fbox{エ}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //三角形の面積比
@@ -7700,7 +7851,8 @@ class QuestionController extends Controller
         $item[1] = '\triangle{ABC}:\triangle{BPR}=\fbox{ウ}:\fbox{エ}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //円に内接する四角形
@@ -7799,7 +7951,8 @@ class QuestionController extends Controller
         $item[0] = '\beta = \fbox{ア}^\circ';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','canvas','script'));
+        $start = time();
+        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script'));
     }
 
     //円の接線
@@ -7826,7 +7979,8 @@ class QuestionController extends Controller
         $item[0] = 'AC = \fbox{ア}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //接線と弦のつくる角
@@ -7990,7 +8144,8 @@ class QuestionController extends Controller
         $item[1] = '\beta = \fbox{イ}^\circ';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','canvas','script'));
+        $start = time();
+        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script'));
     }
 
     //方べきの定理
@@ -8103,7 +8258,8 @@ class QuestionController extends Controller
         list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','canvas','script'));
+        $start = time();
+        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script'));
     }
 
     //２円の関係
@@ -8133,7 +8289,8 @@ class QuestionController extends Controller
         $item[2] = '2円が内接するとき、d = \fbox{エ}\\\\';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     
@@ -8177,7 +8334,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //最大公約数・最小公倍数
@@ -8207,7 +8365,8 @@ class QuestionController extends Controller
         $item[1] = '最小公倍数は\fbox{イ}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //余り
@@ -8239,7 +8398,8 @@ class QuestionController extends Controller
         $item[0] = '\fbox{ア}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //ユークリッドの互除法と１次不定方程式
@@ -8277,7 +8437,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //余り
@@ -8305,7 +8466,8 @@ class QuestionController extends Controller
         $item[1] = '10進数\\ '.$N.'を'.$m.'進数で表すと、\fbox{イ}_{('.$m.')}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //数学B
@@ -8364,7 +8526,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //分点の位置ベクトル
@@ -8414,7 +8577,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //ベクトルの成分と大きさ
@@ -8454,7 +8618,8 @@ class QuestionController extends Controller
         $option = array_values($option);
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //一直線上にある条件
@@ -8495,7 +8660,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //交点の位置ベクトル
@@ -8543,7 +8709,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //内積と角の大きさ
@@ -8599,7 +8766,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //成分と内積
@@ -8640,7 +8808,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //数列
@@ -8704,7 +8873,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //等比数列
@@ -8759,7 +8929,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //Σの計算　その１
@@ -8816,7 +8987,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //Σの計算　その２
@@ -8842,7 +9014,8 @@ class QuestionController extends Controller
         $item[0] = '\frac{\fbox{ア}^{n+\fbox{イ}}-\fbox{ウ}}{\fbox{エ}}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //分数の数列の和
@@ -8878,7 +9051,8 @@ class QuestionController extends Controller
         $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //階差数列
@@ -8941,7 +9115,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //和から一般項
@@ -8981,7 +9156,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //群数列
@@ -9051,7 +9227,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
     //漸化式
@@ -9099,7 +9276,8 @@ class QuestionController extends Controller
         }
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks'));
+        $start = time();
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
     }
 
 
