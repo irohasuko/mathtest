@@ -14,13 +14,17 @@ class RandomController extends Controller
     {
         $rate = [];
         
-        $records = \App\Models\User::find(1)->records()
+        if(\App\Models\User::find(auth()->user()->id)->records()->count() < 1){
+            return view('error/random');
+        }
+
+        $records = \App\Models\User::find(auth()->user()->id)->records()
             ->select('question_id',DB::raw('COUNT(result) AS count'),DB::raw('COUNT(result=1 OR NULL) AS a'),DB::raw('COUNT(result=0 OR NULL) AS b'))
             ->groupBy('question_id')
             ->get();
             
         foreach($records as $record){
-            if($record->a != 0){ //テスト用　本来は $record->count != 0
+            if($record->count != 0){ //テスト用　本来は $record->count != 0
                 $rate[$record->question_id] = round($record->a / $record->count,4);
             }
         }

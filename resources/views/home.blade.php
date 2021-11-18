@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">演習選択</h4>
-                    <p class="card-text">各単元の問題を自分で選択して演習できます<br><br></p>
+                    <p class="card-text">各単元の問題を自分で選択して演習できます</p>
                     <div class="text-right">
                         <a href="{{route('unit_select')}}" class="btn btn-primary">学習する</a>
                     </div>
@@ -21,7 +21,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">弱点演習</h4>
-                    <p class="card-text">あなたが苦手な問題をランダムで抽出して演習できます</p>
+                    <p class="card-text">正答率の低い問題を抽出して演習できます</p>
                     <div class="text-right">
                         <a href="random_list" class="btn btn-primary">学習する</a>
                     </div>
@@ -33,7 +33,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">公式一覧</h4>
-                    <p class="card-text">わからない問題があれば、ここで公式を確認しましょう</p>
+                    <p class="card-text">わからない問題は、公式を確認しましょう</p>
                     <div class="text-right">
                         <a href="#" class="btn btn-primary">学習する</a>
                     </div>

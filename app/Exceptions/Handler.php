@@ -43,7 +43,7 @@ class Handler extends ExceptionHandler
     protected function renderHttpException(HttpExceptionInterface $e)
     {
         if ($e->getStatusCode() == 419) {
-        return response()->view('error');
+        return response()->view('error/form');
     }
   }
 }
