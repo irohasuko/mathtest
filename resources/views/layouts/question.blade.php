@@ -25,6 +25,9 @@
                 <input type="hidden" name="text" value="{{$text}}">
                 <input type="hidden" name="blank_text" value="{{$blank_text}}">
                 <input type="hidden" name="start" value="{{$start}}">
+                @if(isset($sample_text))
+                    <input type="hidden" name="sample_text" value="{{$sample_text}}">
+                @endif
                 <div class="text-right">
                     <button type="submit" class="btn btn-primary">解答</button>
                 </div>

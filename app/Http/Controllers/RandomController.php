@@ -24,7 +24,7 @@ class RandomController extends Controller
             ->get();
             
         foreach($records as $record){
-            if($record->count != 0){ //テスト用　本来は $record->count != 0
+            if($record->a != 0){ //テスト用　本来は $record->count != 0
                 $rate[$record->question_id] = round($record->a / $record->count,4);
             }
         }

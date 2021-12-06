@@ -1,7 +1,7 @@
 <?php
 
 //最大公約数
-if (! function_exists('gmp')) {
+if (! function_exists('gcd')) {
     function gcd($a,$b)
     {
         $c = gmp_gcd($a,$b);
@@ -71,6 +71,103 @@ if (! function_exists('frac')) {
         }
         if($a === 0){
             $text = 'NULL';
+        }
+
+        return $text;
+    }
+}
+
+//分数の表示処理1
+if (! function_exists('f1')) {
+    function f1($a,$b,$d='')
+    {
+        list($a,$b) = gcd($a,$b);
+        if(abs($b) === 1){
+            $text = ($a*$b>0 ? abs($a) :'-'.abs($a)).$d;
+        } else {
+            $text = ($a*$b>0 ? '' :'-').'\frac{'.abs($a).'}{'.abs($b).'}'.$d;
+        }
+        if($a === 0){
+            $text = '0';
+        }
+
+        return $text;
+    }
+}
+
+//分数の表示処理2
+if (! function_exists('f2')) {
+    function f2($a,$b,$d='')
+    {
+        list($a,$b) = gcd($a,$b);
+        if(abs($b) === 1){
+            $text = ($a*$b>0 ? '+'.abs($a) :'-'.abs($a)).$d;
+        } else {
+            $text = ($a*$b>0 ? '+' :'-').'\frac{'.abs($a).'}{'.abs($b).'}'.$d;
+        }
+        if($a === 0){
+            $text = '0';
+        }
+
+        return $text;
+    }
+}
+
+//分数の表示処理3
+if (! function_exists('f3')) {
+    function f3($a,$b)
+    {
+        list($a,$b) = gcd($a,$b);
+        if(abs($b) === 1){
+            $text = ($a*$b>0 ? '' :'-').abs($a);
+        } else {
+            $text = ($a*$b>0 ? '' :'-').'\frac{'.abs($a).'}{'.abs($b).'}';
+        }
+        if($a === 0){
+            $text = '0';
+        }
+
+        return $text;
+    }
+}
+
+//ルートの表示処理
+if (! function_exists('rt')) {
+    function rt($a,$b)  //a√b
+    {
+        list($a,$b) = root($a,$b);
+        if(abs($a) === 1){
+            $text = ($a>0 ? '+' :'-').'\sqrt{'.$b.'}';
+        } else {
+            $text = ($a>0 ? '+'.$a :$a).'\sqrt{'.$b.'}';
+        }
+        if($a === 0 || $b === 0){
+            $text = '';
+        }
+
+        return $text;
+    }
+}
+
+//ルートと分数混合の表示処理
+if (! function_exists('fr_rt')) {
+    function fr_rt($a,$b,$c,$d)  //(a+b√c)/d
+    {
+        $g = gmp_gcd($a,gmp_gcd($b,$d));
+        $a /= $g; $b /= $g; $d /= $g;
+
+        if(abs($d) == 1){
+            if($c === 1){
+                $text = $a+$b;
+            }else{
+                $text = ($a=0?'':$a).d2($b,'\sqrt{'.$c.'}');
+            }
+        } else {
+            if($c === 1){
+                $text = frac($a+$b,$d);
+            }else{
+                $text = '\frac{'.($a=0?'':$a).rt($b,$c).'}{'.$d.'}';
+            }
         }
 
         return $text;
@@ -403,6 +500,7 @@ if (! function_exists('complex')) {
     }
 }
 
+//フォーム二重送信のガード
 if (! function_exists('multiSubmitCheck')){
     function multiSubmitCheck($request)
     {

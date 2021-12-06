@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-9">
+        <div class="col-md-10 col-lg-9 mb-5">
             <div class="card">
                 <div class="card-body">
                     <div id="answer">
@@ -13,7 +13,31 @@
                     </div>
                 </div>
             </div>
-            <br>
+            <!-- ボタン-->
+            <div class="btn-toolbar">
+                <div class="btn-group ml-auto">
+                    <button class="btn btn-primary" data-toggle="collapse" data-target="#sample" aria-expand="false" aria-controls="sample">解説を表示</button>
+                    <!--
+                        <button class="btn btn-primary" data-toggle="collapse" data-target="#formula" aria-expand="false" aria-controls="formula">使用する公式</button>
+                    -->
+                </div>
+            </div>
+            <div class="collapse" id="sample">
+                <div class="card card-body">
+                    <div id="sample_card">
+                        @if(isset($sample_text))
+                        $${{$sample_text}}$$
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div class="collapse" id="formula">
+                <div class="card card-body">
+                    $$分配法則$$
+                </div>
+            </div>
+            -->
         </div>
 
         <div class="col-md-10 col-lg-3">
