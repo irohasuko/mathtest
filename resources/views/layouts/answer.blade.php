@@ -29,6 +29,12 @@
                         $${{$sample_text}}$$
                         @endif
                     </div>
+                    @if(isset($plot))
+                        <div class="graph-wrap" align="center">
+                        <!-- グラフの出力先(JSXGraph用) -->
+                            <div id="plot" class="graph" style="width:300px; height:200px;"></div>
+                        </div>
+                    @endif
                 </div>
             </div>
             <!--
@@ -65,3 +71,9 @@
     }
 </script>
 @endsection
+
+@if(isset($plot))
+    @section('canvas')
+        {!!$plot!!}
+    @endsection
+@endif

@@ -28,6 +28,9 @@
                 @if(isset($sample_text))
                     <input type="hidden" name="sample_text" value="{{$sample_text}}">
                 @endif
+                @if(isset($plot))
+                    <input type="hidden" name="plot" value="{{$plot}}">
+                @endif
                 <div class="text-right">
                     <button type="submit" class="btn btn-primary">解答</button>
                 </div>

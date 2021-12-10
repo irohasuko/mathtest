@@ -271,10 +271,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10203;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit102_a03(Request $request, $unit,$question,$time)
@@ -284,10 +285,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10204;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','plot'));
     }
 
     public function unit102_a04(Request $request, $unit,$question,$time)
@@ -297,10 +299,12 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $plot = $request->plot;
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10205;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','plot','sample_text'));
     }
 
     public function unit102_a05(Request $request, $unit,$question,$time)
@@ -310,10 +314,12 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $plot = $request->plot;
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10206;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','plot'));
     }
 
     public function unit102_a06(Request $request, $unit,$question,$time)
@@ -323,10 +329,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10207;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit102_a07(Request $request, $unit,$question,$time)

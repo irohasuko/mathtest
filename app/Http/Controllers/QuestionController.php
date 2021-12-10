@@ -902,9 +902,19 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = 
+            '放物線 \\ y='.d1($a).'x^{2}'.d2($b).'x'.d3($c).'\\ を\\\\
+             x軸方向に'.$d.'、y軸方向に'.$e.'だけ平行移動した式は、\\\\'.
+            '\begin{eqnarray}
+                y'.d4(-1*$e).' &=& '.d1($a).'(x'.d4(-1*$d).')^{2}'.d2($b).'(x'.d4(-1*$d).')'.d3($c).'\\\\
+                y  &=& '.d1($a,'(x^{2}'.d2(-2*$d,'x').d4($d*$d).')').d2($b,'(x'.d4(-1*$d).')').d4($c+$e).' \\\\
+                   &=& '.d1($a,'x^{2}').d2(-2*$a*$d,'x').d4($a*$d*$d).d2($b,'x').d4(-1*$b*$d).d4($c+$e).'\\\\
+                   &=& '.d1($a,'x^{2}').d2(-2*$a*$d+$b,'x').d4($a*$d*$d-$b*$d+$c+$e).'\\\\
+           \end{eqnarray}\\\\';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //対称移動
@@ -923,14 +933,14 @@ class QuestionController extends Controller
         //答えの計算
         switch($pattern){
             case 1:
-                $right_answers[0] = $a;
-                $right_answers[1] = -1*$b;
-                $right_answers[2] = $c;
-                break;
-            case 2:
                 $right_answers[0] = -1*$a;
                 $right_answers[1] = -1*$b;
                 $right_answers[2] = -1*$c;
+                break;
+            case 2:
+                $right_answers[0] = $a;
+                $right_answers[1] = -1*$b;
+                $right_answers[2] = $c;
                 break;
             case 3:
                 $right_answers[0] = -1*$a;
@@ -943,13 +953,32 @@ class QuestionController extends Controller
         $text = '$$ 放物線 \\ y='.d1($a).'x^{2}'.d2($b).'x'.d3($c).'\\ について、\\\\';
         switch($pattern){
             case 1:
-                $text.= 'x軸に関して平行移動すると、\\\\';
+                $text.= 'x軸に関して対称移動すると、\\\\';
+                $sample_text = 
+                    'x軸に関して対称移動すると、\\\\
+                    \begin{eqnarray}
+                        -y &=& '.d1($a,'x^{2}').d2($b,'x').d3($c).'\\\\
+                        y  &=& '.d1(-1*$a,'x^{2}').d2(-1*$b,'x').d4(-1*$c).'\\\\
+                    \end{eqnarray}\\\\';
                 break;
             case 2:
-                $text.= 'y軸に関して平行移動すると、\\\\';
+                $text.= 'y軸に関して対称移動すると、\\\\';
+                $sample_text = 
+                    'y軸に関して対称移動すると、\\\\
+                    \begin{eqnarray}
+                        y &=& '.d1($a,'(-x)^{2}').d2($b,'(-x)').d4($c).'\\\\
+                          &=& '.d1($a,'x^{2}').d2(-1*$b,'x').d4($c).'\\\\
+                    \end{eqnarray}\\\\';
                 break;
             case 3:
-                $text.= '原点に関して平行移動すると、\\\\';
+                $text.= '原点に関して対称移動すると、\\\\';
+                $sample_text = 
+                    '原点に関して対称移動すると、\\\\
+                    \begin{eqnarray}
+                        -y &=& '.d1($a,'(-x)^{2}').d2($b,'(-x)').d4($c).'\\\\
+                           &=& '.d1($a,'x^{2}').d2(-1*$b,'x').d4($c).'\\\\
+                         y &=& '.d1(-1*$a,'x^{2}').d2($b,'x').d4(-1*$c).'\\\\
+                    \end{eqnarray}\\\\';
                 break;
         }
 
@@ -957,21 +986,6 @@ class QuestionController extends Controller
         $item[0] = 'y='.($right_answers[0]<0?'-':'').'\fbox{ア}x^{2}';
         $item[1] = ($right_answers[1]<0?'-':'+').'\fbox{イ}x';
         $item[2] = ($right_answers[2]<0?'-':'+').'\fbox{ウ}';
-
-        /*
-        if($right_answers[1] == 0){
-            unset($right_answers[1]);
-            $item[1] = str_replace('+\fbox{'.$option[1].'}x','',$item[1]);
-            unset($option[1]);
-            $blanks -= 1;
-        }
-        if($right_answers[2] == 0){
-            unset($right_answers[2]);
-            $item[2] = str_replace('+\fbox{'.$option[2].'}','',$item[2]);
-            unset($option[2]);
-            $blanks -= 1;
-        }
-        */
 
         $right_answers = array_values($right_answers);
         $option = array_values($option);
@@ -983,7 +997,7 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //２次関数の最大・最小　その１
@@ -1040,9 +1054,41 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = 
+            '\begin{eqnarray}
+                y &=& '.d1($a).'x^{2}'.d2($b).'x'.d3($c).'\\\\
+                    &=& '.d1($a,'(x^{2}'.f2($b,$a).'x)').d4($c).' \\\\
+                    &=& '.d1($a,'(x'.f2($b,2*$a).')^{2}').f2(-1*$b*$b+4*$a*$c,4*$a).'\\\\
+            \end{eqnarray}\\\\'.
+            'よって、頂点は \quad ('.f1(-1*$b,2*$a).','.f1(-1*$b*$b+4*$a*$c,4*$a).')より、\\\\';
+        if($a > 0){
+            $sample_text .= 'x='.f1(-1*$b,2*$a).'のとき最小値'.f1(-1*$b*$b+4*$a*$c,4*$a); 
+        } else {
+            $sample_text .= 'x='.f1(-1*$b,2*$a).'のとき最大値'.f1(-1*$b*$b+4*$a*$c,4*$a); 
+        }
+
+        $x = -1*$b/(2*$a);
+        $y = -1*$b*$b/(4*$a)+$c;
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:['.($x-5<-1?$x-5:-1).','.($y+5>1?$y+5:1).','.($x+5>1?$x+5:1).','.($y-5<-1?$y-5:-1).'],
+                    axis: true,
+                    showNavigation: false,
+                    showCopyright: false 
+                });
+
+                function bezier(t) {
+                    return '.$a.'*t*t + '.$b.'*t + '.$c.';
+                }
+                let graph = board.create(\'functiongraph\', [bezier, '.($x-5).', '.($x+5).']);
+                board.create(\'point\',['.$x.','.$y.'] , {name:\' \', face:\'o\', size:1});
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //２次関数の最大・最小　その２
@@ -1127,8 +1173,18 @@ class QuestionController extends Controller
         $item[2] = 'x='.($right_answers[4]*$right_answers[5]<0?'-':'').'\frac{\fbox{オ}}{\fbox{カ}}のとき、';
         $item[3] = '最小値'.($right_answers[6]*$right_answers[7]<0?'-':'').'\frac{\fbox{キ}}{\fbox{ク}}をとる';
 
+        $r = $right_answers;
+        $sample_text = 
+            '\begin{eqnarray}
+                y &=& '.d1($a).'x^{2}'.d2($b).'x'.d3($c).'\\\\
+                  &=& '.d1($a,'(x'.f2($b,2*$a).')^{2}').f2(-1*$b*$b+4*$a*$c,4*$a).'\\\\
+            \end{eqnarray}\\\\'.
+            'よって、図形と範囲は下図のようになるので、\\\\
+            x='.f3($r[0],$r[1]).'のとき最大値'.f3($r[2],$r[3]).'を、\\\\
+            x='.f3($r[4],$r[5]).'のとき最小値'.f3($r[6],$r[7]).'をとる\\\\';
+
         for($i=0;$i<4;$i++){
-            if($right_answers[2*$i+1] == 1){
+            if(abs($right_answers[2*$i+1]) == 1){
                 unset($right_answers[2*$i+1]);
                 $item[$i] = str_replace(['\frac{','}{\fbox{'.$option[2*$i+1].'}}'],['',''],$item[$i]);
                 unset($option[2*$i+1]);
@@ -1144,9 +1200,77 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+
+        $f_axis = (-1*$b*$b+4*$a*$c)/(4*$a);
+        if($f_d > $f_e && $f_d >= $f_axis){ //下に凸かつx=dで最大
+            $f_max = $f_d;
+            $max = $d;
+            if($d < $axis && $axis < $e){   //範囲に軸が含まれている
+                $f_min = $f_axis;
+                $min = $axis;
+            }else{  //範囲に軸が含まれていない
+                $f_min = $f_e;
+                $min = $e;
+            }
+        }elseif($f_e >= $f_axis){ //下に凸かつx=eで最大
+            $f_max = $f_e;
+            $max = $e;
+            if($d < $axis && $axis < $e){   //範囲に軸が含まれている
+                $f_min = $f_axis;
+                $min = $axis;
+            }else{  //範囲に軸が含まれていない
+                $f_min = $f_d;
+                $min = $d;
+            }
+        }else{  //上に凸
+            if($d < $axis && $axis < $e){   //範囲に軸が含まれている
+                $f_max = $f_axis;
+                $max = $axis;
+                if($f_d > $f_e){
+                    $f_min = $f_e;
+                    $min = $e;
+                }else{
+                    $f_min = $f_d;
+                    $min = $d;
+                }
+            }else{  //範囲に軸が含まれていない
+                if($f_d > $f_e){
+                    $f_max = $f_d;
+                    $max = $d;
+                    $f_min = $f_e;
+                    $min = $e;
+                }else{
+                    $f_max = $f_e;
+                    $max = $e;
+                    $f_min = $f_d;
+                    $min = $d;
+                }
+            }
+        }
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:['.($d-3).','.($f_max+2).','.($e+3).','.($f_min-2).'],
+                    axis: true,
+                    showNavigation: false,
+                    showCopyright: false 
+                });
+
+                function bezier(t) {
+                    return '.$a.'*t*t + '.$b.'*t + '.$c.';
+                }
+                board.create(\'functiongraph\', [bezier, '.($d-3).', '.($d).'],{dash:1,strokeColor:\'black\'});
+                board.create(\'functiongraph\', [bezier, '.($e).', '.($e+3).'],{dash:1,strokeColor:\'black\'});
+                board.create(\'functiongraph\', [bezier, '.($d).', '.($e).']);
+                board.create(\'point\',['.$max.','.$f_max.'] , {name:\' \', face:\'o\', size:1});
+                board.create(\'point\',['.$min.','.$f_min.'] , {name:\' \', face:\'o\', size:1});
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //２次関数の決定
@@ -1219,6 +1343,19 @@ class QuestionController extends Controller
             $blanks -= 1;
         }
 
+        $r = $right_answers;
+        $sample_text = 
+            'y=ax^{2}+bx+cとおく\\\\'.
+            '\begin{eqnarray}
+                &(&'.$a.',0)を通るので、0='.d1($a*$a,'a').d2($a,'b').'+c \quad ・・・ ①\\\\
+                &(&0,'.$b.')を通るので、'.$b.'=c \quad ・・・ ②\\\\
+                &(&'.$c.','.$d.')を通るので、'.$d.'='.d1($c*$c,'a').d2($c,'b').'+c \quad ・・・ ③\\\\
+            \end{eqnarray}\\\\'.
+            '①、②、③を連立して解くと、\\\\
+            a='.f3($r[0],$r[1]).',\quad b='.f3($r[2],$r[3]).',\quad c='.$r[4].'\\\\
+            したがって、求める二次関数は、\\\\
+            y='.f1($r[0],$r[1],'x^{2}').f2($r[2],$r[3],'x').d4($r[4]);
+
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
@@ -1229,7 +1366,7 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //２次方程式
