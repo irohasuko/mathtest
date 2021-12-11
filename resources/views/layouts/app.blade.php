@@ -23,8 +23,8 @@
     <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
     <!-- jsxgraphs -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.1.0/jsxgraph.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsxgraph/1.1.0/jsxgraphcore.min.js"></script>
+    <link rel="stylesheet" href="https://jsxgraph.org/distrib/jsxgraph.css">
+    <script src="https://jsxgraph.org/distrib/jsxgraphcore.js"></script>
 
 
 </head>

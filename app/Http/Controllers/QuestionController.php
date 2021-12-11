@@ -1082,7 +1082,7 @@ class QuestionController extends Controller
                     return '.$a.'*t*t + '.$b.'*t + '.$c.';
                 }
                 let graph = board.create(\'functiongraph\', [bezier, '.($x-5).', '.($x+5).']);
-                board.create(\'point\',['.$x.','.$y.'] , {name:\' \', face:\'o\', size:1});
+                board.create(\'point\',['.$x.','.$y.'] , {name:\' \', face:\'o\', size:1, fixed:true});
             </script>
         ';
 
@@ -1253,18 +1253,18 @@ class QuestionController extends Controller
                 var board = JXG.JSXGraph.initBoard(\'plot\', {
                     boundingbox:['.($d-3).','.($f_max+2).','.($e+3).','.($f_min-2).'],
                     axis: true,
-                    showNavigation: false,
-                    showCopyright: false 
+                    showNavigation: true,
+                    showCopyright: false
                 });
 
                 function bezier(t) {
                     return '.$a.'*t*t + '.$b.'*t + '.$c.';
                 }
-                board.create(\'functiongraph\', [bezier, '.($d-3).', '.($d).'],{dash:1,strokeColor:\'black\'});
-                board.create(\'functiongraph\', [bezier, '.($e).', '.($e+3).'],{dash:1,strokeColor:\'black\'});
+                board.create(\'functiongraph\', [bezier, -20, '.($d).'],{dash:1,strokeColor:\'black\'});
+                board.create(\'functiongraph\', [bezier, '.($e).', 20],{dash:1,strokeColor:\'black\'});
                 board.create(\'functiongraph\', [bezier, '.($d).', '.($e).']);
-                board.create(\'point\',['.$max.','.$f_max.'] , {name:\' \', face:\'o\', size:1});
-                board.create(\'point\',['.$min.','.$f_min.'] , {name:\' \', face:\'o\', size:1});
+                board.create(\'point\',['.$max.','.$f_max.'] , {name:\' \', face:\'o\', size:1, fixed:true});
+                board.create(\'point\',['.$min.','.$f_min.'] , {name:\' \', face:\'o\', size:1, fixed:true});
             </script>
         ';
 
@@ -1400,6 +1400,25 @@ class QuestionController extends Controller
         $item[1] = (-1*$right_answers[2]*$right_answers[3]<0?'-':'').'\frac{\fbox{ウ}}{\fbox{エ}} \\ ';
         $item[2] = '(ただし、'.(-1*$right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}} \lt '.(-1*$right_answers[2]*$right_answers[3]<0?'-':'').'\frac{\fbox{ウ}}{\fbox{エ}})';
 
+        $r = $right_answers;
+        $sample_text = '
+        \def\Tasuki#1#2#3#4#5#6#7{
+            \begin{array}{cccc}
+                {#1} & \diagdown \\ \diagup & {#2} & \rightarrow & {#3} \\\\
+                {#4} & \diagup \\ \diagdown & {#5} & \rightarrow & {#6} \\\\
+                \hline
+                     & &      &             & {#7}
+            \end{array} 
+        }
+
+        '.d1($a,'x^{2}').d2($b,'xy').d2($c,'y^{2}').'= 0\\\\
+        \Tasuki{'.$r[0].'}{'.$r[1].'}{'.($r[1]*$r[2]).'}{'.$r[2].'}{'.$r[3].'}{'.($r[0]*$r[3]).'}{'.$b.'}\\\\
+
+        \begin{eqnarray}
+            ('.d1($r[0],'x').d4($r[1]).')('.d1($r[2],'x').d4($r[3]).') &=& 0\\\\
+            x &=& '.f3(-1*$r[0],$r[1]).','.f3(-1*$r[2],$r[3]).'\\\\'.
+        '\end{eqnarray}';
+
         if(abs($right_answers[1]) == 1){
             unset($right_answers[1]);
             $item[0] = str_replace(['\frac{','}{\fbox{'.$option[1].'}}'],['',''],$item[0]);
@@ -1415,6 +1434,7 @@ class QuestionController extends Controller
             $blanks -= 1;
         }
 
+
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
@@ -1425,7 +1445,7 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //判別式
