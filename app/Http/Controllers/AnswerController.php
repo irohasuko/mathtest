@@ -357,10 +357,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10209;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit102_a09(Request $request, $unit,$question,$time)
@@ -370,10 +371,12 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10210;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','plot'));
     }
 
     public function unit102_a10(Request $request, $unit,$question,$time)
@@ -382,10 +385,12 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.'\\\\'.$request->options[$request->right_answers[0]-1].'$$';
         $answer_text = '$$'.$request->options[$request->answers[0]-1].'$$';
         $next_id = 10211;         
-        return view('answer/select',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/select',compact('text','answer_text','question','unit','next_id','result','sample_text','plot'));
     }
 
     public function unit102_a11(Request $request, $unit,$question,$time)
@@ -395,10 +400,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10301;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit103_a01(Request $request, $unit,$question,$time)
@@ -408,10 +414,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10302;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit103_a02(Request $request, $unit,$question,$time)
@@ -421,10 +428,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10303;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit103_a03(Request $request, $unit,$question,$time)
@@ -434,10 +442,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10304;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit103_a04(Request $request, $unit,$question,$time)
@@ -447,10 +456,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10305;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit103_a05(Request $request, $unit,$question,$time)
@@ -460,10 +470,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10306;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit103_a06(Request $request, $unit,$question,$time)
@@ -473,10 +484,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10307;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit103_a07(Request $request, $unit,$question,$time)
@@ -486,10 +498,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10308;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit103_a08(Request $request, $unit,$question,$time)
@@ -499,10 +512,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10309;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit103_a09(Request $request, $unit,$question,$time)
@@ -512,10 +526,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10401;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit104_a01(Request $request, $unit,$question,$time)
@@ -525,10 +540,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10402;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit104_a02(Request $request, $unit,$question,$time)
@@ -538,10 +554,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10403;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit104_a03(Request $request, $unit,$question,$time)
@@ -551,10 +568,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10404;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit104_a04(Request $request, $unit,$question,$time)
@@ -564,10 +582,12 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $script = $request->script;
         $text = $request->text.'\\\\'.$request->options[$request->right_answers[0]-1].'$$';
         $answer_text = '$$'.$request->options[$request->answers[0]-1].'$$';
         $next_id = 20101;         
-        return view('answer/select',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/select',compact('text','answer_text','question','unit','next_id','result','sample_text','script'));
     }
 
     public function unit201_a01(Request $request, $unit,$question,$time)
@@ -577,10 +597,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20102;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit201_a02(Request $request, $unit,$question,$time)
@@ -590,10 +611,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20103;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit201_a03(Request $request, $unit,$question,$time)
@@ -603,10 +625,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20104;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit201_a04(Request $request, $unit,$question,$time)
@@ -616,10 +639,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20105;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit201_a05(Request $request, $unit,$question,$time)
@@ -629,10 +653,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20201;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit202_a01(Request $request, $unit,$question,$time)
@@ -642,10 +667,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20202;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit202_a02(Request $request, $unit,$question,$time)
@@ -655,10 +681,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20203;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit202_a03(Request $request, $unit,$question,$time)
@@ -668,10 +695,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20204;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit202_a04(Request $request, $unit,$question,$time)
@@ -681,10 +709,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20205;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit202_a05(Request $request, $unit,$question,$time)
@@ -694,10 +723,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20206;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit202_a06(Request $request, $unit,$question,$time)
@@ -707,10 +737,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20207;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit202_a07(Request $request, $unit,$question,$time)
@@ -720,10 +751,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20301;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit203_a01(Request $request, $unit,$question,$time)
@@ -733,10 +765,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20302;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit203_a02(Request $request, $unit,$question,$time)
@@ -746,10 +779,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20303;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit203_a03(Request $request, $unit,$question,$time)
@@ -759,10 +793,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20304;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit203_a04(Request $request, $unit,$question,$time)
@@ -772,10 +807,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20305;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit203_a05(Request $request, $unit,$question,$time)
@@ -785,10 +821,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20306;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit203_a06(Request $request, $unit,$question,$time)
@@ -798,10 +835,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20307;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit203_a07(Request $request, $unit,$question,$time)
@@ -811,10 +849,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20308;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit203_a08(Request $request, $unit,$question,$time)
@@ -824,10 +863,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20401;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit204_a01(Request $request, $unit,$question,$time)
@@ -837,10 +877,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20402;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit204_a02(Request $request, $unit,$question,$time)
@@ -1578,10 +1619,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30502;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit305_a02(Request $request, $unit,$question,$time)
@@ -1591,10 +1633,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30503;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit305_a03(Request $request, $unit,$question,$time)
@@ -1604,10 +1647,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30504;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit305_a04(Request $request, $unit,$question,$time)
@@ -1617,10 +1661,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30505;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit305_a05(Request $request, $unit,$question,$time)
@@ -1630,10 +1675,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30506;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit305_a06(Request $request, $unit,$question,$time)
@@ -1643,10 +1689,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30507;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit305_a07(Request $request, $unit,$question,$time)
@@ -1656,10 +1703,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30508;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit305_a08(Request $request, $unit,$question,$time)
@@ -1669,10 +1717,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30509;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit305_a09(Request $request, $unit,$question,$time)
@@ -1682,10 +1731,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30510;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit305_a10(Request $request, $unit,$question,$time)
@@ -1695,10 +1745,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30511;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit305_a11(Request $request, $unit,$question,$time)
@@ -1708,10 +1759,12 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30512;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','plot'));
     }
 
     public function unit305_a12(Request $request, $unit,$question,$time)
@@ -1721,10 +1774,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30601;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit306_a01(Request $request, $unit,$question,$time)
@@ -1734,10 +1788,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30602;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit306_a02(Request $request, $unit,$question,$time)
@@ -1747,10 +1802,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30603;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit306_a03(Request $request, $unit,$question,$time)
@@ -1760,10 +1816,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30604;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit306_a04(Request $request, $unit,$question,$time)
@@ -1773,10 +1830,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30605;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit306_a05(Request $request, $unit,$question,$time)
@@ -1786,10 +1844,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30606;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit306_a06(Request $request, $unit,$question,$time)
@@ -1799,10 +1858,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30607;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit306_a07(Request $request, $unit,$question,$time)
@@ -1812,10 +1872,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30608;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit306_a08(Request $request, $unit,$question,$time)
@@ -1825,10 +1886,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30609;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit306_a09(Request $request, $unit,$question,$time)
@@ -1838,10 +1900,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30610;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit306_a10(Request $request, $unit,$question,$time)
@@ -1851,10 +1914,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30611;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit306_a11(Request $request, $unit,$question,$time)
@@ -1864,10 +1928,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30612;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit306_a12(Request $request, $unit,$question,$time)
@@ -1877,10 +1942,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 40101;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit401_a01(Request $request, $unit,$question,$time)

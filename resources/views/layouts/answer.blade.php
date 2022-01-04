@@ -27,6 +27,18 @@
                     <div id="sample_card">
                         @if(isset($sample_text))
                         $${{$sample_text}}$$
+                        @else
+                        申し訳ございません。解説はまだ未実装です。今後の実装をお待ちください。
+                        @endif
+                        @if(isset($script))
+                            <div class="text-center">
+                                <canvas id="canvas" width="350" height="200">
+                                    canvas対応のブラウザでは、ここに図形が表示されます。
+                                </canvas>
+                            </div>
+                            @section('canvas')
+                                {!!$script!!}
+                            @endsection
                         @endif
                     </div>
                     @if(isset($plot))
@@ -35,6 +47,7 @@
                             <div id="plot" class="graph" style="width:300px; height:200px;"></div>
                         </div>
                     @endif
+                    
                 </div>
             </div>
             <!--

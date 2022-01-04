@@ -31,6 +31,9 @@
                 @if(isset($plot))
                     <input type="hidden" name="plot" value="{{$plot}}">
                 @endif
+                @if(isset($script))
+                    <input type="hidden" name="script" value="{{$script}}">
+                @endif
                 <div class="text-right">
                     <button type="submit" class="btn btn-primary">解答</button>
                 </div>

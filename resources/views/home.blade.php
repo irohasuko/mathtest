@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-4">
+        <div class="col-md-10 col-lg-6">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">演習選択</h4>
@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <div class="col-md-10 col-lg-4">
+        <div class="col-md-10 col-lg-6">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">弱点演習</h4>
@@ -29,6 +29,7 @@
             </div>
         </div>
 
+        <!--
         <div class="col-md-10 col-lg-4">
             <div class="card">
                 <div class="card-body">
@@ -40,6 +41,7 @@
                 </div>
             </div>
         </div>
+        -->
 
         <div class="col-md-10 col-lg-12">
             <div class="card">

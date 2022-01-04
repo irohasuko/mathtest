@@ -64,26 +64,31 @@ if (! function_exists('li')) {
 if (! function_exists('frac')) {
     function frac($a,$b)
     {
+        list($a,$b) = gcd($a,$b);
         if(abs($b) === 1){
             $text = $a*$b>0 ? '+'.$a :'-'.$a;
         } else {
             $text = ($a*$b>0 ? '+' :'-').'\frac{'.abs($a).'}{'.abs($b).'}';
         }
         if($a === 0){
-            $text = 'NULL';
+            $text = '';
         }
 
         return $text;
     }
 }
 
-//分数の表示処理1
+//分数の表示処理1 先頭の係数
 if (! function_exists('f1')) {
     function f1($a,$b,$d='')
     {
         list($a,$b) = gcd($a,$b);
         if(abs($b) === 1){
-            $text = ($a*$b>0 ? abs($a) :'-'.abs($a)).$d;
+            if(abs($a)==1){
+                $text = ($a*$b>0 ? '' : '-').$d;
+            }else{
+                $text = ($a*$b>0 ? abs($a) :'-'.abs($a)).$d;
+            }
         } else {
             $text = ($a*$b>0 ? '' :'-').'\frac{'.abs($a).'}{'.abs($b).'}'.$d;
         }
@@ -95,25 +100,29 @@ if (! function_exists('f1')) {
     }
 }
 
-//分数の表示処理2
+//分数の表示処理2 先頭以外の係数
 if (! function_exists('f2')) {
     function f2($a,$b,$d='')
     {
         list($a,$b) = gcd($a,$b);
         if(abs($b) === 1){
-            $text = ($a*$b>0 ? '+'.abs($a) :'-'.abs($a)).$d;
+            if(abs($a)==1){
+                $text = ($a*$b>0?'+':'-').$d;
+            }else{
+                $text = ($a*$b>0 ? '+'.abs($a) :'-'.abs($a)).$d;
+            }
         } else {
             $text = ($a*$b>0 ? '+' :'-').'\frac{'.abs($a).'}{'.abs($b).'}'.$d;
         }
         if($a === 0){
-            $text = '0';
+            $text = '';
         }
 
         return $text;
     }
 }
 
-//分数の表示処理3
+//分数の表示処理3 数字のみ、
 if (! function_exists('f3')) {
     function f3($a,$b)
     {
@@ -136,10 +145,15 @@ if (! function_exists('rt')) {
     function rt($a,$b)  //a√b
     {
         list($a,$b) = root($a,$b);
-        if(abs($a) === 1){
-            $text = ($a>0 ? '+' :'-').'\sqrt{'.$b.'}';
-        } else {
-            $text = ($a>0 ? '+'.$a :$a).'\sqrt{'.$b.'}';
+        if($b == 1){
+            $text = ($a>0 ? '+'.$a :$a);
+        }
+        else{
+            if(abs($a) === 1){
+                $text = ($a>0 ? '+' :'-').'\sqrt{'.$b.'}';
+            } else {
+                $text = ($a>0 ? '+'.$a :$a).'\sqrt{'.$b.'}';
+            }
         }
         if($a === 0 || $b === 0){
             $text = '';
@@ -149,10 +163,32 @@ if (! function_exists('rt')) {
     }
 }
 
-//ルートと分数混合の表示処理
+//ルートの表示処理
+if (! function_exists('rt2')) {
+    function rt2($a,$b)  //a√b
+    {
+        list($a,$b) = root($a,$b);
+        if(abs($a) === 1){
+            $text = ($a>0 ? '' :'-').'\sqrt{'.$b.'}';
+        } else {
+            $text = ($a>0 ? ''.$a :$a).'\sqrt{'.$b.'}';
+        }
+        if($b==1){
+            $text = $a;
+        }
+        if($a === 0 || $b === 0){
+            $text = '0';
+        }
+
+        return $text;
+    }
+}
+
+//ルートと分数混合の表示処理1
 if (! function_exists('fr_rt')) {
     function fr_rt($a,$b,$c,$d)  //(a+b√c)/d
     {
+        list($b,$c) = root($b,$c);
         $g = gmp_gcd($a,gmp_gcd($b,$d));
         $a /= $g; $b /= $g; $d /= $g;
 
@@ -164,9 +200,131 @@ if (! function_exists('fr_rt')) {
             }
         } else {
             if($c === 1){
-                $text = frac($a+$b,$d);
+                $text = f3($a+$b,$d);
             }else{
                 $text = '\frac{'.($a=0?'':$a).rt($b,$c).'}{'.$d.'}';
+            }
+        }
+
+        return $text;
+    }
+}
+
+//ルートと分数混合の表示処理2
+if (! function_exists('fr_rt2')) {
+    function fr_rt2($a,$b,$c)  //a√b/c
+    {
+        list($a,$b) = root($a,$b);
+        list($a,$c) = gcd($a,$c);
+
+        if(abs($c) == 1){
+            if($b === 1){
+                $text = ($a*$c<0?'-':'').abs($a);
+            }else{
+                $text = ($a*$c<0?'-':'').substr(rt($a,$b),1);
+            }
+        } else {
+            if($b === 1){
+                $text = f3($a,$c);
+            }else{
+                $text = ($a*$c<0?'-':'').'\frac{'.fo(rt(abs($a),$b)).'}{'.abs($c).'}';
+            }
+        }
+
+        if($a == 0 || $b == 0){
+            $text = 0;
+        }
+
+        return $text;
+    }
+}
+
+//ルートと分数混合の表示処理3 複素数を含む
+if (! function_exists('fr_rt3')) {
+    function fr_rt3($a,$b,$c,$d)  //a+b√c/d
+    {
+        if($c >= 0){    //実数
+            list($b,$c) = root($b,$c);
+            $g = gmp_gcd($a,gmp_gcd($b,$d));
+            $a /= $g; $b /= $g; $d /= $g;
+            $sign = $d/abs($d);
+
+            if(abs($d)==1){
+                if($c==1){
+                    $text = ($a+$b)*$sign;
+                }else{
+                    $text = ($sign*$a).rt($sign*$b,$c);
+                }
+            }else{
+                if($c==1){
+                    $text = f3($a+$b,$d);
+                }else{
+                    $text = fr_rt2($a,$b,$c,$d);
+                }
+            }
+        }else{  //虚数
+            list($b,$c) = root($b,$c);
+            $g = gmp_gcd($a,gmp_gcd($b,$d));
+            $a /= $g; $b /= $g; $d /= $g;
+            $sign = $d/abs($d);
+            if(abs($d)==1){
+                if($c==1){
+                    $text = ($sign*$a).d2($sign*$b,'i');
+                }else{
+                    $text = ($sign*$a).d2($sign*$b,'\sqrt{'.$c.'}i');
+                }
+            }else{
+                if($c==1){
+                    $text = '\frac{'.($sign*$a).d2($sign*$b,'i').'}{'.abs($d).'}';
+                }else{
+                    $text = '\frac{'.($sign*$a).d2($sign*$b,'\sqrt{'.$c.'}i').'}{'.abs($d).'}';
+                }
+            }
+        }
+
+        return $text;
+    }
+}
+
+//2次方程式の解の計算
+if (! function_exists('quadratic')) {
+    function quadratic($a,$b,$c)  //ax^{2}+bx+c=0, a>0
+    {
+        $D = $b*$b-4*$a*$c;
+        $sign = $a/abs($a);
+        if($D > 0){     //実数解２つ
+            list($p,$q) = root(1,$D);
+            if(is_int(sqrt($D))){   //ルートの中身が1
+                $text = f3(-1*$b-sqrt($D),2*$a).','.f3(-1*$b+sqrt($D),2*$a);
+            }else{
+                $g = gmp_gcd($b,gmp_gcd($p,2*$a));
+                $b/=$g; $p/=$g; $a/=$g;
+                if(2*$a < 1){
+                    $text = (-1*$b).'\pm'.rt2($p,$q);
+                }else{
+                    $text = '\frac{'.(-1*$b).'\pm'.rt2($p,$q).'}{'.(2*$a).'}';
+                }
+            }
+        }elseif($D==0){     //重解
+            $text = f3(-1*$b,2*$a);
+        }else{      //虚数解２つ
+            list($p,$q) = root(1,abs($D));
+            if(is_int(sqrt(abs($D)))){   //ルートの中身が1
+                $g = gmp_gcd($b,gmp_gcd($p,2*$a));
+                $b/=$g; $p/=$g; $a/=$g;
+                if(2*$a < 1){
+                    $text = (-1*$b).'\pm'.rt2($p,$q);
+                }else{
+                    $text = '\frac{'.(-1*$b).'\pm'.sqrt(abs($D)).'i}{'.(2*$a).'}';
+                }
+            }else{
+                $g = gmp_gcd($b,gmp_gcd($p,2*$a));
+                $b/=$g; $p/=$g; $a/=$g;
+                if(2*$a < 1){
+                    $text = (-1*$b).'\pm \sqrt{'.$q.'}';
+                }else{
+                    $text = '\frac{'.(-1*$b).'\pm '.rt2($p,$q).'i}{'.(2*$a).'}';
+                }
             }
         }
 
@@ -204,22 +362,52 @@ if (! function_exists('d2')) {
     }
 }
 
-//項の表示処理３　文字のない項 その１
+//項の表示処理３　文字のない項 その１ 0の場合は0を出力
 if (! function_exists('d3')) {
     function d3($a)
     {
-        $text = $a>0 ? '+'.$a : $a;
+        $text = $a>=0 ? '+'.$a : $a;
         return $text;
     }
 }
 
-//項の表示処理４　文字のない項 その２
+//項の表示処理４　文字のない項 その２ 0の場合は表示しない
 if (! function_exists('d4')) {
     function d4($a)
     {
         $text = $a>0 ? '+'.$a : $a;
         if($a == 0){
             $text = '';
+        }
+        return $text;
+    }
+}
+
+//積の表示処理1  a・b、bがマイナスのときのみかっこをつける
+if (! function_exists('dot1')) {
+    function dot1($a,$b)
+    {
+        if($b<0){
+            $text = $a.'\cdot'.'('.$b.')';
+        }else{
+            $text = $a.'cdot'.$b;
+        }
+        return $text;
+    }
+}
+
+//積の表示処理2  a・b、1に加え、aが1のときは表示させない
+if (! function_exists('dot2')) {
+    function dot2($a,$b)
+    {
+        if($a == 1){
+            $text = $b;
+        }else{
+            if($b<0){
+                $text = $a.'\cdot'.'('.$b.')';
+            }else{
+                $text = $a.'cdot'.$b;
+            }
         }
         return $text;
     }
@@ -288,6 +476,58 @@ if (! function_exists('d_cos')) {
         $k = array_search($degree,$deg);
 
         return array($numerator[$k],$denominator[$k]);
+    }
+}
+
+//sinの表示処理(0°≦Θ≦360°)
+if (! function_exists('text_sin')) {
+    function text_sin($degree)
+    {
+        $deg = [0,30,45,60,90];
+        $text[0] = '0';
+        $text[1] = '\frac{1}{2}';
+        $text[2] = '\frac{1}{\sqrt{2}}';
+        $text[3] = '\frac{\sqrt{3}}{2}';
+        $text[4] = '1';
+
+        if($degree > 180){
+            $degree -= 180;
+            $sign = '-';
+        }else{
+            $sign = '';
+        }
+        if($degree > 90){
+            $degree = 180 - $degree;
+        }
+        $k = array_search($degree,$deg);
+
+        return $sign.$text[$k];
+    }
+}
+
+//sinの表示処理(0°≦Θ≦360°)
+if (! function_exists('text_cos')) {
+    function text_cos($degree)
+    {
+        $deg = [0,30,45,60,90];
+        $text[0] = '1';
+        $text[1] = '\frac{\sqrt{3}}{2}';
+        $text[2] = '\frac{1}{\sqrt{2}}';
+        $text[3] = '\frac{1}{2}';
+        $text[4] = '0';
+
+        if($degree > 180){
+            $degree -= 180;
+        }
+        if($degree > 90){
+            $degree = 180 - $degree;
+            $sign = '-';
+        }else{
+            $sign = '';
+        }
+        $k = array_search($degree,$deg);
+
+        return $sign.$text[$k];
     }
 }
 
@@ -455,7 +695,7 @@ if (! function_exists('n_ary')) {
     }
 }
 
-//問題での√の表示処理
+//問題での複素数の表示処理
 if (! function_exists('complex')) {
     function complex($a,$b,$c,$d) //$a√$b + $c√$diを想定
     {
@@ -493,10 +733,26 @@ if (! function_exists('complex')) {
             }
         }
         if($c == 0 || $d == 0){
-            $literal[2] = '';
+            $literal[2] = '0';
         }
 
         return implode($literal);
+    }
+}
+
+//aCbの表示
+if (! function_exists('text_c')) {
+    function text_c($a,$b) 
+    {
+        $c = array();   //分子
+        $d = array();   //分母
+        while($b > 0){
+            array_push($c,$a);
+            array_push($d,$b);
+            $a--; $b--;
+        }
+        $text = '\frac{'.implode(' \cdot ',$c).'}{'.implode(' \cdot ',$d).'}';
+        return $text;
     }
 }
 

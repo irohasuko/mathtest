@@ -1377,18 +1377,27 @@ class QuestionController extends Controller
         $option = $this->option;
 
         //変数の設定
-        $right_answers[0] = rand(1,5);
-        do { $right_answers[1] = rand(-7,7); } while( $right_answers[1]==0 || gmp_gcd($right_answers[0],$right_answers[1])!=1 );
-        $right_answers[2] = rand(1,5);
-        do { $right_answers[3] = rand(-7,7); } while( 
-            $right_answers[3]==0 || gmp_gcd($right_answers[2],$right_answers[3])!=1 ||
-            ($right_answers[0] == $right_answers[2] && $right_answers[1] == $right_answers[3]));
+        $p = rand(1,5);
+        do { $q = rand(-7,7); } while( $p==0 || gmp_gcd($p,$q)!=1 );
+        $r = rand(1,5);
+        do { $s = rand(-7,7); } while( 
+            $s==0 || gmp_gcd($r,$s)!=1 ||
+            ($p == $r && $q == $s));
 
-        $a = $right_answers[1]*$right_answers[3];
-        $b = $right_answers[0]*$right_answers[3] + $right_answers[1]*$right_answers[2];
-        $c = $right_answers[0]*$right_answers[2];
+        $a = $p*$r;
+        $b = $p*$s + $r*$q;
+        $c = $q*$s;
 
-        if(-1*$right_answers[0]/$right_answers[1] > -1*$right_answers[2]/$right_answers[3]){
+        //答えの設定
+        $right_answers[0] = -1*$q;
+        $right_answers[1] = $p;
+        $right_answers[2] = -1*$s;
+        $right_answers[3] = $r;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[2],$right_answers[3]) = gcd($right_answers[2],$right_answers[3]);
+
+        if($right_answers[0]/$right_answers[1] > $right_answers[2]/$right_answers[3]){
             $right_answers = array($right_answers[2],$right_answers[3],$right_answers[0],$right_answers[1]);
         }
 
@@ -1396,27 +1405,29 @@ class QuestionController extends Controller
         $text = '$$ ２次方程式:\\ '.d1($a).'x^{2}'.d2($b,'x').d3($c).'=0 \\ の解は、\\\\';
 
         //空欄テキストの設定
-        $item[0] = 'x='.(-1*$right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}、';
-        $item[1] = (-1*$right_answers[2]*$right_answers[3]<0?'-':'').'\frac{\fbox{ウ}}{\fbox{エ}} \\ ';
-        $item[2] = '(ただし、'.(-1*$right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}} \lt '.(-1*$right_answers[2]*$right_answers[3]<0?'-':'').'\frac{\fbox{ウ}}{\fbox{エ}})';
+        $item[0] = 'x='.($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}、';
+        $item[1] = ($right_answers[2]*$right_answers[3]<0?'-':'').'\frac{\fbox{ウ}}{\fbox{エ}} \\ ';
+        $item[2] = '(ただし、'.($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}} \lt '.($right_answers[2]*$right_answers[3]<0?'-':'').'\frac{\fbox{ウ}}{\fbox{エ}})';
 
-        $r = $right_answers;
+        $ans = $right_answers;
         $sample_text = '
         \def\Tasuki#1#2#3#4#5#6#7{
-            \begin{array}{cccc}
+            \begin{array}{|cccc|}
+            \hline
                 {#1} & \diagdown \\ \diagup & {#2} & \rightarrow & {#3} \\\\
                 {#4} & \diagup \\ \diagdown & {#5} & \rightarrow & {#6} \\\\
                 \hline
-                     & &      &             & {#7}
+                     & &      &             & {#7} \\\\
+            \hline
             \end{array} 
         }
 
-        '.d1($a,'x^{2}').d2($b,'xy').d2($c,'y^{2}').'= 0\\\\
-        \Tasuki{'.$r[0].'}{'.$r[1].'}{'.($r[1]*$r[2]).'}{'.$r[2].'}{'.$r[3].'}{'.($r[0]*$r[3]).'}{'.$b.'}\\\\
+        '.d1($a,'x^{2}').d2($b,'x').d4($c).'= 0\\\\
+        \Tasuki{'.$p.'}{'.$q.'}{'.($q*$r).'}{'.$r.'}{'.$s.'}{'.($p*$s).'}{'.$b.'}\\\\
 
         \begin{eqnarray}
-            ('.d1($r[0],'x').d4($r[1]).')('.d1($r[2],'x').d4($r[3]).') &=& 0\\\\
-            x &=& '.f3(-1*$r[0],$r[1]).','.f3(-1*$r[2],$r[3]).'\\\\'.
+            ('.d1($p,'x').d4($q).')('.d1($r,'x').d4($s).') &=& 0\\\\
+            x &=& '.f3($ans[0],$ans[1]).','.f3($ans[2],$ans[3]).'\\\\'.
         '\end{eqnarray}';
 
         if(abs($right_answers[1]) == 1){
@@ -1470,7 +1481,7 @@ class QuestionController extends Controller
         $text = '$$ xの２次方程式 \\ '.d1($a,'x^{2}').d2($b,'x').'+k'.d3($c).'=0 \\ が \\\\';
         switch($pattern){
             case 1:
-                $text .= '異なる２つの実数解を持つとき、';
+                $text .= '異なる二つの実数解を持つとき、';
                 break;
             case 2:
                 $text .= '重解を持つとき、';
@@ -1494,6 +1505,44 @@ class QuestionController extends Controller
                 break;
         }
 
+        $sample_text = 
+            '判別式をDとすると、\\\\
+            \begin{array}{cc}
+                D &=& ('.$b.')^{2} -4 \cdot ('.($a).')\cdot(k'.d4($c).')\\\\
+                  &=& '.($b*$b).d2(-4*$a,'k').d4(-4*$a*$c).'\\\\
+            \end{array}
+            \\\\';
+
+        switch($pattern){
+            case 1:
+                $sample_text .= 
+                    '異なる二つの実数解をもつとき、D \gt 0 \\ より、\\\\
+                    \begin{eqnarray}
+                        '.($b*$b).d2(-4*$a,'k').d4(-4*$a*$c).'& \gt & 0\\\\
+                        '.d1(-4*$a,'k').'& \gt & '.(-1*$b*$b+4*$a*$c).'\\\\
+                        k &\lt& '.f3($b*$b-4*$a*$c,4*$a).'\\\\
+                    \end{eqnarray}';
+                break;
+            case 2:
+                $sample_text .= 
+                    '重解をもつとき、D = 0 \\ より、\\\\
+                    \begin{eqnarray}
+                        '.($b*$b).d2(-4*$a,'k').d4(-4*$a*$c).'&=& 0\\\\
+                        '.d1(-4*$a,'k').'&=& '.(-1*$b*$b+4*$a*$c).'\\\\
+                        k &=& '.f3($b*$b-4*$a*$c,4*$a).'\\\\
+                    \end{eqnarray}';
+                break;
+            case 3:
+                $sample_text .= 
+                    '実数解をもたないとき、D \lt 0 \\ より、\\\\
+                    \begin{eqnarray}
+                        '.($b*$b).d2(-4*$a,'k').d4(-4*$a*$c).'& \lt & 0\\\\
+                        '.d1(-4*$a,'k').'& \lt & '.(-1*$b*$b+4*$a*$c).'\\\\
+                        k & \gt & '.f3($b*$b-4*$a*$c,4*$a).'\\\\
+                    \end{eqnarray}';
+                break;
+        }
+
         if($right_answers[1] == 1){
             unset($right_answers[1]);
             $item[0] = str_replace(['\frac{','}{\fbox{'.$option[1].'}}'],['',''],$item[0]);
@@ -1511,7 +1560,7 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //２次不等式　その１
@@ -1558,14 +1607,23 @@ class QuestionController extends Controller
         $item[0] = 'x \lt \frac{'.($right_answers[0]<0?'-':'').'\fbox{ア}-\fbox{イ}\sqrt{\fbox{ウ}}}{\fbox{エ}}、';
         $item[1] = '\frac{'.($right_answers[4]<0?'-':'').'\fbox{オ}+\fbox{カ}\sqrt{\fbox{キ}}}{\fbox{ク}} \lt x';
 
+        $sample_text = 
+            d1($a,'x^{2}').d2($b,'x').d3($c).'=0\\ を解くと、\\\\
+            x = '.fr_rt(-1*$b,-1,$b*$b-4*$a*$c,2*$a).',\quad'.fr_rt(-1*$b,1,$b*$b-4*$a*$c,2*$a).'\\\\[10pt]
+            よって、下図より、解は\\\\[5pt]';
+
         switch($pattern){
             case 1:
                 $item[0] = 'x \lt \frac{'.($right_answers[0]<0?'-':'').'\fbox{ア}-\fbox{イ}\sqrt{\fbox{ウ}}}{\fbox{エ}}、';
                 $item[1] = '\frac{'.($right_answers[4]<0?'-':'').'\fbox{オ}+\fbox{カ}\sqrt{\fbox{キ}}}{\fbox{ク}} \lt x';
+                $sample_text .= 
+                    'x \lt '.fr_rt(-1*$b,-1,$b*$b-4*$a*$c,2*$a).',\quad'.fr_rt(-1*$b,1,$b*$b-4*$a*$c,2*$a).'\lt x';
                 break;
             case 2:
                 $item[0] = '\frac{'.($right_answers[0]<0?'-':'').'\fbox{ア}-\fbox{イ}\sqrt{\fbox{ウ}}}{\fbox{エ}} \lt x \lt';
                 $item[1] = '\frac{'.($right_answers[4]<0?'-':'').'\fbox{オ}+\fbox{カ}\sqrt{\fbox{キ}}}{\fbox{ク}}';
+                $sample_text .= 
+                    fr_rt(-1*$b,-1,$b*$b-4*$a*$c,2*$a).'\lt x \lt'.fr_rt(-1*$b,1,$b*$b-4*$a*$c,2*$a);
                 break;
         }
 
@@ -1634,9 +1692,42 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $x_l = (-1*$b - sqrt($b*$b-4*$a*$c))/(2*$a);
+        $x_m = (-1*$b + sqrt($b*$b-4*$a*$c))/(2*$a);
+        $axis = -1*$b/(2*$a);
+        $f_axis = $a*$axis*$axis + $b*$axis + $c;
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:['.($axis-5).','.($f_axis+7>-1?$f_axis+7:-1).','.($axis+5).','.($f_axis-3<-1?$f_axis-3:-1).'],
+                    axis: true,
+                    showNavigation: false,
+                    showCopyright: false
+                });
+
+                function bezier(t) {
+                    return '.$a.'*t*t + '.$b.'*t + '.$c.';
+                }
+
+                board.create(\'functiongraph\', [bezier, '.($axis-5).', '.($axis+5).']);
+
+                '.($pattern==1?
+                            '
+                                board.create(\'line\',[['.($axis-5).',0],['.($x_l).',0]], {straightFirst:false,straightLast:false,strokeColor:\'#00ff00\',strokeWidth:2,fixed:true});
+                                board.create(\'line\',[['.($axis+5).',0],['.($x_m).',0]], {straightFirst:false,straightLast:false,strokeColor:\'#00ff00\',strokeWidth:2,fixed:true});
+                            '
+                        :
+                            '
+                                board.create(\'line\',[['.($x_l).',0],['.($x_m).',0]], {straightFirst:false,straightLast:false,strokeColor:\'#00ff00\',strokeWidth:2,fixed:true})
+                            '
+                        ).'
+
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //２次不等式　その２
@@ -1687,9 +1778,47 @@ class QuestionController extends Controller
         $options[0] = '①　なし';
         $options[1] = '②　すべての実数';
 
+        $sample_text = '
+            判別式をDとおくと、\\\\
+            D = ('.$b.')^{2}-4\cdot('.$a.')\cdot('.$c.') = '.($b*$b-4*$a*$c).'\lt 0\\\\
+            よって、y = '.d1($a,'x^{2}').d2($b,'x').d3($c).'とおくと、\\\\
+            下図のように、x軸との交点を持たないので、\\\\
+            不等式を満たすxは、
+            '.($right_answers[0]==1?'存在しない':'すべての実数').'
+        ';
+
+        $axis = -1*$b/(2*$a);
+        $f_axis = $a*$axis*$axis + $b*$axis + $c;
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:['.($axis-5).','.($f_axis+7>-1?$f_axis+7:-1).','.($axis+5).','.($f_axis-3<-1?$f_axis-3:-1).'],
+                    axis: true,
+                    showNavigation: false,
+                    showCopyright: false
+                });
+
+                function bezier(t) {
+                    return '.$a.'*t*t + '.$b.'*t + '.$c.';
+                }
+                board.create(\'functiongraph\', [bezier, '.($axis-5).', '.($axis+5).']);
+
+                var p1 = board.create(\'point\',['.($axis-5).',0], {name:\'\', size:0, fixed:true});
+                var p2 = board.create(\'point\',['.($axis+5).',0], {name:\'\', size:0, fixed:true});
+                if('.$pattern.' == 1){
+                    var p3 = board.create(\'point\',['.($axis+5).','.($f_axis+7>-1?$f_axis+7:-1).'], {name:\'\', size:0, fixed:true});
+                    var p4 = board.create(\'point\',['.($axis-5).','.($f_axis+7>-1?$f_axis+7:-1).'], {name:\'\', size:0, fixed:true});
+                }else{
+                    var p3 = board.create(\'point\',['.($axis+5).','.($f_axis-3<-1?$f_axis-3:-1).'], {name:\'\', size:0, fixed:true});
+                    var p4 = board.create(\'point\',['.($axis-5).','.($f_axis-3<-1?$f_axis-3:-1).'], {name:\'\', size:0, fixed:true});
+                }
+                board.create(\'polygon\',[p1,p2,p3,p4],{borders:{strokeColor:\'black\'}});
+            </script>
+        ';
+
         $blank_text = implode($item).'$$';
         $start = time();
-        return view('question/select',compact('right_answers','unit','question','text','options','blanks','start','blank_text'));
+        return view('question/select',compact('right_answers','unit','question','text','options','blanks','start','blank_text','sample_text','plot'));
     }
 
     //放物線と軸の関係
@@ -1786,9 +1915,20 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            '.d1($a,'x^{2}').d2($b,'kx').d4($c).'+k=0とすると、判別式Dは、\\\\
+            \begin{eqnarray}
+                D &=& ('.d1($b,'k').')^{2}-4\cdot('.$a.')\cdot('.d4($c).'+k)\\\\
+                  &=& '.d1($b*$b,'k^{2}').d2(-4*$a,'k').d4(-4*$a*$c).'\\\\
+            \end{eqnarray}\\\\[15pt]
+            x軸に接するとき、D=0より、\\\\
+            '.d1($b*$b,'k^{2}').d2(-4*$a,'k').d4(-4*$a*$c).'=0\\\\
+            これを解いて、k='.fr_rt(2*$a,-1,4*$a*$a + 4*$a*$b*$b*$c,$b*$b).',\quad'.fr_rt(2*$a,1,4*$a*$a + 4*$a*$b*$b*$c,$b*$b).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //図形と計量（103）
@@ -1823,7 +1963,7 @@ class QuestionController extends Controller
 
         //空欄テキストの設定
         $item[0] = '\sin \alpha =\frac{\fbox{ア}\sqrt{\fbox{イ}}}{\fbox{ウ}}、';
-        $item[1] = '\tan \alpha ='.($a<0?'-':'').'\frac{\fbox{エ}\sqrt{\fbox{オ}}}{\fbox{カ}}、';
+        $item[1] = '\tan \alpha ='.($a<0?'-':'').'\frac{\fbox{エ}\sqrt{\fbox{オ}}}{\fbox{カ}}';
 
         for($i=0;$i<2;$i++){
             if($right_answers[3*$i] == 1 && $right_answers[3*$i+1] != 1){
@@ -1854,9 +1994,21 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \sin^{2}{\alpha} + \cos^{2}{\alpha} = 1 \quad より、\\\\
+            \begin{eqnarray}
+                \sin^{2}{\alpha} &=& 1 - \cos^{2}{\alpha}\\\\
+                                 &=& 1 - '.f3($a*$a,$b*$b).'\\\\
+                                 &=& '.f3($b*$b-$a*$a,$b*$b).'\\\\
+            \end{eqnarray}\\\\[15pt]
+            0° \leqq \alpha \leqq 180° より、\sin{\alpha} \gt 0 なので、\\\\
+            \sin{\alpha} = '.fr_rt2(1,$b*$b-$a*$a,$b).'\\\\
+            \tan{\alpha} = \frac{\sin{\alpha}}{\cos{\alpha}} = '.fr_rt2(1,$b*$b-$a*$a,$a).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //三角方程式
@@ -1878,17 +2030,25 @@ class QuestionController extends Controller
         $right_answers[0] = $degree;
 
         //正解テキストの設定
-        $text = '$$ 0° \leqq \alpha \leqq 180° で、'.d1($a,'\cos \theta').'+\sqrt{'.$b.'}=0 \\ のとき、\\\\';
+        $text = '$$ 0° \leqq \theta \leqq 180° で、'.d1($a,'\cos \theta').'+\sqrt{'.$b.'}=0 \\ のとき、\\\\';
         if($b == 1){
             $text = str_replace('\sqrt{'.$b.'}',$b,$text);
         } elseif($b == 0){
             $text = str_replace('+\sqrt{'.$b.'}','',$text);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                '.d1($a,'\cos{\theta}').rt(1,$b).' &=& 0\\\\
+                                    \cos{\theta} &=& '.fr_rt2(-1,$b,$a).'\\\\
+                                         \theta  &=& '.$degree.'°\\\\
+            \end{eqnarray}\\\\
+        ';
+
         //空欄テキストの設定
         $blank_text = '\theta = \fbox{ア}° $$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //特別な角度の三角比
@@ -1959,9 +2119,19 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            0° \lt \theta \lt 180° より、\sin{\theta} \gt 0 なので\\\\
+            \sin{\theta} = \sqrt{1-\frac{'.($a*$a).'}{'.($b*$b).'}} = '.fr_rt2(1,$b*$b-$a*$a,$b).'\\\\
+            したがって、\\\\
+            \sin (90°-\theta) = \cos{\theta} = '.f3($a,$b).'\\\\
+            \cos (90°-\theta) = \sin{\theta} = '.fr_rt2(1,$b*$b-$a*$a,$b).'\\\\
+            \sin (180°-\theta) = \sin{\theta} = '.fr_rt2(1,$b*$b-$a*$a,$b).'\\\\
+            \cos (180°-\theta) = -\cos{\theta} = '.f3(-1*$a,$b).'\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //正弦定理　その１
@@ -2022,9 +2192,21 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            三角形の内角の合計は180°なので、\\\\
+            \angle{C} = 180° - (\angle{A}+\angle{B}) = '.$dC.'°\\\\
+            正弦定理より、\\\\
+            \begin{eqnarray}
+                \frac{AC}{\sin{B}} &=& \frac{AB}{\sin{C}}\\\\
+                                AC &=& \frac{AB}{\sin{C}} \cdot \sin{B}\\\\
+                                   &=& \frac{'.$a.'}{'.text_sin($dC).'} \cdot '.text_sin($dB).'\\\\
+                                   &=& '.fr_rt2($a*$c_d,$b_n*$c_n,$b_d*$c_n).'
+            \end{eqnarray}\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //正弦定理　その２
@@ -2084,9 +2266,21 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            三角形の内角の合計は180°なので、\\\\
+            \angle{C} = 180° - (\angle{A}+\angle{B}) = '.$dC.'°\\\\
+            正弦定理より、\\\\
+            \begin{eqnarray}
+                2R &=& \frac{AB}{\sin{C}}\\\\[8pt]
+                   &=& \frac{'.$a.'}{'.text_sin($dC).'}\\\\[8pt]
+                   &=& '.fr_rt2($a*$c_d,$c_n,$c_n).'\\\\[8pt]
+                R  &=& '.fr_rt2($a*$c_d,$c_n,2*$c_n).'\\\\
+            \end{eqnarray}\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //余弦定理　その１
@@ -2138,9 +2332,19 @@ class QuestionController extends Controller
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
+        $sample_text = '
+            余弦定理より、\\\\
+            \begin{eqnarray}
+                AC^{2} &=& AB^{2}+BC^{2}-2 \cdot AB \cdot BC \cdot \cos{B}\\\\[7pt]
+                       &=& '.$a.'^{2}+'.$b.'^{2} -2\cdot'.$a.'\cdot'.$b.'\cdot '.f3($c,$d).'\\\\[7pt]
+                       &=& '.f3($a*$a*$d + $b*$b*$d - 2*$a*$b*$c,$d).'\\\\[7pt]
+            \end{eqnarray}\\\\[10pt]
+            AC \gt 0 より、AC='.fr_rt2(1,$a*$a*$d*$d + $b*$b*$d*$d - 2*$a*$b*$c*$d,$d,$d).'\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //余弦定理　その２
@@ -2160,7 +2364,7 @@ class QuestionController extends Controller
         list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
 
         //正解テキストの設定
-        $text = '$$ △ABCにおいて、\\\\AB='.$a.'、BC='.$b.'、CA='.$c.'、のとき、\\\\';
+        $text = '$$ △ABCにおいて、\\\\AB='.$a.'、BC='.$b.'、CA='.$c.'のとき、\\\\';
 
         //空欄テキストの設定
         $item[0] = '\cos B ='.($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}';
@@ -2180,9 +2384,18 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            余弦定理より、\\\\
+            \begin{eqnarray}
+                \cos{B} &=& \frac{AB^{2}+BC^{2}-CA^{2}}{2 \cdot AB \cdot BC}\\\\[5pt]
+                        &=& \frac{'.($a*$a).'+'.($b*$b).'-'.($c*$c).'}{2\cdot'.($a).'\cdot'.($b).'}\\\\[5pt]
+                        &=& '.f3($a*$a+$b*$b-$c*$c,2*$a*$b).'\\\\[5pt]
+            \end{eqnarray}\\\\[10pt]
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //三角形の面積
@@ -2232,9 +2445,22 @@ class QuestionController extends Controller
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
+        $sample_text = '
+            余弦定理より、\\\\
+            \cos{B} = \frac{AB^{2}+BC^{2}-CA^{2}}{2 \cdot AB \cdot BC} = '.f3($a*$a+$b*$b-$c*$c,2*$a*$b).'\\\\
+            Bは三角形の内角であり、\\\\0° \lt B \lt 180°より、\sin{B} \gt 0なので、\\\\
+            \sin{B} = \sqrt{1-\cos^{2}{B}} = '.fr_rt2(1,4*$a*$a*$b*$b-pow($a*$a+$b*$b-$c*$c,2),2*$a*$b).'\\\\
+            よって、三角形の面積Sは、\\\\
+            \begin{eqnarray}
+                S &=& \frac{1}{2} \cdot AB \cdot BC \cdot \sin{B}\\\\[5pt]
+                  &=& \frac{1}{2} \cdot '.$a.' \cdot '.$b.' \cdot '.fr_rt2(1,4*$a*$a*$b*$b-pow($a*$a+$b*$b-$c*$c,2),2*$a*$b).'\\\\[5pt]
+                  &=& '.fr_rt2(1,4*$a*$a*$b*$b-pow($a*$a+$b*$b-$c*$c,2),4).'\\\\[5pt]
+            \end{eqnarray}\\\\[10pt]
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //内接円の半径
@@ -2284,9 +2510,27 @@ class QuestionController extends Controller
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
+        $sample_text = '
+            余弦定理より、\\\\
+            \cos{B} = \frac{AB^{2}+BC^{2}-CA^{2}}{2 \cdot AB \cdot BC} = '.f3($a*$a+$b*$b-$c*$c,2*$a*$b).'\\\\
+            Bは三角形の内角であり、\\\\0° \lt B \lt 180°より、\sin{B} \gt 0なので、\\\\
+            \sin{B} = \sqrt{1-\cos^{2}{B}} = '.fr_rt2(1,4*$a*$a*$b*$b-pow($a*$a+$b*$b-$c*$c,2),2*$a*$b).'\\\\
+            よって、三角形の面積Sは、\\\\
+            \begin{eqnarray}
+                S &=& \frac{1}{2} \cdot AB \cdot BC \cdot \sin{B}\\\\[5pt]
+                &=& \frac{1}{2} \cdot '.$a.' \cdot '.$b.' \cdot '.fr_rt2(1,4*$a*$a*$b*$b-pow($a*$a+$b*$b-$c*$c,2),2*$a*$b).'\\\\[5pt]
+                &=& '.fr_rt2(1,4*$a*$a*$b*$b-pow($a*$a+$b*$b-$c*$c,2),4).'\\\\[5pt]
+            \end{eqnarray}\\\\[10pt]
+            また、内接円の半径rを用いて三角形の面積Sを表すと、\\\\
+            S = \frac{1}{2}r(AB+BC+CA) = '.f1($a+$b+$c,2,'r').'\\\\
+            よって、\\\\
+            '.f1($a+$b+$c,2,'r').' = '.fr_rt2(1,4*$a*$a*$b*$b-pow($a*$a+$b*$b-$c*$c,2),4).'\\\\
+            r = '.fr_rt2(1,4*$a*$a*$b*$b-pow($a*$a+$b*$b-$c*$c,2),2*($a+$b+$c)).'\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //データの分析(104)
@@ -2316,9 +2560,18 @@ class QuestionController extends Controller
         $item[1] = '中央値は\fbox{イ}、';
         $item[2] = 'データの範囲は\fbox{ウ}である。\\\\';
 
+        $sample_text = '
+            データを昇順に並び替えると、\\\\
+            '.implode('　',$r_data).'\\\\
+            よって、平均値は、\\\\
+            \frac{'.implode('+',$r_data).'}{8} = '.$right_answers[0].'\\\\
+            中央値は、\frac{'.$r_data[3].'+'.$r_data[4].'}{2} = '.$right_answers[1].'\\\\
+            データの範囲は、'.$r_data[7].'-'.$r_data[0].' = '.$right_answers[2].'\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/data',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/data',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //四分位数(と箱ひげ図)
@@ -2349,12 +2602,21 @@ class QuestionController extends Controller
         $item[2] = '四分位範囲は\fbox{ウ}、';
         $item[3] = '四分位偏差は\fbox{エ}である。';
 
+        $sample_text = '
+            データを昇順に並び替えると、\\\\
+            '.implode('　',$r_data).'\\\\
+            よって、第1四分位数は、\frac{'.$r_data[1].'+'.$r_data[2].'}{2} = '.$right_answers[0].'\\\\
+            第3四分位数は、\frac{'.$r_data[5].'+'.$r_data[6].'}{2} = '.$right_answers[1].'\\\\
+            四分位範囲は、'.$right_answers[1].'-'.$right_answers[0].' = '.$right_answers[2].'\\\\
+            四分位偏差は、は、\frac{'.$right_answers[2].'}{2} = '.$right_answers[3].'\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/data',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/data',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
-    //分散・標準偏差
+    //分散
     public function unit104_q03($unit,$question){
         //初期設定
         $question_id = 10403;
@@ -2381,9 +2643,24 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = 'このデータの分散は\fbox{ア}である。';
 
+        $sample_text = '
+            まず、データの平均をとると、\\\\
+            \bar{x} = \frac{'.implode('+',$data).'}{5} = '.$ave.'\\\\
+            また、データの2乗の平均を考える。\\\\
+            データをすべて2乗すると、'.implode('　',$data_2).'\\\\
+            これの平均をとると、\\\\
+            \bar{x^{2}} = \frac{'.implode('+',$data_2).'}{5} = '.$ave_2.'\\\\
+            よって、分散S_xは、\\\\
+            \begin{eqnarray}
+                S_x &=& \bar{x^{2}} - (\bar{x})^{2}\\\\
+                    &=& '.$ave_2.' - '.$ave.'^{2}\\\\
+                    &=& '.$s_2.'\\\\
+            \end{eqnarray}\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/data',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/data',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //相関係数の読み取り
@@ -2498,9 +2775,24 @@ class QuestionController extends Controller
         $options[2] = '③　 0.2';
         $options[3] = '④　 0.9';
 
+        $sample_text = '
+            一方の変量が増加すると、他方の変量も増加する傾向があれば正の相関、\\\\
+            つまり、データが右上がりの直線に近いほど、正の相関が強い。\\\\
+            一方の変量が増加すると、他方の変量は減少する傾向があれば負の相関、\\\\
+            つまり、データが右下がりの直線に近いほど、負の相関が強い。\\\\
+            今回のデータは、
+            '.($right_answers[0]==4 ?
+                '正の相関が強い傾向にあるので、\\\\
+                相関係数は1に近い。'
+            :
+                '負の相関が強い傾向にあるので、\\\\
+                相関係数は-1に近い。'
+             ).'
+        ';
+
         $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
         $start = time();
-        return view('question/data_select',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script','options'));
+        return view('question/data_select',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script','options','sample_text'));
 
         //return view('question/data_select',compact('x','y','right_answer','unit','question','text','options','blanks'));
     }
@@ -2530,10 +2822,16 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = 'x^{'.$c.'}y^{'.$d.'}の係数は、\fbox{ア}';
 
-        $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
+        $sample_text = '
+            二項定理より、x^{'.$c.'}y^{'.$d.'}の項は、\\\\
+            {}_'.$b.' C_'.$c.' \cdot x^{'.$c.'} \cdot ('.d1($a,'y').')^{'.$d.'}
+                = '.text_c($b,$c).' \cdot ('.$a.')^{'.$d.'} \cdot x^{'.$c.'}y^{'.$d.'}
+                = '.d1($right_answers[0],'x^{'.$c.'}y^{'.$d.'}').'
+        ';
 
+        $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //整式の割り算
@@ -2590,10 +2888,28 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
-        $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
+        $sample_text = '
+        \begin{array}{cccccc}
+             & & x & '.d4($a-$d).' &  & \\\\
+             \hline
+            x^{2}'.d2($d,'x').d4($e).' & \large{)} & x^{3} & '.d2($a,'x^{2}').' & '.d2($b,'x').' & '.d4($c).'\\\\
+             &  & x^{3} & '.d2($d,'x^{2}').' & '.d2($e,'x').' & \\\\
+             \hline
+             &  &  & '.d1($a-$d,'x^{2}').' & '.d2($b-$e,'x').' & '.d4($c).'\\\\
+             '.($a-$d == 0 ?
+                ''
+                :
+                '&  &  & '.d1($a-$d,'x^{2}').' & '.d2(($a-$d)*$d,'x').' & '.d4(($a-$d)*$e).'\\\\
+                \hline
+                &  &  & & '.d1($b-$e-$a*$d+$d*$d,'x').' & '.d4($c-$a*$e+$d*$e).'\\\\'
+                ).'
+        \end{array}\\\\
+        よって、商はx'.d4($a-$d).'、余りは'.fo(d1($b-$e-$a*$d+$d*$d,'x').d4($c-$a*$e+$d*$e)).'
+        ';
 
+        $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //割り算の基本公式
@@ -2624,7 +2940,7 @@ class QuestionController extends Controller
                  商が'.$a.'x^{2}'.d2($c,'x').d3($d).'であるとき、\\\\';
 
         //空欄テキストの設定
-        $item[0] = '\alpha = \fbox{ア}、';
+        $item[0] = '\alpha = '.($right_answers[0]<0?'-':'').'\fbox{ア}、';
         $item[1] = '\beta = '.($right_answers[1]*$right_answers[2]<0?'-':'').'\frac{\fbox{イ}}{\fbox{ウ}}、';
         $item[2] = '余りは、'.($right_answers[3]*$right_answers[4]<0?'-':'').'\frac{\fbox{エ}}{\fbox{オ}}である。';
 
@@ -2649,10 +2965,22 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
-        $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
+        $sample_text = '
+            割る式が1次式なので、余りは定数項になる。\\\\
+            その余りをrとおくと、\\\\
+            \begin{eqnarray}
+                '.$a.'x^{3} + \alpha x^{2}+\alpha\beta x +\beta -1 &=& ('.d1($a,'x^{2}').d2($c,'x').d4($d).')(x'.d4($b).')+r\\\\
+                                                                   &=& '.d1($a,'x^{3}').d2($a*$b+$c,'x^{2}').d2($b*$c+$d,'x').d4($b*$d).'+r
+            \end{eqnarray}\\\\
+            両辺を比較して、\\\\
+            \alpha = '.($a*$b+$c).' \quad \alpha\beta = '.($b*$c+$d).' \quad \beta-1 = '.($b*$d).'+r\\\\
+            これらを解いて、\\\\
+            \alpha = '.($a*$b+$c).' \quad \beta = '.f3($b*$c+$d,$a*$b+$c).' \quad r = '.f3($b*$c + $d - $a*$b*$b*$d - $b*$c*$d - $a*$b - $c, $a*$b+$c).'\\\\
+        ';
 
+        $blank_text = fo(str_replace($option,$this->option,implode($item))).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //恒等式
@@ -2687,10 +3015,28 @@ class QuestionController extends Controller
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
-        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        $sample_text = '
+            xについての恒等式となるとき、\\\\
+            xに何を代入しても、この関係が成立するので、\\\\
+            \begin{eqnarray}
+                &x=2&を代入して、\quad &&'.d1($a,' \cdot 2^{3} ').d2($b,' \cdot 2^{2} ').d2($c,' \cdot 2').d4($d).'= 3\beta+\gamma\\\\
+                &&                &&'.($a*2*2*2+$b*2*2+$c*2+$d).' = 3\beta+\gamma\\\\
+                &x=-1&を代入して、\quad &&'.d1($a,' \cdot (-1)^{3} ').d2($b,' \cdot (-1)^{2} ').d2($c,' \cdot (-1)').d4($d).'= '.d1($a,' \cdot (-3)^{3} ').'+\alpha \cdot (-3)^2 +\gamma\\\\
+                &&                &&'.(-1*$a+$b-$c+$d+27*$a).' = 9\alpha+\gamma\\\\
+                &x=0&を代入して、\quad &&'.($d).'='.d1($a,' \cdot (-2)^{3}').'+\alpha \cdot (-2)^{2} +\beta+\gamma\\\\
+                &&                &&'.($d+8*$a).' = 4\alpha+\beta+\gamma\\\\  
+            \end{eqnarray}\\\\
+            これら3つの式を連立して解くと、\\\\
+            \begin{array}{rcl}
+                \alpha & = & '.(6*$a+$b).'\\\\
+                \beta  & = & '.(12*$a+4*$b+$c).'\\\\
+                \gamma & = & '.(-28*$a-8*$b-$c+$d).'\\\\
+            \end{array}
+        ';
 
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //相加平均、相乗平均の大小関係
@@ -2737,10 +3083,22 @@ class QuestionController extends Controller
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
-        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        $sample_text = '
+            a \gt 0 より、\frac{'.$a.'}{a} \gt 0\\\\
+            よって、相加平均と相乗平均の大小関係より、\\\\
+            a+\frac{'.$a.'}{a} \geqq 2\sqrt{a \cdot \frac{'.$a.'}{a}} = '.rt2(2,$a).'\\\\
+            よって、a+\frac{'.$a.'}{a}の最小値は'.rt2(2,$a).'\\\\
+            上式の等号が成立するのは、a=\frac{'.$a.'}{a}のときなので、\\\\
+            \begin{eqnarray}
+            a &=& \frac{'.$a.'}{a}\\\\
+            a^{2} &=& '.($a).'
+            \end{eqnarray}\\\\
+            a>0より、a='.rt2(1,$a).'
+        ';
 
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //複素数と方程式(202)
@@ -2791,11 +3149,19 @@ class QuestionController extends Controller
         {
             $right_answers[$i] = abs($right_answers[$i]);
         }
+        
+        $sample_text = '
+            与式を変形し、実部と虚部に分けると、\\\\
+            ('.d1($a,'x').d2($c,'y').d4($e).') + ('.d1($b,'x').d2($d,'y').d4($f).')i = 0\\\\
+            よって、\\\\
+            '.d1($a,'x').d2($c,'y').d4($e).' = 0, \quad '.d1($b,'x').d2($d,'y').d4($f).'=0\\\\
+            これを解いて、\\\\
+            x = '.f3($c*$f-$d*$e,$a*$d-$b*$c).', \quad y='.f3($b*$e-$a*$f,$a*$d-$b*$c).'
+        ';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
-
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //虚数解をもつ条件
@@ -2848,10 +3214,34 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
-        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        list($s,$t) = root(1,$b*$b+$c);
 
+        $sample_text = '
+            判別式をDとおくと、\\\\
+            D=a^{2}-4('.d1($b,'a').d4($c).') = a^{2}'.d2(-4*$b,'a').d4(-4*$c).'\\\\
+            異なる2つの虚数解をもつとき、D \lt 0 より、\\\\
+            a^{2}'.d2(-4*$b,'a').d4(-4*$c).' \lt 0\\\\
+            a^{2}'.d2(-4*$b,'a').d4(-4*$c).'=0とすると、\\\\
+            '.($t==1 ?'
+                \begin{eqnarray}
+                    (a'.d4(-2*$b+2*sqrt($b*$b+$c)).')(a'.d4(-2*$b-2*sqrt($b*$b+$c)).') &=& 0\\\\
+                       a &=& '.(2*$b-2*sqrt($b*$b+$c)).', \quad '.(2*$b+2*sqrt($b*$b+$c)).'
+                \end{eqnarray}\\\\
+            ':'
+                \begin{eqnarray}
+                    a &=& '.(2*$b).'\pm \sqrt{('.(2*$b).')^{2}-1 \cdot ('.(-4*$c).')}\\\\
+                    &=& '.(2*$b).'\pm \sqrt{'.(4*$b*$b+4*$c).'}\\\\
+                    &=& '.(2*$b).'\pm '.rt2(2,$b*$b+$c).'
+                \end{eqnarray}\\\\
+            ').'
+            
+            よって、これを満たすaの範囲は、\\\\
+            '.fr_rt(2*$b,-2,$b*$b+$c,1).'\lt a \lt '.fr_rt(2*$b,2,$b*$b+$c,1).'
+        ';
+
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //解と係数の関係　その１
@@ -2888,7 +3278,7 @@ class QuestionController extends Controller
         $item[2] = '\alpha ^{2}+ \beta ^{2}='.($right_answers[4]*$right_answers[5]<0?'-':'').'\frac{\fbox{オ}}{\fbox{カ}}';
 
         for($i=0;$i<3;$i++){
-            if($right_answers[2*$i+1] == 1){
+            if(abs($right_answers[2*$i+1]) == 1){
                 $item[$i] = str_replace(['\frac{','}{\fbox{'.$option[2*$i+1].'}}'],['',''],$item[$i]);
                 unset($right_answers[2*$i+1]);
                 unset($option[2*$i+1]);
@@ -2904,10 +3294,20 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
-        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        $sample_text = '
+            解と係数の関係より、\\\\
+            \alpha + \beta = '.f3(-1*$b,$a).'、\alpha\beta = '.f3($c,$a).'\\\\
+            また、\\\\
+            \begin{eqnarray}
+                \alpha^{2}+\beta^{2} &=& (\alpha+\beta)^{2}-2\alpha\beta\\\\
+                                     &=& ('.f3(-1*$b,$a).')^{2}-2 \cdot ('.f3($c,$a).')\\\\
+                                     &=& '.f3($b*$b-2*$a*$c,$a*$a).'\\\\
+            \end{eqnarray}
+        ';
 
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //解と係数の関係　その２
@@ -2938,10 +3338,16 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
-        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
+        $sample_text = '
+            ('.$a.d2($b,'i').')+('.$a.d2(-1*$b,'i').') = '.(2*$a).'\\\\
+            ('.$a.d2($b,'i').') \cdot ('.$a.d2(-1*$b,'i').') = '.($a*$a+$b*$b).'\\\\
+            よって、解と係数の関係より、\\\\この２つを解に持つ２次方程式の一つは、\\\\
+            x^{2}'.d2(-2*$a,'x').d4($a*$a+$b*$b).'=0
+        ';
 
+        $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //剰余の定理
@@ -2967,9 +3373,20 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\fbox{ア}である。';
 
+        $sample_text = '
+            '.d1($a,'x^{3}').d2($b,'x^{2}').d2($c,'x').d3($d).'をx'.d4(-1*$e).'で割ったときの\\\\
+            商をQ(x)、余りをrとおくと、\\\\
+            '.d1($a,'x^{3}').d2($b,'x^{2}').d2($c,'x').d3($d).' = Q(x)(x'.d4(-1*$e).')+r\\\\
+            これは、xについての恒等式となるため、x='.$e.'を代入して、\\\\
+            \begin{eqnarray}
+                r &=& '.d1($a,'\cdot').'('.$e.')^{3}'.d2($b,'\cdot').'('.$e.')^{2}'.d2($c,'\cdot').'('.$e.')'.d4($d).'\\\\
+                  &=& '.$right_answers[0].'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
     
     //因数定理
@@ -3009,9 +3426,21 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            '.d1($a,'x^{3}').'+ax^{2}'.d2($b,'(a-2)x').d4($c).'\\ を\\  x'.d4(-1*$d).'で\\\\
+            割ったときの商をQ(x)とおくと、\\\\
+            '.d1($a,'x^{3}').'+ax^{2}'.d2($b,'(a-2)x').d4($c).'=Q(x)(x'.d4(-1*$d).')\\\\
+            これは、xについての恒等式となるため、x='.$d.'を代入して、\\\\
+            \begin{eqnarray}
+                '.d1($a,'\cdot').'('.$d.')^{3}+\alpha \cdot ('.$d.')^{2}'.d2($b,'(\alpha-2)').'\cdot('.$d.')'.d4($c).' &=& 0\\\\
+                '.d1($d*$d+$b*$d,'\alpha').' &=& '.d3(-1*$a*$d*$d*$d+2*$b*$d-$c).'\\\\
+                \alpha &=& '.f3(-1*$a*$d*$d*$d+2*$b*$d-$c,$d*$d+$b*$d).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //３次方程式
@@ -3031,6 +3460,8 @@ class QuestionController extends Controller
                 do { $right_answers[2] = rand(-5,5); } while( $right_answers[2]==0 || $right_answers[2] == $right_answers[0] || $right_answers[2] == $right_answers[1]);
                 sort($right_answers);
 
+                $r = $right_answers;
+
                 //答えの設定
                 $a = -1*($right_answers[0]+$right_answers[1]+$right_answers[2]);
                 $b = $right_answers[0]*$right_answers[1] + $right_answers[1]*$right_answers[2] + $right_answers[2]*$right_answers[0];
@@ -3041,6 +3472,24 @@ class QuestionController extends Controller
                 $item[1] = ($right_answers[1]<0?'-':'').'\fbox{イ}、';
                 $item[2] = ($right_answers[2]<0?'-':'').'\fbox{ウ} \\\\';
                 $item[3] = 'ただし、'.($right_answers[0]<0?'-':'').'\fbox{ア} \lt '.($right_answers[1]<0?'-':'').'\fbox{イ} \lt '.($right_answers[2]<0?'-':'').'\fbox{ウ}';
+
+                $sample_text = '
+                    f(x) = x^{3}'.d2($a,'x^{2}').d2($b,'x').($c==0?'':d3($c)).'とすると、\\\\
+                    f('.$r[0].')=0より、f(x)はx'.d4(-1*$r[0]).'を因数に持ち、\\\\
+                    \begin{array}{|cccccc|}
+                        \hline
+                        & 1 & '.$a.' & '.$b.' & '.d4($c).' & |'.$r[0].'\\\\
+                        +)  & & '.$r[0].' & '.(-1*$r[0]*$r[1]-$r[0]*$r[2]).' & '.d4(-1*$c).' &\\\\
+                        \hline
+                        & 1 & '.(-1*$r[1]-$r[2]).' & '.($r[1]*$r[2]).' & 0 & \\\\
+                        \hline
+                    \end{array}\\\\
+                    \begin{eqnarray}
+                        (x'.d4(-1*$r[0]).')(x^{2}'.d2(-1*$r[1]-$r[2],'x').d4($r[1]*$r[2]).') &=& 0\\\\
+                        (x'.d4(-1*$r[0]).')(x'.d4(-1*$r[1]).')(x'.d4(-1*$r[2]).') &=& 0\\\\
+                        x &=& '.$r[0].',\quad'.$r[1].',\quad'.$r[2].'
+                    \end{eqnarray}
+                ';
                 break;
             case 2: //解が複素数
                 //変数の設定
@@ -3094,6 +3543,23 @@ class QuestionController extends Controller
                 $right_answers = array_values($right_answers);
                 $option = array_values($option);
 
+                $sample_text = '
+                    f(x) = x^{3}'.d2($a,'x^{2}').d2($b,'x').($c==0?'':d3($c)).'とすると、\\\\
+                    f('.($a_c).')=0より、f(x)はx'.d4(-1*$a_c).'を因数に持ち、\\\\
+                    \begin{array}{|cccccc|}
+                        \hline
+                        & 1 & '.$a.' & '.$b.' & '.$c.' & |'.$a_c.'\\\\
+                        +)  & & '.$a_c.' & '.($a_c*$b_c).' & '.(-1*$c).' &\\\\
+                        \hline
+                        & 1 & '.($b_c).' & '.($c_c).' & 0 & \\\\
+                        \hline
+                    \end{array}\\\\
+                    \begin{eqnarray}
+                        (x'.d4(-1*$a_c).')(x^{2}'.d2($b_c,'x').d4($c_c).') &=& 0\\\\
+                        x &=& '.$a_c.',\quad '.quadratic(1,$b_c,$c_c).'
+                    \end{eqnarray}
+                ';
+
                 break;
         }
 
@@ -3107,7 +3573,7 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //図形と方程式(203)
@@ -3151,9 +3617,17 @@ class QuestionController extends Controller
         switch($pattern){
             case 1:
                 $text .= '内分する点の座標は、\\\\';
+                $sample_text = '
+                    (\frac{'.$a.'\cdot'.$f.'+'.$c.'\cdot'.$e.'}{'.$e.'+'.$f.'}, \frac{'.$b.'\cdot'.$f.'+'.$d.'\cdot'.$e.'}{'.$e.'+'.$f.'})
+                        = ('.f3($a*$f + $c*$e,$e+$f).','.f3($b*$f + $d*$e,$e+$f).')
+                ';
                 break;
             case 2:
                 $text .= '外分する点の座標は、\\\\';
+                $sample_text = '
+                    (\frac{'.$a.'\cdot-'.$f.'+'.$c.'\cdot'.$e.'}{'.$e.'+'.$f.'}, \frac{'.$b.'\cdot-'.$f.'+'.$d.'\cdot'.$e.'}{'.$e.'+'.$f.'})
+                        = ('.f3(-1*$a*$f + $c*$e,$e-$f).','.f3(-1*$b*$f + $d*$e,$e-$f).')
+                ';
                 break;
         }
 
@@ -3184,7 +3658,7 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //重心の座標
@@ -3239,9 +3713,14 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            ( \frac{('.$a.')+('.$c.')+('.$e.')}{3}, \frac{('.$b.')+('.$d.')+('.$f.')}{3}) 
+                = ( '.f3($a+$c+$e,3).', '.f3($b+$d+$f,3).')
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //直線の方程式
@@ -3282,10 +3761,42 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = 'l:\fbox{ア}x';
         $item[1] = ($right_answers[1]<0?'-':'+').'\fbox{イ}y';
-        $item[2] = ($right_answers[2]<0?'-':'+').'\fbox{ウ} = 0 \\\\';
-        $item[3] = 'm:\fbox{エ}x';
-        $item[4] = ($right_answers[4]<0?'-':'+').'\fbox{オ}y';
-        $item[5] = ($right_answers[5]<0?'-':'+').'\fbox{カ} = 0';
+        $item[2] = ($right_answers[2]<0?'-':'+').'\fbox{ウ}';
+        $item[3] = '=0 \\\\';
+        $item[4] = 'm:\fbox{エ}x';
+        $item[5] = ($right_answers[4]<0?'-':'+').'\fbox{オ}y';
+        $item[6] = ($right_answers[5]<0?'-':'+').'\fbox{カ}';
+        $item[7] = '=0 \\\\';
+
+        $sample_text = '
+            A,Bを通る直線の傾きは、\\\\
+            \frac{('.$d.')-('.$b.')}{('.$c.')-('.$a.')} = '.f3($d-$b,$c-$a).'\\\\
+            これが、A('.$a.','.$b.')を通るので、\\\\
+            y'.d4(-1*$b).' = '.f3($d-$b,$c-$a).'(x'.d4(-1*$a).')\\\\
+            '.d1($right_answers[0],'x').d2($right_answers[1],'y').d4($right_answers[2]).'=0\\\\
+            \\\\
+            A,Bの中点は、( \frac{('.$a.')+('.$c.')}{2}, \frac{('.$b.')+('.$d.')}{2}) = ( '.f3($a+$c,2).', '.f3($b+$d,2).')\\\\
+            また、直線ABに垂直な傾きは、'.f3($a-$c,$d-$b).'\\\\
+            よって、線分ABの垂直二等分線は、\\\\
+            ( '.f3($a+$c,2).', '.f3($b+$d,2).')を通る傾き'.f3($a-$c,$d-$b).'の直線なので、\\\\
+            y'.f2($b+$d,-2).' = '.f3($a-$c,$d-$b).'(x'.f2($a+$c,-2).')\\\\
+            '.d1($right_answers[3],'x').d2($right_answers[4],'y').d4($right_answers[5]).'=0\\\\
+        ';
+
+        if($right_answers[2]==0){
+            unset($right_answers[2]);
+            unset($option[2]);
+            unset($item[2]);
+            $blanks -= 1;
+        }
+        if($right_answers[5]==0){
+            unset($right_answers[5]);
+            unset($option[5]);
+            unset($item[6]);
+            $blanks -= 1;
+        }
+        $right_answers = array_values($right_answers);
+        $option = array_values($option);
 
         for($i=0;$i<$blanks;$i++)
         {
@@ -3294,7 +3805,7 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //対称な点
@@ -3323,7 +3834,7 @@ class QuestionController extends Controller
         list($right_answers[2],$right_answers[3]) = gcd($right_answers[2],$right_answers[3]);
 
         //問題テキストの設定
-        $text = '$$ A('.$a.','.$b.')\\ において、直線\\ '.d1($c,'x').d2($d,'y').d3($e).'=0 \\\\ に関して対称な点の座標は、\\\\';
+        $text = '$$ A('.$a.','.$b.')\\ と、直線\\ '.d1($c,'x').d2($d,'y').d3($e).'=0 \\\\ に関して対称な点の座標は、\\\\';
 
         //空欄テキストの設定
         $item[0] = '('.($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}},';
@@ -3350,9 +3861,22 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            対称な点をP(x,y)とおくと、\\\\
+            ('.$a.','.$b.')と(x,y)の中点は、直線上にあるので、\\\\
+            (\frac{'.$a.'+x}{2}, \frac{'.$b.'+y}{2})は直線上にあり、\\\\
+            \frac{'.$a.'+x}{2} \cdot '.$c.'+\frac{'.$b.'+y}{2} '.d4($e).'=0\\\\
+            '.d1($c,'x').d2($d,'y').d4($a*$c+$b*$d+2*$e).'=0 \cdots ①\\\\
+            また、APと直線'.d1($c,'x').d2($d,'y').d3($e).'=0\\ は垂直なので、\\\\
+            '.f3(-1*$c,$d).'\cdot \frac{y'.d4(-1*$b).'}{x'.d4(-1*$a).'} = -1\\\\
+            '.d1($d,'x').d2(-1*$c,'y').d4($b*$c-$a*$d).'=0 \cdots ②\\\\
+            ①、②を解いて、
+            x = '.f3(-1*($a*$c*$c + 2*$b*$c*$d + 2*$c*$e - $a*$d*$d),$c*$c + $d*$d).'\quad y = '.f3(-1*($a*$c*$d + $b*$d*$d + 2*$d*$e - $b*$c*$c + $a*$c*$d),$c*$c + $d*$d).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //点と直線の距離
@@ -3407,9 +3931,14 @@ class QuestionController extends Controller
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
+        $sample_text = '
+            直線'.d1($a,'x').d2($b,'y').d3($c).'=0 \\ と点\\ ('.$d.','.$e.')との距離は\\\\
+            \frac{|'.$a.'\cdot'.$d.d2($b,'\cdot'.$e).d3($c).'|}{\sqrt{('.$d.')^{2}+('.$e.')^{2}}} = '.fr_rt2(abs($a*$d+$b*$e+$c),$a*$a+$b*$b,$a*$a+$b*$b).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //円の方程式　その１
@@ -3422,11 +3951,11 @@ class QuestionController extends Controller
         //変数の設定
         $a = rand(-5,5);
         $b = rand(-5,5);
-        do { $c = rand(-5,5); } while( $a*$a+$b*$b-$c*$c==0);
+        do { $c = rand(-5,5); } while( $a*$a+$b*$b-$c <= 0);
 
         //答えの設定
         $right_answers[0] = 1;
-        $right_answers[1] = $a*$a+$b*$b-$c*$c;
+        $right_answers[1] = $a*$a+$b*$b-$c;
         $right_answers[2] = -1*$a;
         $right_answers[3] = -1*$b;
 
@@ -3457,9 +3986,19 @@ class QuestionController extends Controller
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
+        $sample_text = '
+            \begin{eqnarray}
+                x^{2}+y^{2}'.d2(2*$a,'x').d2(2*$b,'y').d4($c).' &=& 0\\\\
+                x^{2}'.d2(2*$a,'x').'+y^{2}'.d2(2*$b,'y').d4($c).' &=& 0\\\\
+                (x'.d4($a).')^{2}'.d4(-1*$a*$a).'+(y'.d4($b).')^{2}'.d4(-1*$b*$b).d4($c).' &=& 0\\\\
+                (x'.d4($a).')^{2}+(y'.d4($b).')^{2} &=& '.($a*$a+$b*$b-$c).'\\\\
+            \end{eqnarray}\\\\
+            これは半径'.fo(rt(1,$a*$a+$b*$b-$c)).'、中心('.(-1*$a).','.(-1*$b).')の円を表す
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //円の方程式　その２
@@ -3529,9 +4068,19 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            求める円の中心は、線分ABの中点なので、\\\\
+            (\frac{'.$a.d3($c).'}{2},\frac{'.$b.d3($d).'}{2}) = ('.f3($a+$c,2).','.f3($b+$d,2).')\\\\
+            また、直径の長さは、線分ABの長さなので、\\\\
+            \sqrt{('.$c.d3(-1*$a).')^{2}+('.$d.d3(-1*$b).')^{2}} = '.fo(rt(1,($c-$a)*($c-$a)+($d-$b)*($d-$b))).'\\\\
+            よって、半径の長さは、'.fr_rt2(1,($c-$a)*($c-$a)+($d-$b)*($d-$b),2).'\\\\
+            したがって、求める円の方程式は、\\\\
+            (x'.f2($a+$c,-2).')^{2}+(y'.f2($b+$d,-2).')^{2} = '.f3(($c-$a)*($c-$a)+($d-$b)*($d-$b),4).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //円の接線
@@ -3585,9 +4134,18 @@ class QuestionController extends Controller
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
+        $sample_text = '
+            接するとき、直線と円の中心間の距離の長さが\\\\
+            円の半径と等しくなるので、\\\\
+            y='.d1($c,'x').d4($d).'を変形して、\\\\
+            '.d1($c,'x').'-y'.d4($d).'=0 \quad とすると、\\\\
+            点と直線の距離の公式より、半径rは、\\\\
+            r = \frac{|'.$c.'\cdot '.$a.d4(-1*$b).d4($d).'|}{\sqrt{('.$c.')^{2}+(-1)^{2}}} = '.fr_rt2(abs($c*$a-$b+$d),$c*$c+1,$c*$c+1).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //弧度法
@@ -3664,9 +4222,49 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $table = '
+            \begin{array}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+                \hline
+                \theta & 0 & \frac{\pi}{6} & \frac{\pi}{4} & \frac{\pi}{3} & \frac{\pi}{2} & \frac{2}{3}\pi & \frac{3}{4}\pi & \frac{5}{6}\pi & \pi & \frac{7}{6}\pi & \frac{5}{4}\pi & \frac{4}{3}\pi & \frac{3}{2}\pi & \frac{5}{3}\pi & \frac{7}{4}\pi & \frac{11}{6}\pi\\\\
+                \hline
+                \sin{\theta} & 0 & \frac{1}{2} & \frac{1}{\sqrt{2}} & \frac{\sqrt{3}}{2} & 1 & \frac{\sqrt{3}}{2} & \frac{1}{\sqrt{2}} & \frac{1}{2} & 0 & -\frac{1}{2} & -\frac{1}{\sqrt{2}} & -\frac{\sqrt{3}}{2} & -1 & -\frac{\sqrt{3}}{2} & -\frac{1}{\sqrt{2}} & -\frac{1}{2}\\\\
+                \hdashline
+                \cos{\theta} & 1 & \frac{\sqrt{3}}{2} & \frac{1}{\sqrt{2}} & \frac{1}{2} & 0 & -\frac{1}{2} & -\frac{1}{\sqrt{2}} & -\frac{\sqrt{3}}{2} & -1 & -\frac{\sqrt{3}}{2} & -\frac{1}{\sqrt{2}} & -\frac{1}{2} & 0 & \frac{1}{2} & \frac{1}{\sqrt{2}} & \frac{\sqrt{3}}{2}\\\\
+                \hdashline
+                \tan{\theta} & 0 & \frac{1}{\sqrt{3}} & 1 & \sqrt{3} & × & -\sqrt{3} & -1 & -\frac{1}{\sqrt{3}} & 0 & \frac{1}{\sqrt{3}} & 1 & \sqrt{3} & × & -\sqrt{3} & -1 & -\frac{1}{\sqrt{3}}\\\\
+                \hline
+            \end{array}
+        ';
+
+        $x = $a; $y = $b;
+        $count = 0;
+        while($x/$y < 0){
+            $x += 2*$y;
+            $count += 1;
+            $flag = 1;
+        }
+        while($x/$y >= 2){
+            $x -= 2*$y;
+            $count -= 1;
+            $flag = 1;
+        }
+
+        if(isset($flag)){
+            $sample_text = '
+                \begin{eqnarray}
+                    \sin({'.fo(f2($a,$b,'\pi')).'}) &=& \sin('.fo(f2($a,$b,'\pi')).d2(2*$count,'\pi').')\\\\
+                                            &=& \sin({'.fo(f2($x,$y,'\pi')).'})\\\\
+                    \cos({'.fo(f2($a,$b,'\pi')).'}) &=& \cos('.fo(f2($a,$b,'\pi')).d2(2*$count,'\pi').')\\\\
+                                            &=& \cos({'.fo(f2($x,$y,'\pi')).'})
+                \end{eqnarray}\\\\
+            '.$table;
+        }else{
+            $sample_text = $table;
+        }
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //三角関数のグラフ
@@ -6417,9 +7015,19 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            積の微分より、\\\\
+            \begin{eqnarray}
+                f\'(x) &=& ('.d1($a,'x^{3}').d2($b,'x').')\'('.d1($c,'x^{4}').d4($d).') + ('.d1($a,'x^{3}').d2($b,'x').')('.d1($c,'x^{4}').d4($d).')\'\\\\
+                       &=& ('.d1(3*$a,'x^{2}').d4($b).')('.d1($c,'x^{4}').d4($d).')+('.d1($a,'x^{3}').d2($b,'x').')('.d1(4*$c,'x^{3}').')\\\\
+                       &=& '.d1(3*$a*$c,'x^{6}').d2(3*$a*$d,'x^{2}').d2($b*$c,'x^{4}').d4($b*$d).d2(4*$a*$c,'x^{6}').d2(4*$b*$c,'x^{4}').'\\\\
+                       &=& '.d1(7*$a*$c,'x^{6}').d2(5*$b*$c,'x^{4}').d2(3*$a*$d,'x^{2}').d4($b*$d).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //商の微分法
@@ -6458,9 +7066,18 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                f\'(x) &=& \frac{('.d1($a,'x').d4($b).')\'(x^{2}'.d4($c).')-('.d1($a,'x').d4($b).')(x^{2}'.d4($c).')\'}{(x^{2}'.d4($c).')^{2}}\\\\
+                       &=& \frac{'.d1($a,'(x^{2}'.d4($c).')-('.d1($a,'x').d4($b).') \cdot 2x').'}{(x^{2}'.d4($c).')^{2}}\\\\
+                       &=& \frac{('.d1($a,'x^{2}').d4($a*$c).')-('.d1(2*$a,'x^{2}').d2(2*$b,'x').')}{(x^{2}'.d4($c).')^{2}}\\\\
+                       &=& \frac{'.d1(-1*$a,'x^{2}').d2(-2*$b,'x').d4($a*$c).'}{(x^{2}'.d4($c).')^{2}}
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //合成関数の微分 その１
@@ -6509,9 +7126,18 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            合成関数の微分より、\\\\
+            \begin{eqnarray}
+                f\'(x) &=& '.$d.'('.d1($a,'x^{2}').d2($b,'x').d4($c).')^{'.($d-1).'} \cdot ('.d1($a,'x^{2}').d2($b,'x').d4($c).')\'\\\\
+                       &=& '.$d.'('.d1(2*$a,'x').d4($b).')('.d1($a,'x^{2}').d2($b,'x').d4($c).')^{'.($d-1).'}\\\\
+                       '.($t==1?'':'&=& '.($d*$t).'('.d1(2*$a/$t,'x').d4($b/$t).')('.d1($a,'x^{2}').d2($b,'x').d4($c).')^{'.($d-1).'}').'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //合成関数の微分 その２
@@ -6572,9 +7198,20 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            f(x) = \sqrt['.$a.']{'.d1($b,'x^{2}').d2($c,'x').d4($d).'} = ('.d1($b,'x^{2}').d2($c,'x').d4($d).')^{\frac{1}{'.$a.'}}\\\\
+            合成関数の微分より、\\\\
+            \begin{eqnarray}
+                f\'(x) &=& \frac{1}{'.$a.'} \cdot ('.d1($b,'x^{2}').d2($c,'x').d4($d).')^{'.fo(frac(1-$a,$a)).'} \cdot ('.d1(2*$b,'x').d4($c).')\\\\
+                       &=& \frac{1}{'.$a.'} \cdot \frac{1}{('.d1($b,'x^{2}').d2($c,'x').d4($d).')^{'.fo(frac($a-1,$a)).'}} \cdot ('.d1(2*$b,'x').d4($c).')\\\\
+                       &=& \frac{'.d1(2*$b,'x').d4($c).'}{'.$a.'\sqrt['.$a.']{('.d1($b,'x^{2}').d2($c,'x').d4($d).')^{'.($a-1).'}}}\\\\
+                       '.($t==1?'':'&=& \frac{'.d1(2*$b/$t,'x').d4($c/$t).'}{'.$a/$t.'\sqrt['.$a.']{('.d1($b,'x^{2}').d2($c,'x').d4($d).')^{'.($a-1).'}}}').'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //三角関数の微分 その１
@@ -6621,6 +7258,13 @@ class QuestionController extends Controller
                     unset($option[0]);
                     $blanks -= 1;
                 }
+
+                $sample_text = '
+                    \begin{eqnarray}
+                        f\'(x) &=& \cos{('.d1($a,'x').d4($b).')} \cdot ('.d1($a,'x').d4($b).')\'\\\\
+                               &=& '.d1($a,'\cos{('.d1($a,'x').d4($b).')}').'
+                    \end{eqnarray}
+                ';
                 break;
             case 2:
                 $item[0] = 'f\'(x) = '.($right_answers[0]<0?'-':'').'\fbox{ア}';
@@ -6632,11 +7276,26 @@ class QuestionController extends Controller
                     unset($option[0]);
                     $blanks -= 1;
                 }
+
+                $sample_text = '
+                    \begin{eqnarray}
+                        f\'(x) &=& -\sin{('.d1($a,'x').d4($b).')} \cdot ('.d1($a,'x').d4($b).')\'\\\\
+                               &=& '.d1(-1*$a,'\sin{('.d1($a,'x').d4($b).')}').'
+                    \end{eqnarray}
+                ';
                 break;
             case 3:
                 $item[0] = 'f\'(x) = \frac{\fbox{ア}}';
                 $item[1] = '{\cos^{2}{(\fbox{イ}x';
                 $item[2] = ($right_answers[2]<0?'-':'+').'\fbox{ウ})}}';
+
+                $sample_text = '
+                    \begin{eqnarray}
+                        f\'(x) &=& \frac{1}{\cos^{2}{('.d1($a,'x').d4($b).')}} \cdot ('.d1($a,'x').d4($b).')\'\\\\
+                               &=& \frac{'.($a).'}{\cos^{2}{('.d1($a,'x').d4($b).')}}
+                    \end{eqnarray}
+                ';
+
                 break;
         }
 
@@ -6650,7 +7309,7 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //三角関数の微分 その２
@@ -6691,9 +7350,17 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                f\'(x) &=& ('.d1($a,'x').')\'\sin{x} + '.d1($a,'x').'(\sin{x})\' '.d2($b,'(\cos{x})\'').'\\\\
+                       &=& '.d1($a,'\sin{x}').d2($a,'x\cos{x}').d2(-1*$b,'\sin{x}').'\\\\
+                       &=& '.d1($a,'x\cos{x}').d2($a-$b,'\sin{x}').'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //対数関数の微分 その１
@@ -6724,16 +7391,23 @@ class QuestionController extends Controller
         $item[1] = '\frac{\fbox{ア}}';
         $item[2] = '{(\fbox{イ}x';
         $item[3] = ($right_answers[2]<0?'-':'+').'\fbox{ウ})';
-        $item[4] = 'log{\fbox{エ}}}';
+        $item[4] = '\log{\fbox{エ}}}';
 
         for($i=0;$i<$blanks;$i++)
         {
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                f\'(x) &=& \frac{1}{('.d1($b,'x').d4($c).')\log{'.$a.'}} \cdot ('.d1($b,'x').d4($c).')\'\\\\
+                       &=& \frac{'.$b.'}{('.d1($b,'x').d4($c).')\log{'.$a.'}}
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //対数関数の微分 その２
@@ -6766,9 +7440,17 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                f\'(x) &=& \frac{('.d1($a,'\sin{'.$b.'}x').')\'}{'.d1($a,'\sin{'.$b.'}x').'}\\\\[5pt]
+                       &=& \frac{'.d1($a*$b,'\cos{'.$b.'}x').'}{'.d1($a,'\sin{'.$b.'}x').'}\\\\[5pt]
+                       &=& \frac{'.d1($b,'\cos{'.$b.'}x').'}{\sin{'.d1($b,'x').'}}
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //指数関数の微分
@@ -6813,9 +7495,13 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            f\'(x) = ('.d1($a,'x').d4($b).')\' \cdot e^{'.d1($a,'x').d4($b).'} = '.d1($a,'e^{'.d1($a,'x').d4($b).'}').'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //媒介変数表示と微分
@@ -6864,9 +7550,18 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \frac{dy}{dx} = \frac{\frac{dy}{dt}}{\frac{dx}{dt}}\\\\
+            \frac{dx}{dt} = '.($a).'、\frac{dy}{dt} = '.d1(2*$c,'t').d4($d).'より、\\\\
+            \begin{eqnarray}
+                \frac{dx}{dy} &=& \frac{'.d1(2*$c,'t').d4($d).'}{'.$a.'}\\\\
+                              &=& '.f1(2*$c,$a,'t').f2($d,$a).'
+            \end{eqnarray} 
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //曲線の凹凸と変曲点
@@ -6900,11 +7595,53 @@ class QuestionController extends Controller
         $item[0] = '変曲点は、x座標の小さい順に\\\\(\fbox{ア},\fbox{イ}),(\fbox{ウ},\fbox{エ})\\ であり、\\\\';
         $item[1] = 'x \lt \fbox{オ}\\ で下に凸\\\\'; 
         $item[2] = '\fbox{オ} \lt x \lt \fbox{カ}\\ で上に凸\\\\'; 
-        $item[3] = '\fbox{カ} \lt x\\ で下に凸'; 
+        $item[3] = '\fbox{カ} \lt x\\ で下に凸';
+
+        $sample_text = '
+            y = x^{4}'.d2($a,'x^{3}').d2($b,'x^{2}').d2($c,'x').d4($d).'より、\\\\
+            y\' = 4x^{3}'.d2(3*$a,'x^{2}').d2(2*$b,'x').d4($c).'\\\\
+            y\'\' = 12x^{2}'.d2(6*$a,'x').d4(2*$b).'\\\\
+            \\\\
+            y\'\' = 12x^{2}'.d2(6*$a,'x').d4(2*$b).' = 12(x'.d4($p).')(x'.d4($q).')\\\\
+            x='.$p.'のとき\\ y = '.$right_answers[1].'、x='.$q.'のとき\\ y = '.$right_answers[3].'\\\\
+            よって、変曲点は、('.$p.','.$right_answers[1].'),('.$q.','.$right_answers[3].')\\\\
+            また、y\'\'は、
+            \begin{array}{ccc}
+                x \lt '.$p.' &で & y\'\' \gt 0\\\\
+                '.$p.' \lt x \lt '.$q.' &で & y\'\' \lt 0\\\\
+                '.$q.' \lt x &で & y\'\' \gt 0\\\\
+            \end{array}\\\\
+            よって、yのグラフは、
+            \begin{array}{ccc}
+                x \lt '.$p.' &で & 下に凸\\\\
+                '.$p.' \lt x \lt '.$q.' &で & 上に凸\\\\
+                '.$q.' \lt x &で & 下に凸\\\\
+            \end{array}\\\\
+            である。グラフの概形は以下のようになる。\\\\
+        ';
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:[-10,10,10,-10],
+                    axis: true,
+                    showNavigation: true,
+                    showCopyright: false
+                });
+
+                function bezier(t) {
+                    return t*t*t*t + '.$a.'*t*t*t + '.$b.'*t*t + '.$c.'*t + '.$d.';
+                }
+
+                board.create(\'functiongraph\', [bezier, -10, 10]);
+                board.create(\'point\',['.$p.','.$right_answers[1].'] , {name:\' \', face:\'o\', size:1, fixed:true});
+                board.create(\'point\',['.$q.','.$right_answers[3].'] , {name:\' \', face:\'o\', size:1, fixed:true});
+            </script>
+        ';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //速度と加速度
@@ -6925,6 +7662,8 @@ class QuestionController extends Controller
         $right_answers[1] = $a*$a + 4*$b*$b*$d*$d;
         $right_answers[2] = 2*abs($b);
 
+        list($right_answers[0],$right_answers[1]) = root($right_answers[0],$right_answers[1]);
+
         //問題テキストの設定
         $text = '$$ 座標平面上を運動する点Pの\\\\時刻\\ t\\ における座標(x,y)が\\\\
                 x = '.d1($a,'t').'、y='.d1($b,'t^{2}').d4($c).'\\\\で表されるとき、
@@ -6944,9 +7683,19 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \frac{dx}{dt} = '.$a.'、\frac{dy}{dt} = '.d1(2*$b,'t').'、\frac{d^{2}x}{dt^{2}} = 0、\frac{d^{2}y}{dt^{2}} = '.(2*$b).'\\\\
+            時間tにおける速さは、\\\\
+            \sqrt{(\frac{dx}{dt})^{2}+(\frac{dy}{dt})^{2}} = \sqrt{('.$a.')^{2}+('.d1(2*$b,'t').')^{2}} = \sqrt{'.($a*$a).d2(4*$b*$b,'t^{2}').'}\\\\
+            よって、t='.$d.'における速さは、'.rt2(1,$a*$a+4*$b*$b*$d*$d).'\\\\
+            時間tにおける加速度の大きさは、\\\\
+            \sqrt{(\frac{d^{2}x}{dt^{2}})^{2}+(\frac{d^{2}y}{dt^{2}})^{2}} = \sqrt{('.(2*$b).')^{2}} = '.abs(2*$b).'\\\\
+            よって、tにかかわらず、加速度の大きさは、'.abs(2*$b).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //積分法
@@ -6974,7 +7723,7 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}';
         $item[1] = 'x^{\frac{\fbox{ウ}}{\fbox{エ}}}';
-        $item[2] = ($right_answers[4]<0?'-':'+').'\fbox{オ}log{|x|}';
+        $item[2] = ($right_answers[4]<0?'-':'+').'\fbox{オ}\log{|x|}';
         $item[3] = '+C';
 
         for($i=0;$i<$blanks;$i++)
@@ -6982,9 +7731,18 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                \int{(\sqrt['.$a.']{x}'.($b<0?'-':'+').'\frac{'.abs($b).'}{x})}dx &=& \int{\sqrt['.$a.']{x}}dx '.($b<0?'-':'+').'\int{\frac{'.abs($b).'}{x}}dx\\\\
+                                    &=& \int{x^{\frac{1}{'.$a.'}}}dx '.($b<0?'-':'+').'\int{\frac{'.abs($b).'}{x}}dx\\\\
+                                    &=& '.f1($a,$a+1,'x^{\frac{'.($a+1).'}{'.$a.'}}').d2($b,'\log{|x|}').'+C\\\\
+            \end{eqnarray}
+        ';
+
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //三角関数の不定積分
@@ -7015,9 +7773,16 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                \int{('.d1($a,'\sin{x}').d2($b,'\cos{x}').')}dx &=& \int{'.d1($a,'\sin{x}').'}dx'.($b>0?'+':'-').'\int{'.d1(abs($b),'\cos{x}').'}dx\\\\
+                                &=& '.d1(-1*$a,'\cos{x}').d2($b,'\sin{x}').'+C\\\\
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //指数関数の不定積分
@@ -7044,9 +7809,16 @@ class QuestionController extends Controller
         $item[1] = '+\frac{\fbox{イ}^{x}}{\log{\fbox{ウ}}}';
         $item[2] = '+C';
 
+        $sample_text = '
+            \begin{eqnarray}
+                \int{('.d1($a,'e^{x}').'+'.$b.'^{x})}dx &=& \int{'.d1($a,'e^{x}').'}dx + \int{'.$b.'^{x}}dx\\\\
+                        &=& '.d1($a,'e^{x}').'+\frac{'.$b.'^{x}}{\log{'.$b.'}}+C
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //置換積分法　その１
@@ -7094,9 +7866,27 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \sqrt{'.$b.'-x} = t \quad とおくと、\\\\
+            '.$b.'-x=t^{2} \quad x=-t^{2}'.d4($b).'より、\\\\
+            \frac{dx}{dt} = -2t \quad \therefore dx = -2tdt\\\\
+            したがって、\\\\
+            \begin{eqnarray}
+                \int{'.d1($a,'x').'\sqrt{'.$b.'-x}}\\ dx &=& \int{\{'.d1($a,'(-t^{2}'.d4($b).')t').'\}}(-2t)dt\\\\
+                        &=& \int{('.d1(-1*$a,'t^{3}').d2($a*$b,'t').')(-2t)}dt\\\\
+                        &=& \int{('.d1(2*$a,'t^{4}').d2(-2*$a*$b,'t^{2}').')}dt\\\\
+                        &=& '.(2*$a).'\int{(t^{4}'.d2(-1*$b,'t^{2}').')}dt\\\\
+                        &=& '.(2*$a).'('.f1(1,5,'t^{5}').f2($b,3,'t^{3}').')+C\\\\
+                        &=& '.f1(2*$a,15,'t^{3}(3t^{2}'.d2(-5*$b).')').'+C\\\\
+                        &=& '.f1(2*$a,15,'('.$b.'-x)\sqrt{'.$b.'-x}').'\{3('.$b.'-x)'.d2(-5*$b).'\}+C\\\\
+                        &=& '.f1(-2*$a,15).'('.(2*$b).'+3x)('.$b.'-x)\sqrt{'.$b.'-x}+C\\\\
+                        '.($s==1?'':'&=& '.f1(-2*$a*$s,15).'('.(2*$b/$s).d2(3/$s,'x').')('.$b.'-x)\sqrt{'.$b.'-x}+C').'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //置換積分法　その２
@@ -7139,9 +7929,22 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            '.d1($a,'x^{2}').d2($b,'x').d4($c).' = u\\ とおくと、\\\\
+            両辺をxで微分して、\\\\
+            '.d1(2*$a,'x').d4($b).' = \frac{du}{dx}\\\\
+            \therefore ('.d1(2*$a,'x').d4($b).')dx = du\\\\
+            したがって、\\\\
+            \begin{eqnarray}
+                \int{('.d1(2*$a,'x').d4($b).')\sqrt{'.d1($a,'x^{2}').d2($b,'x').d4($c).'}}\\ dx &=& \int{\sqrt{u}}du\\\\
+                        &=& \frac{2}{3}u^{\frac{3}{2}}\\\\
+                        &=& \frac{2}{3}('.d1($a,'x^{2}').d2($b,'x').d4($c).')^{\frac{3}{2}}
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //置換積分法　その３
@@ -7176,9 +7979,23 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            '.d1($a,'x^{2}').d4($b).' = u\\ とおくと、\\\\
+            両辺をxで微分して、\\\\
+            '.d1(2*$a,'x').' = \frac{du}{dx}\\\\
+            \therefore xdx = \frac{1}{'.(2*$a).'}du\\\\
+            したがって、\\\\
+            \begin{eqnarray}
+                \int{\frac{x}{'.d1($a,'x^{2}').d4($b).'}}\\ dx &=& \int{\frac{1}{u} \cdot \frac{1}{'.(2*$a).'}}du\\\\
+                        &=& \frac{1}{'.(2*$a).'}\int{\frac{1}{u}}du\\\\
+                        &=& \frac{1}{'.(2*$a).'}\log{|u|}+C\\\\
+                        &=& \frac{1}{'.(2*$a).'}\log{|'.d1($a,'x^{2}').d4($b).'|}+C
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //部分積分法
@@ -7224,9 +8041,21 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                && \int{'.d1($a,'x').'\log{(x^{2}+'.$b.')}}dx\\\\[5pt]
+                 &=& '.f1($a,2,'x^{2}').'\log{(x^{2}'.d4($b).')} - \int{'.f1($a,2,'x^{2}').' \cdot \frac{2x}{x^{2}'.d4($b).'}}dx\\\\[5pt]
+                 &=& '.f1($a,2,'x^{2}').'\log{(x^{2}'.d4($b).')} - \int{\frac{'.d1($a,'x^{3}').'}{x^{2}'.d4($b).'}}dx\\\\[5pt]
+                 &=& '.f1($a,2,'x^{2}').'\log{(x^{2}'.d4($b).')} - \int{('.d1($a,'x').'- \frac{'.d1($a*$b,'x').'}{x^{2}'.d4($b).'})}dx\\\\[5pt]
+                 &=& '.f1($a,2,'x^{2}').'\log{(x^{2}'.d4($b).')} - \{'.f1($a,2,'x^{2}').f2($a*$b,-2,'\log{(x^{2}'.d4($b).')}').'\}+C\\\\[5pt]
+                 &=& '.f1($a,2,'x^{2}').'\log{(x^{2}'.d4($b).')}  '.f1($a,-2,'x^{2}').f2($a*$b,2,'\log{(x^{2}'.d4($b).')}').'+C\\\\[5pt]
+                 &=& '.f1($a,2,'(x^{2}'.d4($b).')').'\log{(x^{2}'.d4($b).')} '.f2($a,-2,'x^{2}').'+C
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //分数関数の不定積分
@@ -7282,9 +8111,17 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                && \int{\frac{'.d1($a,'x^{2}').d4($b).'}{x'.d4($c).'}}dx\\\\
+                    &=& \int{('.d1($a,'x').d4(-1*$a*$c).($b+$a*$c*$c>0?'+':'-').'\frac{'.abs($b+$a*$c*$c).'}{x'.d4($c).'})}dx\\\\
+                    &=& '.f1($a,2,'x^{2}').d2(-1*$a*$c,'x').d2($b+$a*$c*$c,'\log{|x'.d4($c).'|}').'+C
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //三角関数に関する不定積分
@@ -7311,7 +8148,7 @@ class QuestionController extends Controller
 
         //空欄テキストの設定
         $item[0] = '-\frac{\fbox{ア}}{\fbox{イ}}\cos{\fbox{ウ}x}';
-        $item[1] = '-\frac{\fbox{エ}}{\fbox{オ}}\sin{\fbox{カ}x}';
+        $item[1] = '-\frac{\fbox{エ}}{\fbox{オ}}\cos{\fbox{カ}x}';
         $item[2] = '+C';
 
         $right_answers = array_values($right_answers);
@@ -7322,9 +8159,23 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \sin{('.$a.d4($b).')x} = \sin{'.d1($a,'x').'}\cos{'.d1($b,'x').'} + \cos{'.d1($a,'x').'}\sin{'.d1($b,'x').'}\\\\
+            \sin{('.$a.d4(-1*$b).')x} = \sin{'.d1($a,'x').'}\cos{'.d1($b,'x').'} - \cos{'.d1($a,'x').'}\sin{'.d1($b,'x').'}\\\\
+            これらの両辺を足して、\\\\
+            \sin{'.d1($a+$b,'x').'} + \sin{'.d1($a-$b,'x').'} = 2\sin{'.d1($a,'x').'}\cos{'.d1($b,'x').'}\\\\
+            \therefore \sin{'.d1($a,'x').'}\cos{'.d1($b,'x').'} = \frac{1}{2}\sin{'.d1($a+$b,'x').'} + \frac{1}{2}\sin{'.d1($a-$b,'x').'}\\\\
+            したがって、\\\\
+            \begin{eqnarray}
+                && \int{\sin{'.d1($a,'x').'}\cos{'.d1($b,'x').'}}\\ dx\\\\
+                    &=& \int{(\frac{1}{2}\sin{'.d1($a+$b,'x').'} + \frac{1}{2}\sin{'.d1($a-$b,'x').'})}dx\\\\
+                    &=& '.f1(-1,2*($a+$b),'\cos{'.d1($a+$b,'x').'}').f2(-1,2*($a-$b),'\cos{'.d1($a-$b,'x').'}').'+C
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //定積分の置換積分法
@@ -7355,6 +8206,8 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = ($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}}';
 
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
+
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
@@ -7363,9 +8216,32 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \sqrt{'.$c.'-x}=t \quad とおくと、\\\\
+            '.$c.'-x = t^{2} \quad より、 x = -t^{2}'.d4($c).'\\\\
+            両辺をtで微分して、\frac{dx}{dt} = -2t \quad \therefore dx = -2tdt\\\\
+            \begin{array}{|c|ccc|}
+                \hline
+                x & '.$a.' & \rightarrow & '.$b.'\\\\
+                \hline
+                t & '.$k_1.' & \rightarrow & '.$k_2.'\\\\
+                \hline
+            \end{array}\\\\
+            したがって、\\\\
+            \begin{eqnarray}
+                && \int_{'.$b.'}^{'.$a.'}{\frac{x}{\sqrt{'.$c.'-x}}}dx\\\\
+                    &=& \int_{'.$k_2.'}^{'.$k_1.'}{\frac{-t^{2}'.d4($c).'}{t}}\cdot(-2t)dt\\\\
+                    &=& \int_{'.$k_2.'}^{'.$k_1.'}{(2t^{2}'.d4(-2*$c).')}dt\\\\
+                    &=& 2\int_{'.$k_2.'}^{'.$k_1.'}{(t^{2}'.d4(-1*$c).')}dt\\\\
+                    &=& 2\left[ \frac{1}{3}t^{3}'.d2(-1*$c,'t').' \right]_{'.$k_2.'}^{'.$k_1.'}\\\\
+                    &=& 2\{(\frac{1}{3} \cdot ('.$k_1.')^{3} '.d2(-1*$c,'\cdot ('.$k_1.')').') - (\frac{1}{3} \cdot ('.$k_2.')^{3} '.d2(-1*$c,'\cdot('.$k_2.')').')\}\\\\
+                    &=& '.f3(2*(pow($k_1,3)-pow($k_2,3)) - 6*$c*($k_1-$k_2),3).'\\\\
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //定積分の部分積分法
@@ -7426,9 +8302,44 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                && \int_{0}^{\frac{\pi}{2}}{'.d1($b,'x').'\sin{'.d1($c,'x').'}}\\ dx\\\\
+                    &=& \left[ '.f1(-1*$b,$c,'x\cos{'.d1($c,'x').'}').' \right]_{0}^{\frac{\pi}{2}} - \int_{0}^{\frac{\pi}{2}}{('.f1(-1*$b,$c,'\cos{'.d1($c,'x').'}').')}dx \\\\
+                    &=& \left[ '.f1(-1*$b,$c,'x\cos{'.d1($c,'x').'}').' \right]_{0}^{\frac{\pi}{2}} + \left[ '.f1($b,$c*$c,'\sin{'.d1($c,'x').'}').' \right]_{0}^{\frac{\pi}{2}}\\\\
+                    &=& '.f1(-1*$b,$c,''.(abs(-1*$b/$c)==1?'':'\cdot').' \frac{\pi}{2}\cos{'.f1($c,2,'\pi').'}').' '.f2($b,$c*$c,'\sin{'.f1($c,2,'\pi').'}').'\\\\
+        ';
+
+        switch($c%4){
+            case 0:
+                $sample_text .= '
+                        &=& '.f1(-1*$b,2*$c,'\pi').'
+                    \end{eqnarray}
+                ';
+                break;
+            case 1:
+                $sample_text .= '
+                        &=& '.fo(frac($b,$c*$c)).'
+                    \end{eqnarray}
+                ';
+                break;
+            case 2:
+                $sample_text .= '
+                        &=& '.f1($b,2*$c,'\pi').'
+                    \end{eqnarray}
+                ';
+                break;
+            case 3:
+                $sample_text .= '
+                        &=& '.fo(frac(-1*$b,$c*$c)).'
+                    \end{eqnarray}
+                ';
+                break;
+        }
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //回転体の体積
@@ -7468,9 +8379,21 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            y=x^{2}'.d2($a,'x').d4($b).'\\ と、x軸の共有点は、\\\\
+            x^{2}'.d2($a,'x').d4($b).'=0を解いて、x='.$p.',\\ '.$q.'\\\\
+            したがって、求める体積Vは、\\\\
+            \begin{eqnarray}
+                V &=& \pi\int_{'.$p.'}^{'.$q.'}{(x^{2}'.d2($a,'x').d4($b).')^{2}}dx\\\\
+                  &=& \pi\int_{'.$p.'}^{'.$q.'}{(x^{4}'.d2(2*$a,'x^{3}').d2($a*$a+2*$b,'x^{2}').d2(2*$a*$b,'x').d4($b*$b).')}dx\\\\
+                  &=& \pi\left[ \frac{1}{5}x^{5}'.f2($a,2,'x^{4}').f2($a*$a+2*$b,3,'x^{3}').d2($a*$b,'x^{2}').d2($b*$b,'x').' \right]_{'.$p.'}^{'.$q.'}\\\\
+                  &=& '.f1(6*(pow($q,5)-pow($p,5)) + 15*$a*(pow($q,4)-pow($p,4)) + 10*($a*$a+2*$b)*(pow($q,3)-pow($p,3)) + 30*$a*$b*(pow($q,2)-pow($p,2)) + 30*$b*$b*($q-$p),30,'\pi').'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
 
