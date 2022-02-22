@@ -20,6 +20,16 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <!-- Mathjax -->
+    <!--
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            CommonHTML: { linebreaks: { automatic: true } },
+            "HTML-CSS": { linebreaks: { automatic: true } },
+            SVG: { linebreaks: { automatic: true } },
+            messageStyle: 'none',
+        });
+    </script>
+    -->
     <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
     <!-- jsxgraphs -->
@@ -102,5 +112,17 @@
     </div>
     @yield('canvas')
     @yield('script')
+    <!--
+    <script>
+        var delay;
+        window.addEventListener('resize', function() {
+        clearTimeout(delay);
+        
+        delay = setTimeout(function() {
+            MathJax.Hub.Queue(['Rerender', MathJax.Hub]);
+        }, 100);
+        });
+    </script>
+    -->
 </body>
 </html>

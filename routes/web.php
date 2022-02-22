@@ -30,7 +30,6 @@ Route::get('/unit_select', [App\Http\Controllers\SortController::class, 'unit_se
 Route::get('/q_select/{id}', [App\Http\Controllers\SortController::class, 'q_select'])->name('question_select');
 
 //問題画面
-
 Route::get('/q_select/{unit_id}/{q_id}',[App\Http\Controllers\QuestionController::class, 'question'])->name('question');
 Route::get('/redirect/{q_id}',[App\Http\Controllers\SortController::class, 'q_route'])->name('q_route');
 Route::post('/q_select/{unit_id}/{q_id}',[App\Http\Controllers\AnswerController::class, 'answer'])->name('answer');

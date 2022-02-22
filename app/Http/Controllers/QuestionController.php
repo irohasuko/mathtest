@@ -1164,7 +1164,7 @@ class QuestionController extends Controller
             }
         }
 
-        //正解テキストの設定
+        //問題テキストの設定
         $text = '$$ ２次関数 \\ y='.d1($a).'x^{2}'.d2($b).'x'.d3($c).'\\ ('.$d.'\leqq x \leqq'.$e.')\\ は、\\\\';
 
         //空欄テキストの設定
@@ -4282,7 +4282,7 @@ class QuestionController extends Controller
         list($b,$c) = gcd($b,$c);
 
         //答えの計算
-        $right_answers[0] = -1*$b;
+        $right_answers[0] = -1*$a*$b;
         $right_answers[1] = $c;
         $right_answers[2] = $d;
         $right_answers[3] = 2*$a;
@@ -4309,9 +4309,32 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            y=2\sin{(\frac{x}{'.$a.'}'.f2($b,$c,'\pi').')}'.d3($d).'=2\sin{\frac{1}{'.$a.'}(x'.f2($a*$b,$c,'\pi').')'.d3($d).'}\\\\
+            したがって、このグラフは、y=2\sin{\frac{x}{'.$a.'}}のグラフを\\\\
+            x軸方向に'.f1(-1*$a*$b,$c,'\pi').'、y軸方向に'.$d.'だけ移動させたものである。\\\\
+            周期は\\ y=2\sin{\frac{x}{'.$a.'}}と同様で、'.d1(2*$a,'\pi').'\\\\
+        ';
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:[-1,3,3,-3],
+                    axis: true,
+                    showNavigation: false,
+                    showCopyright: false
+                });
+
+                function bezier(t) {
+                    return 2*sin(t);
+                }
+                board.create(\'functiongraph\', [bezier,-1,3]);
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //加法定理
