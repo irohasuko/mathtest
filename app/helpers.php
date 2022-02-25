@@ -286,6 +286,36 @@ if (! function_exists('fr_rt3')) {
     }
 }
 
+//ルートと分数混合の表示処理4
+if (! function_exists('fr_rt4')) {
+    function fr_rt4($a,$b,$c,$d,$e)  //(a√b+c√d)/e
+    {
+        list($a,$b) = root($a,$b); list($c,$d) = root($c,$d);
+        $s = gmp_gcd($a,gmp_gcd($c,$e));
+        $a/=$s; $c/=$s; $e/=$s;
+        if($e<0){
+            $e*=-1; $a*=-1; $c*=-1;
+        }
+        if($b==$d){
+            if($b == 1){
+                $nu = $a+$c;
+            }else{
+                $nu = ($a+$c).'\sqrt{'.$b.'}';
+            }
+        }else{
+            $nu = fo(rt($a,$b)).rt($c,$d);
+        }
+        if($e==1){
+            $text = $nu;
+        }else{
+            $text = '\frac{'.$nu.'}{'.$e.'}';
+        }
+
+        return $text;
+    }
+}
+
+
 //2次方程式の解の計算
 if (! function_exists('quadratic')) {
     function quadratic($a,$b,$c)  //ax^{2}+bx+c=0, a>0

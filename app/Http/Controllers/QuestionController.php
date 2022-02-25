@@ -4278,7 +4278,7 @@ class QuestionController extends Controller
         $a = rand(2,4);
         do { $b = rand(-5,5); } while( $b==0 );
         do { $c = rand(-5,5); } while( $c==0 );
-        do { $d = rand(-5,5); } while( $d==0 );
+        do { $d = rand(-2,2); } while( $d==0 );
         list($b,$c) = gcd($b,$c);
 
         //答えの計算
@@ -4319,16 +4319,22 @@ class QuestionController extends Controller
         $plot = '
             <script>
                 var board = JXG.JSXGraph.initBoard(\'plot\', {
-                    boundingbox:[-1,3,3,-3],
+                    boundingbox:[-1,'.(2+$d>3?3+$d:3).',7*'.$a.','.(-2+$d<-3?-3+$d:-3).'],
                     axis: true,
-                    showNavigation: false,
+                    showNavigation: true,
                     showCopyright: false
                 });
 
                 function bezier(t) {
-                    return 2*sin(t);
+                    return 2*Math.sin(t/'.$a.');
                 }
-                board.create(\'functiongraph\', [bezier,-1,3]);
+                function bezier2(t) {
+                    return 2*Math.sin((t+'.($a*$b/$c).'*Math.PI)/'.$a.')+'.$d.';
+                }
+                board.create(\'functiongraph\', [bezier,-100,100],{dash:1});
+                board.create(\'functiongraph\', [bezier2,-100,100]);
+                board.create(\'line\',[['.$a.'*Math.PI/2,2],['.(($a*($c-2*$b)*pi())/(2*$c)).',2]], {straightFirst:false, straightLast:false, lastArrow:true, strokeColor:"red",strokeWidth:1});
+                board.create(\'line\',[['.(($a*($c-2*$b)*pi())/(2*$c)).',2],['.(($a*($c-2*$b)*pi())/(2*$c)).',2+'.$d.']], {straightFirst:false, straightLast:false, lastArrow:true, strokeColor:"red",strokeWidth:1});
             </script>
         ';
 
@@ -4417,9 +4423,26 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            0 \lt \alpha \lt \frac{2}{\pi} \\ と \\ \sin{\alpha}=\frac{'.$a.'}{'.$b.'}より、\\\\
+            \cos{\alpha} = \sqrt{1-(\frac{'.$a.'}{'.$b.'})^2} = '.fr_rt2(1,$b*$b-$a*$a,$b).'\\\\
+            0 \lt \beta \lt \frac{2}{\pi} \\ と \\ \cos{\beta}=\frac{'.$c.'}{'.$d.'}より、\\\\
+            \sin{\beta} = \sqrt{1-(\frac{'.$c.'}{'.$d.'})^2} = '.fr_rt2(1,$d*$d-$c*$c,$d).'\\\\
+
+            よって、\\\\
+            \begin{eqnarray}
+                \sin{(\alpha+\beta)} &=& \sin{\alpha}\cos{\beta} + \cos{\alpha}\sin{\beta}\\\\
+                                     &=& '.f3($a,$b).'\cdot'.f3($c,$d).'+'.fr_rt2(1,$d*$d-$c*$c,$d).'\cdot'.fr_rt2(1,$b*$b-$a*$a,$b).'\\\\
+                                     &=& '.fr_rt($a*$c,1,($b*$b-$a*$a)*($d*$d-$c*$c),$b*$d).'\\\\
+                \cos{(\alpha+\beta)} &=& \cos{\alpha}\cos{\beta} - \sin{\alpha}\sin{\beta}\\\\
+                                     &=& '.fr_rt2(1,$b*$b-$a*$a,$b).'\cdot'.f3($c,$d).'-'.f3($a,$b).'\cdot'.fr_rt2(1,$d*$d-$c*$c,$d).'\\\\
+                                     &=& '.fr_rt4($c,$b*$b-$a*$a,-1*$a,$d*$d-$c*$c,$b*$d).'\\\\
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //2倍角の公式
