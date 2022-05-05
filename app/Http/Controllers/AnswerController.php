@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Record;
 use App\Models\Question;
 use App\Models\Unit;
+use App\Models\Formula;
 
 class AnswerController extends Controller
 {
@@ -67,8 +68,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text .'='. str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10102;         
-        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10102;
+        $f_number = [10102];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);
+        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit101_a02(Request $request, $unit,$question,$time)
@@ -81,8 +85,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text .'='. str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10103;         
-        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10103;
+        $f_number = [10102];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit101_a03(Request $request, $unit,$question,$time)
@@ -97,8 +104,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text .'='. str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10104;         
-        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10104;
+        $f_number = [10102];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);    
+        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit101_a04(Request $request, $unit,$question,$time)
@@ -112,7 +122,10 @@ class AnswerController extends Controller
         $text = $request->text .'='. str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10105;         
-        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $f_number = [10102];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);  
+        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit101_a05(Request $request, $unit,$question,$time)
@@ -125,8 +138,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text .'='. str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10106;         
-        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10106;       
+        $f_number = [10104];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);    
+        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit101_a06(Request $request, $unit,$question,$time)
@@ -162,8 +178,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text .'='. str_replace($option,$right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10107;         
-        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10107;    
+        $f_number = [10103];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);       
+        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit101_a07(Request $request, $unit,$question,$time)
@@ -176,8 +195,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text .'='. str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10108;         
-        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10108;
+        $f_number = [10103];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);        
+        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit101_a08(Request $request, $unit,$question,$time)
@@ -190,8 +212,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text .'='. str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10109;         
-        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10109;
+        $f_number = [10105];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);           
+        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit101_a09(Request $request, $unit,$question,$time)
@@ -204,8 +229,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text .'='. str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10110;         
-        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10110;
+        $f_number = [10107];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);       
+        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit101_a10(Request $request, $unit,$question,$time)
@@ -232,8 +260,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10112;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10112;
+        $f_number = [10106];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);           
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit101_a12(Request $request, $unit,$question,$time)
@@ -246,8 +277,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10201;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10201;
+        $f_number = [10109];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);           
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit102_a01(Request $request, $unit,$question,$time)
@@ -260,8 +294,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10202;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10202;
+        $f_number = [10201,10202];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit102_a02(Request $request, $unit,$question,$time)
@@ -274,8 +311,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10203;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10203;
+        $f_number = [10203];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit102_a03(Request $request, $unit,$question,$time)
@@ -284,12 +324,12 @@ class AnswerController extends Controller
         $option = $this->option;
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
-
+        
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 10204;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','plot'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit102_a04(Request $request, $unit,$question,$time)
@@ -303,8 +343,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10205;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','plot','sample_text'));
+        $next_id = 10205;
+        $f_number = [10202,10204];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','plot','sample_text','formulas'));
     }
 
     public function unit102_a05(Request $request, $unit,$question,$time)
@@ -318,8 +361,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10206;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','plot'));
+        $next_id = 10206;
+        $f_number = [10202,10203,10204];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit102_a06(Request $request, $unit,$question,$time)
@@ -346,8 +392,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10208;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10208;
+        $f_number = [10103,10205];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit102_a08(Request $request, $unit,$question,$time)
@@ -360,8 +409,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10209;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10209;
+        $f_number = [10206];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit102_a09(Request $request, $unit,$question,$time)
@@ -375,8 +427,11 @@ class AnswerController extends Controller
         $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10210;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','plot'));
+        $next_id = 10210;
+        $f_number = [10205];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit102_a10(Request $request, $unit,$question,$time)
@@ -389,8 +444,11 @@ class AnswerController extends Controller
         $plot = $request->plot;
         $text = $request->text.'\\\\'.$request->options[$request->right_answers[0]-1].'$$';
         $answer_text = '$$'.$request->options[$request->answers[0]-1].'$$';
-        $next_id = 10211;         
-        return view('answer/select',compact('text','answer_text','question','unit','next_id','result','sample_text','plot'));
+        $next_id = 10211;
+        $f_number = [10206];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/select',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit102_a11(Request $request, $unit,$question,$time)
@@ -403,8 +461,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10301;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10301;
+        $f_number = [10206];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit103_a01(Request $request, $unit,$question,$time)
@@ -417,8 +478,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10302;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10302;
+        $f_number = [10301,10302];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit103_a02(Request $request, $unit,$question,$time)
@@ -431,8 +495,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10303;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10303;
+        $f_number = [10301];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit103_a03(Request $request, $unit,$question,$time)
@@ -445,8 +512,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10304;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10304;
+        $f_number = [10303,10304];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit103_a04(Request $request, $unit,$question,$time)
@@ -459,8 +529,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10305;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10305;
+        $f_number = [10305];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit103_a05(Request $request, $unit,$question,$time)
@@ -473,8 +546,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10306;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10306;
+        $f_number = [10305];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit103_a06(Request $request, $unit,$question,$time)
@@ -487,8 +563,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10307;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10307;
+        $f_number = [10306];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit103_a07(Request $request, $unit,$question,$time)
@@ -501,8 +580,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10308;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10308;
+        $f_number = [10306];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit103_a08(Request $request, $unit,$question,$time)
@@ -515,8 +597,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10309;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10309;
+        $f_number = [10307,10308];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit103_a09(Request $request, $unit,$question,$time)
@@ -529,8 +614,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10401;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10401;
+        $f_number = [10302,10306,10307,10308];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit104_a01(Request $request, $unit,$question,$time)
@@ -543,8 +631,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10402;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10402;
+        $f_number = [10401];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit104_a02(Request $request, $unit,$question,$time)
@@ -557,8 +648,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10403;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10403;
+        $f_number = [10402];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit104_a03(Request $request, $unit,$question,$time)
@@ -571,8 +665,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10404;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 10404;
+        $f_number = [10403];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit104_a04(Request $request, $unit,$question,$time)
@@ -586,8 +683,11 @@ class AnswerController extends Controller
         $script = $request->script;
         $text = $request->text.'\\\\'.$request->options[$request->right_answers[0]-1].'$$';
         $answer_text = '$$'.$request->options[$request->answers[0]-1].'$$';
-        $next_id = 20101;         
-        return view('answer/select',compact('text','answer_text','question','unit','next_id','result','sample_text','script'));
+        $next_id = 20101;
+        $f_number = [10404];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/select',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','script'));
     }
 
     public function unit201_a01(Request $request, $unit,$question,$time)
@@ -600,8 +700,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20102;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20102;
+        $f_number = [20101];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit201_a02(Request $request, $unit,$question,$time)
@@ -614,8 +717,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20103;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20103;
+        $f_number = [20102];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit201_a03(Request $request, $unit,$question,$time)
@@ -628,8 +734,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20104;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20104;
+        $f_number = [20102];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit201_a04(Request $request, $unit,$question,$time)
@@ -642,8 +751,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20105;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20105;
+        $f_number = [20104];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit201_a05(Request $request, $unit,$question,$time)
@@ -656,8 +768,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20201;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20201;
+        $f_number = [20108];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);        
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit202_a01(Request $request, $unit,$question,$time)
@@ -670,8 +785,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20202;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20202;
+        $f_number = [20201];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit202_a02(Request $request, $unit,$question,$time)
@@ -684,8 +802,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20203;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20203;
+        $f_number = [20203];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit202_a03(Request $request, $unit,$question,$time)
@@ -698,8 +819,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20204;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20204;
+        $f_number = [20204];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit202_a04(Request $request, $unit,$question,$time)
@@ -712,8 +836,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20205;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20205;
+        $f_number = [20205,20206];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit202_a05(Request $request, $unit,$question,$time)
@@ -726,8 +853,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20206;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20206;
+        $f_number = [20207];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit202_a06(Request $request, $unit,$question,$time)
@@ -740,8 +870,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20207;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20207;
+        $f_number = [20208];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit202_a07(Request $request, $unit,$question,$time)
@@ -754,8 +887,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20301;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20301;
+        $f_number = [20207];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit203_a01(Request $request, $unit,$question,$time)
@@ -768,8 +904,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20302;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20302;
+        $f_number = [20301,20303];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit203_a02(Request $request, $unit,$question,$time)
@@ -782,8 +921,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20303;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20303;
+        $f_number = [20304];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit203_a03(Request $request, $unit,$question,$time)
@@ -796,8 +938,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20304;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20304;
+        $f_number = [20305];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit203_a04(Request $request, $unit,$question,$time)
@@ -810,8 +955,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20305;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20305;
+        $f_number = [20303,20306];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit203_a05(Request $request, $unit,$question,$time)
@@ -824,8 +972,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20306;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20306;
+        $f_number = [20307];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit203_a06(Request $request, $unit,$question,$time)
@@ -838,8 +989,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20307;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20307;
+        $f_number = [20308];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit203_a07(Request $request, $unit,$question,$time)
@@ -852,8 +1006,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20308;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20308;
+        $f_number = [20302,20308];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit203_a08(Request $request, $unit,$question,$time)
@@ -866,8 +1023,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20401;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20401;
+        $f_number = [20309];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit204_a01(Request $request, $unit,$question,$time)
@@ -909,8 +1069,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20404;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 20404;
+        $f_number = [10302,20404];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit204_a04(Request $request, $unit,$question,$time)
@@ -920,10 +1083,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20405;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20405;
+        $f_number = [10302,20405];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit204_a05(Request $request, $unit,$question,$time)
@@ -933,10 +1100,12 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20406;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20406;    
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','plot'));
     }
 
     public function unit204_a06(Request $request, $unit,$question,$time)
@@ -946,10 +1115,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20407;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20407;
+        $f_number = [20402];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit204_a07(Request $request, $unit,$question,$time)
@@ -959,10 +1133,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20408;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20408;
+        $f_number = [20406];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit204_a08(Request $request, $unit,$question,$time)
@@ -972,10 +1150,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20501;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20501;
+        $f_number = [20402,20406];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit205_a01(Request $request, $unit,$question,$time)
@@ -985,10 +1167,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text .'='. str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20502;         
-        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20502;
+        $f_number = [10101,20501];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit205_a02(Request $request, $unit,$question,$time)
@@ -998,10 +1184,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 20503;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit205_a03(Request $request, $unit,$question,$time)
@@ -1011,10 +1198,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20504;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20504;
+        $f_number = [20503,20504];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit205_a04(Request $request, $unit,$question,$time)
@@ -1024,10 +1215,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20505;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20505;
+        $f_number = [20503,20504];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit205_a05(Request $request, $unit,$question,$time)
@@ -1037,10 +1232,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text .'='. str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20506;         
-        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20506;
+        $f_number = [20504,20505,20506];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit205_a06(Request $request, $unit,$question,$time)
@@ -1050,10 +1249,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text .'='. str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20507;         
-        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20507;
+        $f_number = [20505,20506];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/equation',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit205_a07(Request $request, $unit,$question,$time)
@@ -1063,10 +1266,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20508;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20508;
+        $f_number = [20504];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit205_a08(Request $request, $unit,$question,$time)
@@ -1076,10 +1283,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20509;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20509;
+        $f_number = [20504,20507,20508];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit205_a09(Request $request, $unit,$question,$time)
@@ -1089,10 +1300,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20510;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20510;
+        $f_number = [20506,20507,20508];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit205_a10(Request $request, $unit,$question,$time)
@@ -1102,10 +1317,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20601;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20601;
+        $f_number = [20504];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit206_a01(Request $request, $unit,$question,$time)
@@ -1115,10 +1334,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20602;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20602;
+        $f_number = [20601];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);        
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit206_a02(Request $request, $unit,$question,$time)
@@ -1128,10 +1351,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20603;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20603;
+        $f_number = [20604,20605];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit206_a03(Request $request, $unit,$question,$time)
@@ -1141,10 +1368,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20604;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20604;
+        $f_number = [20602,20606];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit206_a04(Request $request, $unit,$question,$time)
@@ -1154,10 +1385,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20605;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20605;
+        $f_number = [20602,20606];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit206_a05(Request $request, $unit,$question,$time)
@@ -1167,10 +1402,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20606;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20606;
+        $f_number = [20608];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit206_a06(Request $request, $unit,$question,$time)
@@ -1180,10 +1419,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20607;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20607;
+        $f_number = [20608];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit206_a07(Request $request, $unit,$question,$time)
@@ -1193,10 +1436,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20701;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20701;
+        $f_number = [20607,20608];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit207_a01(Request $request, $unit,$question,$time)
@@ -1206,10 +1454,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20702;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20702;
+        $f_number = [20702,20703];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit207_a02(Request $request, $unit,$question,$time)
@@ -1219,10 +1471,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20703;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20703;
+        $f_number = [20702,20705];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit207_a03(Request $request, $unit,$question,$time)
@@ -1232,10 +1488,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20704;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20704;
+        $f_number = [20701];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','formulas','sample_text'));
     }
 
     public function unit207_a04(Request $request, $unit,$question,$time)
@@ -1245,10 +1505,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20705;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20705;
+        $f_number = [20704];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit207_a05(Request $request, $unit,$question,$time)
@@ -1258,10 +1522,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20706;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20706;
+        $f_number = [20706];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit207_a06(Request $request, $unit,$question,$time)
@@ -1271,10 +1540,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 20707;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 20707;
+        $f_number = [20707];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit207_a07(Request $request, $unit,$question,$time)
@@ -1284,10 +1558,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30101;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30101;
+        $f_number = [20706];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit301_a01(Request $request, $unit,$question,$time)
@@ -1297,10 +1576,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30102;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30102;
+        $f_number = [30101];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit301_a02(Request $request, $unit,$question,$time)
@@ -1310,10 +1594,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30103;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30103;
+        $f_number = [30102,30103];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit301_a03(Request $request, $unit,$question,$time)
@@ -1323,10 +1611,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30104;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30104;
+        $f_number = [30102];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit301_a04(Request $request, $unit,$question,$time)
@@ -1336,10 +1628,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30105;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30105;
+        $f_number = [30104];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit301_a05(Request $request, $unit,$question,$time)
@@ -1349,10 +1645,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30106;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30106;
+        $f_number = [30107];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit301_a06(Request $request, $unit,$question,$time)
@@ -1362,10 +1662,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30201;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30201;
+        $f_number = [30108];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit302_a01(Request $request, $unit,$question,$time)
@@ -1375,10 +1679,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30202;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30202;
+        $f_number = [30201];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit302_a02(Request $request, $unit,$question,$time)
@@ -1388,10 +1697,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30203;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30203;
+        $f_number = [30202];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit302_a03(Request $request, $unit,$question,$time)
@@ -1401,10 +1715,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30204;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30204;
+        $f_number = [30203];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit302_a04(Request $request, $unit,$question,$time)
@@ -1414,10 +1733,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30205;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30205;
+        $f_number = [30202,30204];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);        
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit302_a05(Request $request, $unit,$question,$time)
@@ -1427,10 +1750,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30206;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit302_a06(Request $request, $unit,$question,$time)
@@ -1440,10 +1764,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30207;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30207;
+        $f_number = [20309,30202];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);        
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit302_a07(Request $request, $unit,$question,$time)
@@ -1453,10 +1781,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30208;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30208;
+        $f_number = [20311];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit302_a08(Request $request, $unit,$question,$time)
@@ -1466,10 +1798,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30301;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30301;
+        $f_number = [30206];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit303_a01(Request $request, $unit,$question,$time)
@@ -1479,10 +1816,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30302;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30302;
+        $f_number = [30301];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit303_a02(Request $request, $unit,$question,$time)
@@ -1492,10 +1834,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30303;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30303;
+        $f_number = [30301];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit303_a03(Request $request, $unit,$question,$time)
@@ -1505,10 +1851,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30304;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30304;
+        $f_number = [30302];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit303_a04(Request $request, $unit,$question,$time)
@@ -1518,10 +1869,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30305;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30305;
+        $f_number = [30303];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit303_a05(Request $request, $unit,$question,$time)
@@ -1531,10 +1886,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 30401;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit304_a01(Request $request, $unit,$question,$time)
@@ -1544,10 +1900,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30402;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30402;
+        $f_number = [30402];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit304_a02(Request $request, $unit,$question,$time)
@@ -1557,10 +1917,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30403;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30403;
+        $f_number = [30402,30404];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);        
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit304_a03(Request $request, $unit,$question,$time)
@@ -1570,10 +1934,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30404;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30404;
+        $f_number = [30401,30404];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit304_a04(Request $request, $unit,$question,$time)
@@ -1583,10 +1951,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30405;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30405;
+        $f_number = [30405,30406];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit304_a05(Request $request, $unit,$question,$time)
@@ -1596,10 +1968,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30406;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30406;
+        $f_number = [30407];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit304_a06(Request $request, $unit,$question,$time)
@@ -1609,10 +1985,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30501;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 30501;
+        $f_number = [30409];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit305_a01(Request $request, $unit,$question,$time)
@@ -1625,8 +2005,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30502;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30502;
+        $f_number = [20604,30502];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit305_a02(Request $request, $unit,$question,$time)
@@ -1639,8 +2022,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30503;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30503;
+        $f_number = [20604,30503];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit305_a03(Request $request, $unit,$question,$time)
@@ -1653,8 +2039,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30504;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30504;
+        $f_number = [30504];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit305_a04(Request $request, $unit,$question,$time)
@@ -1667,8 +2056,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30505;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30505;
+        $f_number = [30504];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit305_a05(Request $request, $unit,$question,$time)
@@ -1681,8 +2073,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30506;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30506;
+        $f_number = [30506];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit305_a06(Request $request, $unit,$question,$time)
@@ -1695,8 +2090,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30507;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30507;
+        $f_number = [30502,30506];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit305_a07(Request $request, $unit,$question,$time)
@@ -1709,8 +2107,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30508;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30508;
+        $f_number = [30507];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit305_a08(Request $request, $unit,$question,$time)
@@ -1723,8 +2124,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30509;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30509;
+        $f_number = [30504,30506,30507];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit305_a09(Request $request, $unit,$question,$time)
@@ -1737,8 +2141,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30510;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30510;
+        $f_number = [30504,30508];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit305_a10(Request $request, $unit,$question,$time)
@@ -1751,8 +2158,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30511;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30511;
+        $f_number = [30509];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit305_a11(Request $request, $unit,$question,$time)
@@ -1766,8 +2176,11 @@ class AnswerController extends Controller
         $plot = $request->plot;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30512;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','plot'));
+        $next_id = 30512;
+        $f_number = [30513,30514];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','plot'));
     }
 
     public function unit305_a12(Request $request, $unit,$question,$time)
@@ -1780,8 +2193,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30601;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30601;
+        $f_number = [30516];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit306_a01(Request $request, $unit,$question,$time)
@@ -1794,8 +2210,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30602;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30602;
+        $f_number = [30601];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit306_a02(Request $request, $unit,$question,$time)
@@ -1808,8 +2227,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30603;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30603;
+        $f_number = [30602];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit306_a03(Request $request, $unit,$question,$time)
@@ -1822,8 +2244,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30604;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30604;
+        $f_number = [30603];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit306_a04(Request $request, $unit,$question,$time)
@@ -1836,8 +2261,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30605;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30605;
+        $f_number = [30601,30604];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);        
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit306_a05(Request $request, $unit,$question,$time)
@@ -1850,8 +2278,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30606;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30606;
+        $f_number = [30604];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit306_a06(Request $request, $unit,$question,$time)
@@ -1864,8 +2295,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30607;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30607;
+        $f_number = [30604];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit306_a07(Request $request, $unit,$question,$time)
@@ -1878,8 +2312,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30608;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30608;
+        $f_number = [30605];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit306_a08(Request $request, $unit,$question,$time)
@@ -1892,8 +2329,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30609;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30609;
+        $f_number = [30601];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit306_a09(Request $request, $unit,$question,$time)
@@ -1906,8 +2346,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30610;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30610;
+        $f_number = [30602];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit306_a10(Request $request, $unit,$question,$time)
@@ -1920,8 +2363,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30611;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30611;
+        $f_number = [30606];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit306_a11(Request $request, $unit,$question,$time)
@@ -1934,8 +2380,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 30612;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 30612;
+        $f_number = [30601,30602,30608];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit306_a12(Request $request, $unit,$question,$time)
@@ -1948,8 +2397,11 @@ class AnswerController extends Controller
         $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40101;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
+        $next_id = 40101;
+        $f_number = [30601,30613];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit401_a01(Request $request, $unit,$question,$time)
@@ -1959,10 +2411,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40102;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40102;
+        $f_number = [40302];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit401_a02(Request $request, $unit,$question,$time)
@@ -1972,10 +2428,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40103;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40103;
+        $f_number = [40104,40106];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit401_a03(Request $request, $unit,$question,$time)
@@ -1985,10 +2445,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40104;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40104;
+        $f_number = [40103,40104];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit401_a04(Request $request, $unit,$question,$time)
@@ -1998,10 +2462,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40105;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40105;
+        $f_number = [40105];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit401_a05(Request $request, $unit,$question,$time)
@@ -2011,10 +2479,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40106;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40106;
+        $f_number = [40105];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit401_a06(Request $request, $unit,$question,$time)
@@ -2024,10 +2496,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40107;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40107;
+        $f_number = [40103,40106];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit401_a07(Request $request, $unit,$question,$time)
@@ -2037,10 +2513,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40108;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40108;
+        $f_number = [40106];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit401_a08(Request $request, $unit,$question,$time)
@@ -2050,10 +2530,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40109;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40109;
+        $f_number = [40107,40108,40109];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit401_a09(Request $request, $unit,$question,$time)
@@ -2063,10 +2547,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40110;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40110;
+        $f_number = [40106,40107,40109];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit401_a10(Request $request, $unit,$question,$time)
@@ -2076,10 +2564,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40111;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40111;
+        $f_number = [40111];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit401_a11(Request $request, $unit,$question,$time)
@@ -2089,10 +2581,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40201;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40201;
+        $f_number = [40112];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit402_a01(Request $request, $unit,$question,$time)
@@ -2102,10 +2598,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $a_script = $request->a_script;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40202;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40202;
+        $f_number = [40202];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','a_script'));
     }
 
     public function unit402_a02(Request $request, $unit,$question,$time)
@@ -2115,10 +2616,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $a_script = $request->a_script;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40203;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40203;
+        $f_number = [40201,40202];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','a_script'));
     }
 
     public function unit402_a03(Request $request, $unit,$question,$time)
@@ -2128,10 +2634,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $a_script = $request->a_script;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40204;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40204;
+        $f_number = [40202];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','a_script'));
     }
 
     public function unit402_a04(Request $request, $unit,$question,$time)
@@ -2141,10 +2652,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $a_script = $request->a_script;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40205;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40205;
+        $f_number = [40203,40204];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','a_script'));
     }
 
     public function unit402_a05(Request $request, $unit,$question,$time)
@@ -2154,10 +2670,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $a_script = $request->a_script;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40206;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40206;
+        $f_number = [40204];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','a_script'));
     }
 
     public function unit402_a06(Request $request, $unit,$question,$time)
@@ -2167,10 +2688,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $a_script = $request->a_script;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40207;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40207;
+        $f_number = [40205];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','a_script'));
     }
 
     public function unit402_a07(Request $request, $unit,$question,$time)
@@ -2180,10 +2706,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $a_script = $request->a_script;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40208;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40208;
+        $f_number = [40206];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','a_script'));
     }
 
     public function unit402_a08(Request $request, $unit,$question,$time)
@@ -2193,10 +2724,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $a_script = $request->script;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40209;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40209;
+        $f_number = [40205,40207];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','a_script'));
     }
 
     public function unit402_a09(Request $request, $unit,$question,$time)
@@ -2206,10 +2742,15 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
+        $a_script = $request->script;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40210;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40210;
+        $f_number = [40208];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas','a_script'));
     }
 
     public function unit402_a10(Request $request, $unit,$question,$time)
@@ -2219,10 +2760,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 40301;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit403_a01(Request $request, $unit,$question,$time)
@@ -2245,10 +2787,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40303;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40303;
+        $f_number = [40303];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit403_a03(Request $request, $unit,$question,$time)
@@ -2258,10 +2804,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40304;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40304;
+        $f_number = [40304,40305,40306];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit403_a04(Request $request, $unit,$question,$time)
@@ -2271,10 +2821,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 40305;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 40305;
+        $f_number = [40307];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit403_a05(Request $request, $unit,$question,$time)
@@ -2284,10 +2838,11 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
         $next_id = 50101;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text'));
     }
 
     public function unit501_a01(Request $request, $unit,$question,$time)
@@ -2297,10 +2852,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50102;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50102;
+        $f_number = [50111];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit501_a02(Request $request, $unit,$question,$time)
@@ -2310,10 +2869,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50103;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50103;
+        $f_number = [50112];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit501_a03(Request $request, $unit,$question,$time)
@@ -2323,10 +2886,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50104;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50104;
+        $f_number = [50101,50106];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit501_a04(Request $request, $unit,$question,$time)
@@ -2336,10 +2903,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50105;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50105;
+        $f_number = [50113];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit501_a05(Request $request, $unit,$question,$time)
@@ -2349,10 +2920,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50106;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50106;
+        $f_number = [50113,50114];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit501_a06(Request $request, $unit,$question,$time)
@@ -2362,10 +2937,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50107;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50107;
+        $f_number = [50108,50109];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit501_a07(Request $request, $unit,$question,$time)
@@ -2375,10 +2954,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50201;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50201;
+        $f_number = [50108,50110];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit502_a01(Request $request, $unit,$question,$time)
@@ -2388,10 +2971,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50202;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50202;
+        $f_number = [50201,50202];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit502_a02(Request $request, $unit,$question,$time)
@@ -2401,10 +2988,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50203;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50203;
+        $f_number = [50203,50204];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit502_a03(Request $request, $unit,$question,$time)
@@ -2414,10 +3005,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50204;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50204;
+        $f_number = [50205,50206];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit502_a04(Request $request, $unit,$question,$time)
@@ -2427,10 +3022,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50205;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50205;
+        $f_number = [50205];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit502_a05(Request $request, $unit,$question,$time)
@@ -2440,10 +3039,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50206;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50206;
+        $f_number = [50206];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);         
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit502_a06(Request $request, $unit,$question,$time)
@@ -2453,10 +3056,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50207;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50207;
+        $f_number = [50205,50207];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit502_a07(Request $request, $unit,$question,$time)
@@ -2466,10 +3073,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50208;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50208;
+        $f_number = [50208];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit502_a08(Request $request, $unit,$question,$time)
@@ -2479,10 +3090,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 50209;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 50209;
+        $f_number = [50202,50205];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
     public function unit502_a09(Request $request, $unit,$question,$time)
@@ -2492,10 +3107,14 @@ class AnswerController extends Controller
         $result = $this->check_answer($request->answers,$request->right_answers);
         $this->store_result($question->unit_id,$question->q_id,$result,$time);
 
+        $sample_text = $request->sample_text;
         $text = $request->text.str_replace($option,$request->right_answers,$request->blank_text);
         $answer_text = '$$'.str_replace($option,$request->answers,$request->blank_text);
-        $next_id = 10101;         
-        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result'));
+        $next_id = 10101;
+        $f_number = [50203];
+        $f = app()->make('App\Http\Controllers\FormulaController');
+        $formulas = $f->formula_get($f_number);          
+        return view('answer/sentence',compact('text','answer_text','question','unit','next_id','result','sample_text','formulas'));
     }
 
 

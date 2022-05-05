@@ -34,3 +34,15 @@ Breadcrumbs::for('random_list', function ($trail) {
     $trail->push('弱点演習', route('random_list'));
 });
 
+//公式選択画面
+Breadcrumbs::for('formula_list', function ($trail) {
+    $trail->parent('home');
+    $trail->push('公式一覧', route('formula_list'));
+});
+
+//問題画面
+Breadcrumbs::for('formula_select', function ($trail,$unit_id) {
+    $trail->parent('formula_list');
+    $trail->push(Unit::find($unit_id)->name, route('formula_select',['unit_id' => $unit_id]));
+});
+

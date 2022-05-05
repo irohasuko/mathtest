@@ -29,6 +29,11 @@ Route::get('/unit_select', [App\Http\Controllers\SortController::class, 'unit_se
 //問題の選択ページ
 Route::get('/q_select/{id}', [App\Http\Controllers\SortController::class, 'q_select'])->name('question_select');
 
+//公式一覧画面
+Route::get('/formula_list', [App\Http\Controllers\FormulaController::class, 'formula_list'])->name('formula_list');
+//公式画面
+Route::get('/formula/{unit_id}', [App\Http\Controllers\FormulaController::class, 'formula_select'])->name('formula_select');
+
 //問題画面
 Route::get('/q_select/{unit_id}/{q_id}',[App\Http\Controllers\QuestionController::class, 'question'])->name('question');
 Route::get('/redirect/{q_id}',[App\Http\Controllers\SortController::class, 'q_route'])->name('q_route');

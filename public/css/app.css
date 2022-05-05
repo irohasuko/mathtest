@@ -10020,3 +10020,9 @@ h3 {
 	width: 100%;
   overflow-x: auto;
 }
+
+.formula{
+	width: 100%;
+	text-align: center;
+  overflow-x: auto;
+}

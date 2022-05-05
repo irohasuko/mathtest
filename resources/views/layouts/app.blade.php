@@ -84,7 +84,7 @@
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{route('home')}}">ホーム画面へ</a>
                                     <a class="dropdown-item" href="{{route('random_list')}}">弱点演習</a>
-                                    <a class="dropdown-item" href="{{route('home')}}">公式一覧</a>
+                                    <a class="dropdown-item" href="{{route('formula_list')}}">公式一覧</a>
                                     
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

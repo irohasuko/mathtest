@@ -34,6 +34,9 @@
                 @if(isset($script))
                     <input type="hidden" name="script" value="{{$script}}">
                 @endif
+                @if(isset($a_script))
+                    <input type="hidden" name="a_script" value="{{$a_script}}">
+                @endif
                 <div class="text-right">
                     <button type="submit" class="btn btn-primary">解答</button>
                 </div>

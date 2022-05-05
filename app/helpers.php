@@ -122,7 +122,7 @@ if (! function_exists('f2')) {
     }
 }
 
-//分数の表示処理3 数字のみ、
+//分数の表示処理3 数字のみ、前の符号なし
 if (! function_exists('f3')) {
     function f3($a,$b)
     {
@@ -134,6 +134,24 @@ if (! function_exists('f3')) {
         }
         if($a === 0){
             $text = '0';
+        }
+
+        return $text;
+    }
+}
+
+//分数の表示処理3 数字のみ、前の符号あり
+if (! function_exists('f4')) {
+    function f4($a,$b)
+    {
+        list($a,$b) = gcd($a,$b);
+        if(abs($b) === 1){
+            $text = ($a*$b>0 ? '+' :'-').abs($a);
+        } else {
+            $text = ($a*$b>0 ? '+' :'-').'\frac{'.abs($a).'}{'.abs($b).'}';
+        }
+        if($a === 0){
+            $text = '';
         }
 
         return $text;
@@ -443,6 +461,31 @@ if (! function_exists('dot2')) {
     }
 }
 
+//積の表示処理3 a・b^n aが１のときは表示させない
+if (! function_exists('dot3')) {
+    function dot3($a,$b,$n)
+    {
+        if($a == 1){
+            $text = '';
+        }else{
+            if($a >= 0){
+                $text = $a.' \cdot ';
+            }else{
+                $text = '('.$a.') \cdot ';
+            }
+        }
+        if($b >= 0){
+            $text .= $b;
+        }else{
+            $text .= '('.$b.')';
+        }
+        if($n != 1){
+            $text .= '^{'.$n.'}';
+        }
+        return $text;
+    }
+}
+
 //ルートの処理
 if (! function_exists('root')) {
     function root($a,$b)
@@ -662,6 +705,32 @@ if (! function_exists('log_ans')) {
     }
 }
 
+//対数のテキスト処理
+if (! function_exists('log_text')) {
+    function log_text($a,$b) //log_a{b}を想定
+    {
+        $c = 0;
+        while($b%$a == 0){
+            $c += 1;
+            $b /= $a;
+        }
+        if($c == 0){
+            if($b == 1){
+                $text = '0';
+            }else{
+                $text = '\log_{'.$a.'}{'.$b.'}';
+            }
+        }else{
+            if($b == 1){
+                $text = $c;
+            }else{
+                $text = $c.'+\log_{'.$a.'}{'.$b.'}';
+            }
+        }
+        return $text;
+    }
+}
+
 //素因数分解
 if (! function_exists('prime_factrization')) {
     function prime_factrization($N) 
@@ -763,7 +832,11 @@ if (! function_exists('complex')) {
             }
         }
         if($c == 0 || $d == 0){
-            $literal[2] = '0';
+            $literal[2] = '';
+        }
+
+        if($literal[0] == '' && $literal[2] == ''){
+            $literal[0] = '0';
         }
 
         return implode($literal);
@@ -782,6 +855,28 @@ if (! function_exists('text_c')) {
             $a--; $b--;
         }
         $text = '\frac{'.implode(' \cdot ',$c).'}{'.implode(' \cdot ',$d).'}';
+        return $text;
+    }
+}
+
+//aCbの表示
+if (! function_exists('dice_m')) {
+    function dice_m($a) 
+    {
+        $flag = 0;
+        $text = '';
+        for($i=1;$i<=6;$i++){
+            for($j=1;$j<=6;$j++){
+                if($i*$j==$a){
+                   if($flag == 0){
+                        $text .= '('.$i.',\\ '.$j.')';
+                   }else{
+                        $text .= ',('.$i.',\\ '.$j.')';
+                   }
+                   $flag = 1;
+                }
+            }
+        }
         return $text;
     }
 }

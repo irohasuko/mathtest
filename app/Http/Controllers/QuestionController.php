@@ -1702,7 +1702,8 @@ class QuestionController extends Controller
                     boundingbox:['.($axis-5).','.($f_axis+7>-1?$f_axis+7:-1).','.($axis+5).','.($f_axis-3<-1?$f_axis-3:-1).'],
                     axis: true,
                     showNavigation: false,
-                    showCopyright: false
+                    showCopyright: false,
+                    fixed:true
                 });
 
                 function bezier(t) {
@@ -4424,7 +4425,7 @@ class QuestionController extends Controller
         }
 
         $sample_text = '
-            0 \lt \alpha \lt \frac{2}{\pi} \\ と \\ \sin{\alpha}=\frac{'.$a.'}{'.$b.'}より、\\\\
+            0 \lt \alpha \lt \frac{\pi}{2} \\ と \\ \sin{\alpha}=\frac{'.$a.'}{'.$b.'}より、\\\\
             \cos{\alpha} = \sqrt{1-(\frac{'.$a.'}{'.$b.'})^2} = '.fr_rt2(1,$b*$b-$a*$a,$b).'\\\\
             0 \lt \beta \lt \frac{2}{\pi} \\ と \\ \cos{\beta}=\frac{'.$c.'}{'.$d.'}より、\\\\
             \sin{\beta} = \sqrt{1-(\frac{'.$c.'}{'.$d.'})^2} = '.fr_rt2(1,$d*$d-$c*$c,$d).'\\\\
@@ -4485,9 +4486,23 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            0 \lt \alpha \lt \frac{\pi}{2} \\ と \\ \sin{\alpha}=\frac{'.$a.'}{'.$b.'}より、\\\\
+            \cos{\alpha} = \sqrt{1-(\frac{'.$a.'}{'.$b.'})^2} = '.fr_rt2(1,$b*$b-$a*$a,$b).'\\\\
+            よって、\\\\
+            \begin{eqnarray}
+                \sin{2\alpha} &=& 2\sin{\alpha}\cos{\alpha}\\\\
+                              &=& 2 \cdot '.f3($a,$b).'\cdot '.fr_rt2(1,$b*$b-$a*$a,$b).'\\\\
+                              &=& '.fr_rt2(2*$a,$b*$b-$a*$a,$b*$b).'\\\\
+                \cos{2\alpha} &=& 1-2\sin^2{\alpha}\\\\
+                              &=& 1-2\cdot('.f3($a,$b).')^2\\\\
+                              &=& '.f3($b*$b-2*$a*$a,$b*$b).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //三角不等式　その１
@@ -4580,9 +4595,82 @@ class QuestionController extends Controller
                 break;
         }
 
+        $theta = $nu[$n]/$de[$n]*pi();
+
+        $sample_text = '下図より、不等式の満たす範囲は、\\\\';
+        switch($pattern){
+            case 1:
+                if($n < 3){
+                    $sample_text .= f1($nu[$n],$de[$n],'\pi').'\leqq \theta \leqq'.f1($de[$n]-$nu[$n],$de[$n],'\pi');
+                }else{
+                    $sample_text .= '0 \leqq \theta \leqq'.f1($nu[$n],$de[$n],'\pi').'、'.f1(3*$de[$n]-$nu[$n],$de[$n],'\pi').'\leqq \theta \lt 2\pi';
+                }
+                break;
+            case 2:
+                $sample_text .= f1($nu[$n],$de[$n],'\pi').'\lt \theta \lt'.f1(2*$de[$n]-$nu[$n],$de[$n],'\pi');
+                break;
+        }
+
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:[-2,1.4,2,-1.4],
+                    axis: true,
+                    showNavigation: false,
+                    showCopyright: false
+                });
+                function bezier(t) {
+                    return -1*Math.sqrt(1-Math.pow(t,2));
+                }
+                function bezier2(t) {
+                    return Math.sqrt(1-Math.pow(t,2));
+                }
+                board.create(\'functiongraph\', [bezier,-1,1]);
+                board.create(\'functiongraph\', [bezier2,-1,1]);
+        ';
+
+        switch($pattern){
+            case 1:
+                $plot .= '
+                        var p1 = board.create(\'point\',[Math.cos('.$theta.'),Math.sin('.$theta.')],{name:\'\',size:0,fixed:true});
+                        var p2 = board.create(\'point\',[-1*Math.cos('.$theta.'),Math.sin('.$theta.')],{name:\'\',size:0,fixed:true});
+                        var o = board.create(\'point\',[0,0],{name:\'\',size:0,fixed:true});
+                        var r = board.create(\'point\',[1,0],{name:\'\',size:0,fixed:true});
+                        board.create(\'line\',[p1,[0,0]],{straightFirst:false, straightLast:false,fixed:true});
+                        board.create(\'line\',[p2,[0,0]],{straightFirst:false, straightLast:false,fixed:true});
+                        board.create(\'line\',[p1,p2],{dash:2,fixed:true});
+                        board.create(\'angle\',[r,o,p1],{name:\'\'});
+                        board.create(\'angle\',[r,o,p2],{name:\'\', radius:0.5});
+                        '.($n<3
+                            ?'board.create(\'functiongraph\', [bezier2,-1*Math.cos('.$theta.'),Math.cos('.$theta.')],{strokecolor:\'red\',strokeWidth:2});'
+                            :'board.create(\'functiongraph\', [bezier2,-1,1],{strokecolor:\'red\',strokeWidth:2});
+                              board.create(\'functiongraph\', [bezier,-1,Math.cos('.$theta.')],{strokecolor:\'red\',strokeWidth:2});
+                              board.create(\'functiongraph\', [bezier,-1*Math.cos('.$theta.'),1],{strokecolor:\'red\',strokeWidth:2});').'
+                    </script>
+                ';
+                break;
+            case 2:
+                $plot .= '
+                        var p1 = board.create(\'point\',[Math.cos('.$theta.'),Math.sin('.$theta.')],{name:\'\',size:0,fixed:true});
+                        var p2 = board.create(\'point\',[Math.cos('.$theta.'),-1*Math.sin('.$theta.')],{name:\'\',size:0,fixed:true});
+                        var o = board.create(\'point\',[0,0],{name:\'\',size:0,fixed:true});
+                        var r = board.create(\'point\',[1,0],{name:\'\',size:0,fixed:true});
+                        board.create(\'line\',[p1,[0,0]],{straightFirst:false, straightLast:false,fixed:true});
+                        board.create(\'line\',[p2,[0,0]],{straightFirst:false, straightLast:false,fixed:true});
+                        board.create(\'line\',[p1,p2],{dash:2,fixed:true});
+                        board.create(\'angle\',[r,o,p1],{name:\'\'});
+                        board.create(\'angle\',[r,o,p2],{name:\'\', radius:0.5});
+                        board.create(\'functiongraph\', [bezier2,-1,Math.cos('.$theta.')],{strokecolor:\'red\',strokeWidth:2});
+                        board.create(\'functiongraph\', [bezier,-1,Math.cos('.$theta.')],{strokecolor:\'red\',strokeWidth:2});
+                    </script>
+                ';
+                break;
+        }
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //三角不等式　その２
@@ -4631,9 +4719,79 @@ class QuestionController extends Controller
             $item[1] = '\frac{\fbox{ウ}}{\fbox{エ}}\pi \lt \theta \lt \fbox{オ}\pi';
         }
 
+        $angle = $theta[0]/$theta[1]*pi();
+
+        $sample_text = '
+            \begin{eqnarray}
+                '.d1($a,'\sin^2{\theta}').d2(-1*($a*$c+$b),'\cos{\theta}').d3(-1*($a+$b*$c)).' &\gt& 0\\\\
+                '.d1($a,'(1-\cos^2{\theta})').d2(-1*($a*$c+$b),'\cos{\theta}').d3(-1*($a+$b*$c)).' &\gt& 0\\\\
+                '.d1($a,'\cos{\theta}').d2($a*$c+$b,'\cos{\theta}').d3($b*$c).' &\lt& 0\\\\
+                ('.d1($a,'\cos{\theta}').d3($b).')(\cos{\theta}'.d3($c).')&\lt& 0\\\\
+            \end{eqnarray}\\\\
+        ';
+        if($c > 0){
+           $sample_text .= '
+                -1 \leqq \cos{\theta} \leqq 1 \quad より、\\\\
+                (\cos{\theta}'.d3($c).') \gt 0 \quad なので、\\\\
+                '.d1($a,'\cos{\theta}').d3($b).' \lt 0\\\\
+                \cos{\theta} \lt '.f3(-1*$b,$a).'\\\\
+                下図より、'.f1($theta[0],$theta[1],'\pi').' \lt \theta \lt '.f1(2*$theta[1]-$theta[0],$theta[1],'\pi').'
+           ';
+        }else{
+            $sample_text .= '
+                -1 \leqq \cos{\theta} \leqq 1 \quad より、\\\\
+                (\cos{\theta}'.d3($c).') \lt 0 \quad なので、\\\\
+                '.d1($a,'\cos{\theta}').d3($b).' \gt 0\\\\
+                \cos{\theta} \gt '.f3(-1*$b,$a).'\\\\
+                下図より、\\\\
+                0 \leqq \theta \lt '.f1($theta[0],$theta[1],'\pi').'、'.f1(2*$theta[1]-$theta[0],$theta[1],'\pi').' \lt \theta \lt 2\pi
+           ';
+        }
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:[-2,1.4,2,-1.4],
+                    axis: true,
+                    showNavigation: false,
+                    showCopyright: false
+                });
+                function bezier(t) {
+                    return -1*Math.sqrt(1-Math.pow(t,2));
+                }
+                function bezier2(t) {
+                    return Math.sqrt(1-Math.pow(t,2));
+                }
+                board.create(\'functiongraph\', [bezier,-1,1]);
+                board.create(\'functiongraph\', [bezier2,-1,1]);
+                var p1 = board.create(\'point\',[Math.cos('.$angle.'),Math.sin('.$angle.')],{name:\'\',size:0,fixed:true});
+                var p2 = board.create(\'point\',[Math.cos('.$angle.'),-1*Math.sin('.$angle.')],{name:\'\',size:0,fixed:true});
+                var o = board.create(\'point\',[0,0],{name:\'\',size:0,fixed:true});
+                var r = board.create(\'point\',[1,0],{name:\'\',size:0,fixed:true});
+                board.create(\'line\',[p1,[0,0]],{straightFirst:false, straightLast:false,fixed:true});
+                board.create(\'line\',[p2,[0,0]],{straightFirst:false, straightLast:false,fixed:true});
+                board.create(\'line\',[p1,p2],{dash:2,fixed:true});
+                board.create(\'angle\',[r,o,p1],{name:\'\'});
+                board.create(\'angle\',[r,o,p2],{name:\'\', radius:0.5});
+        ';
+
+        if($c>0){
+            $plot .= '
+                    board.create(\'functiongraph\', [bezier2,-1,Math.cos('.$angle.')],{strokecolor:\'red\',strokeWidth:2});
+                    board.create(\'functiongraph\', [bezier,-1,Math.cos('.$angle.')],{strokecolor:\'red\',strokeWidth:2});
+                </script>
+            ';
+        }else{
+            $plot .= '
+                    board.create(\'functiongraph\', [bezier2,Math.cos('.$angle.'),1],{strokecolor:\'red\',strokeWidth:2});
+                    board.create(\'functiongraph\', [bezier,Math.cos('.$angle.'),1],{strokecolor:\'red\',strokeWidth:2});
+                </script>
+            ';
+        }
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //半角の公式
@@ -4681,9 +4839,22 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            半角の公式より、\\\\
+            \sin^2{\frac{\theta}{2}} = \frac{1-\cos{\theta}}{2} = '.f3($b-$a,2*$b).'\\\\
+            0 \lt \theta \lt \pi \quad から、0 \lt \frac{\theta}{2} \lt \frac{\pi}{2} \quad なので、\\\\
+            \sin{\frac{\theta}{2}} \gt 0 \\\\
+            よって、\sin{\frac{\theta}{2}} = \sqrt{'.f3($b-$a,2*$b).'} = '.fr_rt2(1,2*$b*($b-$a),2*$b).'\\\\
+            同様に半角の公式より、\\\\
+            \cos^2{\frac{\theta}{2}} = \frac{1+\cos{\theta}}{2} = '.f3($b+$a,2*$b).'\\\\
+            0 \lt \theta \lt \pi \quad から、0 \lt \frac{\theta}{2} \lt \frac{\pi}{2} \quad なので、\\\\
+            \cos{\frac{\theta}{2}} \gt 0 \\\\
+            よって、\cos{\frac{\theta}{2}} = \sqrt{'.f3($b+$a,2*$b).'} = '.fr_rt2(1,2*$b*($b+$a),2*$b).'\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //三角関数の合成
@@ -4739,9 +4910,21 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                f(\theta) &=& '.d1($a,'\sin{\theta}').($rad[$pattern]<0?'-':'+').d1($a).($b[$pattern]==1?'':'\sqrt{'.$b[$pattern].'}').'\cos{\theta}\\\\
+                          &=& '.rt2(1,$a*$a + $a*$a*$b[$pattern]).'\{\sin{(\theta'.f2(1,$rad[$pattern],'\pi').')}\}\\\\
+            \end{eqnarray}\\\\
+            よって、f(\theta)は、
+            \theta'.f2(1,$rad[$pattern],'\pi').'=\frac{\pi}{2}\\ つまり\\\\
+            \theta = '.f1($rad[$pattern]-2,2*$rad[$pattern],'\pi').'\\ で最大値'.rt2(1,$a*$a + $a*$a*$b[$pattern]).'を、\\\\
+            \theta'.f2(1,$rad[$pattern],'\pi').'=\frac{3}{2}\pi\\ つまり\\\\
+            \theta = '.f1(3*$rad[$pattern]-2,2*$rad[$pattern],'\pi').'\\ で最大値'.rt2(-1,$a*$a + $a*$a*$b[$pattern]).'をとる
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
     
     //指数関数・対数関数
@@ -4779,9 +4962,18 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                2^{'.$a.'} \times \sqrt['.$b.']{4} \div \sqrt{2^{'.$c.'}} &=& 2^{'.$a.'} \times (2^2)^\frac{1}{'.$b.'} \div (2^{'.$c.'})^\frac{1}{2}\\\\
+                                                                          &=& 2^{'.$a.'} \times 2^\frac{2}{'.$b.'} \div 2^\frac{'.$c.'}{2}\\\\
+                                                                          &=& 2^{'.$a.'+\frac{2}{'.$b.'}-\frac{'.$c.'}{2}}\\\\
+                                                                          &=& 2^{'.f3(2*$a*$b+4-$b*$c,2*$b).'}
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //指数の式の値
@@ -4805,9 +4997,23 @@ class QuestionController extends Controller
         $item[0] = 'a^{2x} + a^{-2x} = \fbox{ア} \\\\';
         $item[1] = 'a^{3x} - a^{-3x} = \fbox{イ}';
 
+        $sample_text = '
+            \begin{eqnarray}
+                a^{2x} + a^{-2x} &=& (a^x)^2 + (a^{-x})^2\\\\
+                                 &=& (a^x-a^{-x})^2 +2 \cdot a^x \cdot a^{-x}\\\\
+                                 &=& '.$a.'^2 +2\\\\
+                                 &=& '.($a*$a+2).'\\\\
+                a^{3x} - a^{-3x} &=& (a^x)^3 - (a^{-x})^3\\\\
+                                 &=& (a^x-a^{-x})(a^{2x}+a^x \cdot a^{-x} + a^{-2x})\\\\
+                                 &=& (a^x-a^{-x})(a^{2x}+a^{-2x}+1)\\\\
+                                 &=& '.$a.'\cdot ('.($a*$a+2).'^2 + 1)\\\\
+                                 &=& '.($a*$a*$a+3*$a).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //指数方程式
@@ -4857,9 +5063,22 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                9^{x}'.d2($a,'\cdot 3^{x}').d3($b).' &=& 0\\\\
+                (3^x)^2'.d2($a,'\cdot 3^{x}').d3($b).' &=& 0\\\\
+                3^x = t とおくと、\\\\
+                t^2'.d2($a,'t').d3($b).' &=& 0\\\\
+                (t'.d3(-1*$x).')(t'.d3(-1*$y).') &=& 0\\\\
+                t &=& '.$x.',\\ '.$y.'\\\\
+                3^x &=& '.$x.',\\ '.$y.'\\\\
+                x &=& '.log_text(3,$x).',\\ '.log_text(3,$y).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //指数不等式
@@ -4928,9 +5147,34 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                4^{x}'.d2($a,(abs($a)!=1?'\cdot':'').'2^{x}').d3($b).' & \gt & 0\\\\
+                (2^x)^2'.d2($a,(abs($a)!=1?'\cdot':'').'2^{x}').d3($b).' & \gt & 0\\\\
+                2^x = t とおくと、t \gt 0 \cdots ①\\\\
+                t^2'.d2($a,'t').d3($b).' & \gt & 0\\\\
+                (t'.d3(-1*$x).')(t'.d3(-1*$y).') & \gt & 0\\\\
+            \end{eqnarray}\\\\
+            t \lt '.$x.',\\ '.$y.' \lt t \cdots ②\\\\
+            ①、②より、\\\\
+        ';
+        if($x > 0){
+            $sample_text .= '
+                0 \lt t \lt '.$x.',\\ '.$y.' \lt t\\\\
+                2^x \lt '.$x.',\\ '.$y.' \lt t\\\\
+                x \lt '.log_text(2,$x).',\\ '.log_text(2,$y).' \lt x\\\\
+            ';
+        }else{
+            $sample_text .= '
+                '.$y.' \lt t\\\\
+                2^x \gt '.$y.'\\\\
+                x \gt '.log_text(2,$y).'\\\\
+            ';
+        }
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //対数の計算
@@ -4957,9 +5201,20 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\fbox{ア}';
 
+        $sample_text = '
+            \begin{eqnarray}
+                \log_2 '.$a.'- \log_4 '.$b.' &=& \log_2{'.$a.'} - \frac{\log_2{'.$b.'}}{\log_2{4}}\\\\
+                                             &=& \log_2{'.$a.'} - \frac{1}{2}\log_2{'.$b.'}\\\\
+                                             &=& \log_2{'.$a.'} - \log_2{'.rt2(1,$b).'}\\\\
+                                             &=& \log_2{\frac{'.$a.'}{'.rt2(1,$b).'}}\\\\
+                                             &=& \log_2{'.pow(2,$y).'}\\\\
+                                             &=& '.$y.'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //対数の式の値
@@ -4984,15 +5239,24 @@ class QuestionController extends Controller
 
         //問題テキストの設定
         $text = '$$ \log_{10} 2 = a\\ とおくと、\\\\';
-        $text .= 'log_{10} '.($b==1?$a:'\frac{'.$a.'}{'.$b.'}');
+        $text .= '\log_{10} '.($b==1?$a:'\frac{'.$a.'}{'.$b.'}');
 
         //空欄テキストの設定
         $item[0] = '\fbox{ア} - ';
         $item[1] = '\fbox{イ}a';
 
+        $sample_text = '
+            \begin{eqnarray}
+                \log_{10} '.($b==1?$a:'\frac{'.$a.'}{'.$b.'}').' &=& \log_{10}{\frac{'.pow(10,$x).'}{'.pow(2,$y).'}}\\\\
+                                                                 &=& \log_{10}{'.pow(10,$x).'} - \log_{10}{'.pow(2,$y).'}\\\\
+                                                                 &=& '.$x.'- '.d1($y,'\log_{10}{2}').'\\\\
+                                                                 &=& '.$x.'- '.d1($y,'a').'\\\\
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/equation',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //対数方程式
@@ -5016,9 +5280,17 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = 'x= \fbox{ア}';
 
+        $sample_text = '
+            \begin{eqnarray}
+                \log_'.$a.' (x'.d4($b).') &=& '.$c.'\\\\
+                x'.d4($b).' &=& '.$a.'^{'.$c.'}\\\\
+                x &=& '.(pow($a,$c) - $b).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //対数不等式
@@ -5043,9 +5315,22 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\fbox{ア} \lt x \lt \fbox{イ}';
 
+        $sample_text = '
+            真数条件より、x'.d4($b).' \gt 0\\\\
+            \therefore x \gt '.fo(d4(-1*$b)).' \\ \cdots ①\\\\
+            \begin{eqnarray}
+                \log_{'.$a.'}{(x'.d4($b).')} &\lt& '.$c.'\\\\
+                \log_{'.$a.'}{(x'.d4($b).')} &\lt& \log_{'.$a.'}{'.pow($a,$c).'}\\\\
+                '.$a.' \gt 1 \\ より、\\\\
+                x'.d4($b).' &\lt& '.pow($a,$c).'\\\\
+                x &\lt& '.(pow($a,$c)-$b).' \\ \cdots ②\\\\
+            \end{eqnarray}\\\\
+            ①、②より、'.(-1*$b).'\lt x \lt '.(pow($a,$c)-$b).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //大小関係
@@ -5081,9 +5366,23 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\fbox{ア} \lt \fbox{イ} \lt \fbox{ウ}';
 
+        $sample_text = '
+            aとbに関して、\\\\
+            b = \log_{'.$c.'}'.$d.' = \frac{\log_{'.$x.'}{'.$x.'}}{\log_{'.$x.'}{'.$y.'}} = \frac{1}{\log_{'.$x.'}{'.$y.'}}\\\\
+            よって、a '.(log($b,$a) > log($d,$c)?'\gt':'\lt').' b\\\\
+            また、c = \frac{\log_{'.$x.'}{'.$f.'}}{\log_{'.$x.'}{'.$e.'}} = \frac{3}{2} \\ より、\\\\
+            aとcに関して、\\\\
+            \frac{3}{2} = \log_{'.$x.'}{'.$x.'^{\frac{3}{2}}} = \log_{'.$x.'}{\sqrt{'.$f.'}} \\ なので、\\\\
+            '.(log($b,$a)>log($f,$e) ? 'a \gt c' : 'a \lt c' ).'\\\\
+            bとcに関して、\\\\
+            \frac{3}{2} = \log_{'.$y.'}{'.$y.'^{\frac{3}{2}}} = \log_{'.$y.'}{\sqrt{'.($y*$y*$y).'}} \\ なので、\\\\
+            '.(log($d,$c)>log($f,$e) ? 'b \gt c' : 'b \lt c' ).'\\\\
+            したがって、'.implode(' \lt ',$right_answers).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/alphabet',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/alphabet',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //桁数
@@ -5105,9 +5404,19 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\fbox{ア}桁の整数である。';
 
+        $b = $a*0.3010;
+
+        $sample_text = '
+            \log_{10}{2^{'.$a.'}} = '.$a.'\log_{10}{2} = '.$b.'\\ より、\\\\
+            '.floor($b).' \lt \log_{10}{2^{'.$a.'}} \lt '.(floor($b)+1).'\\\\
+            \log_{10}{10^{'.floor($b).'}} \lt \log_{10}{2^{'.$a.'}} \lt \log_{10}{10^{'.(floor($b)+1).'}}\\\\
+            10^{'.floor($b).'} \lt 2^{'.$a.'} \lt 10^{'.(floor($b)+1).'}\\\\
+            よって、2^{'.$a.'}は'.(floor(0.3010*$a)+1).'桁の整数
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //微分法
@@ -5137,9 +5446,18 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\fbox{ア}';
 
+        $sample_text = '
+            f('.$e.') = '.dot3($a,$e,3).'+'.dot3($b,$e,2).'+'.dot3($c,$e,1).d3($d).'='.($a*$e*$e*$e+$b*$e*$e+$c*$e+$d).'\\\\
+            f('.$f.') = '.dot3($a,$f,3).'+'.dot3($b,$f,2).'+'.dot3($c,$f,1).d3($d).'='.($a*$f*$f*$f+$b*$f*$f+$c*$f+$d).'\\\\
+            よって、平均変化率は、\\\\
+            \frac{f('.$f.')-f('.$e.')}{'.dot3(1,$f,1).'-'.dot3(1,$e,1).'} 
+            = \frac{'.dot3(1,$a*$f*$f*$f+$b*$f*$f+$c*$f+$d,1).'-'.dot3(1,$a*$e*$e*$e+$b*$e*$e+$c*$e+$d,1).'}{'.dot3(1,$f,1).'-'.dot3(1,$e,1).'}
+            = '.$right_answers[0].'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //公式による微分
@@ -5186,9 +5504,16 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                f\'(x) &=& 3 \cdot '.($a>0?d1($a,'x^2'):'('.d1($a,'x^2').')').'+2 \cdot '.($b>0?d1($b,'x'):'('.d1($b,'x').')').d4($c).'\\\\
+                       &=& '.d1(3*$a,'x^2').d2(2*$b,'x').d4($c).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //接線の方程式
@@ -5236,9 +5561,22 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            f\'(x) = '.d1(2*$a,'x').d4($b).'\\ より、\\\\
+            x='.$d.'における接線の傾きは、\\\\
+            f\'('.$d.') = '.dot3(2*$a,$d,1).d4($b).' = '.(2*$a*$d+$b).'\\\\
+            よって、接線の方程式は、\\\\
+            \begin{eqnarray}
+                y &=& '.(2*$a*$d+$b).($d!=0?'(x'.d4(-1*$d).')':'x').d4($a*$d*$d+$b*$d+$c).'\\\\
+                '.($d!=0? '&=& '.d1(2*$a*$d+$b,'x').'+'.dot3(-1*$d,2*$a*$d+$b,1).d4($a*$d*$d+$b*$d+$c).'\\\\
+                           &=&' .d1(2*$a*$d+$b,'x').d4(-1*$a*$d*$d+$c)
+                :'').'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //曲線上にない点から引いた接線
@@ -5293,9 +5631,17 @@ class QuestionController extends Controller
         for($i=0;$i<2;$i++){
             if($right_answers[3*$i] == 0){
                 $item[2*$i] = 'y = ';
+                unset($right_answers[3*$i]);
+                unset($option[3*$i]);
                 $blanks -= 1;
             }
             list($right_answers,$option,$blanks,$item[2*$i+1]) = l_frac($right_answers,$option,3*$i+2,$blanks,$item[2*$i+1]);
+            if($right_answers[3*$i+1] == 0){
+                $item[2*$i+1] = '';
+                unset($right_answers[3*$i+1]);
+                unset($option[3*$i+1]);
+                $blanks -= 1;
+            }
         }
 
         $right_answers = array_values($right_answers);
@@ -5306,9 +5652,35 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $p[0] = $a;  $p[1] = $a*$d-$f;  list($p[0],$p[1])=gcd($p[0],$p[1]);
+        $q[0] = $a;  $q[1] = $a*$d+$f;  list($q[0],$q[1])=gcd($q[0],$q[1]);
+
+        $sample_text = '
+            接点を(t,f(t))とおく。\\\\
+            このとき、f\'(t) = '.d1(2*$a,'t').d4($b).'\\\\
+            よって、接線の方程式は、\\\\
+            \begin{eqnarray}
+                y &=& f\'(t)(x-t) + f(t)\\\\
+                  &=& ('.d1(2*$a,'t').d4($b).')(x-t)'.d2($a,'t^2').d2($b,'t').d4($c).'\\\\
+                  &=& ('.d1(2*$a,'t').d4($b).')x'.d2(-1*$a,'t^2').d4($c).'\\\\
+            \end{eqnarray}\\\\
+            これが、('.$d.','.f3($e[0],$e[1]).')を通るので、\\\\
+            '.f3($e[0],$e[1]).' = ('.d1(2*$a,'t').d4($b).') \cdot '.dot3(1,$d,1).d2(-1*$a,'t^2').d4($c).'\\\\
+            '.d1($a,'t^2').d2(-2*$a*$d,'t').d4(-1*$b*$d-$c).f2($e[0],$e[1]).'=0\\\\
+            '.(abs($e[1])!=1 ? d1($e[1]*$a,'t^2').d2(-2*$a*$d*$e[1],'t').d4(-1*$b*$d*$e[1]-$c*$e[1]+$e[0]).'=0\\\\' : '' ).'
+            ('.d1($p[0],'t').d4(-1*$p[1]).')('.d1($q[0],'t').d4(-1*$q[1]).') = 0\\\\
+            \quad \quad t = '.f3($a*$d-$f,$a).','.f3($a*$d+$f,$a).'\\\\
+            t='.f3($a*$d-$f,$a).'のとき、接線は、\\\\
+            y = ('.(2*$a).' \cdot '.f3($a*$d-$f,$a).d4($b).')x '.d4($a).' \cdot ('.f3($a*$d-$f,$a).')^2 '.d4($c).'\\\\
+            \therefore y = '.d1(2*$a*$d-2*$f+$b,'x').f2(-1*pow($a*$d-$f,2)+$a*$c,$a).'\\\\
+            t='.f3($a*$d+$f,$a).'のとき、接線は、\\\\
+            y = ('.(2*$a).' \cdot '.f3($a*$d+$f,$a).d4($b).')x '.d4($a).' \cdot ('.f3($a*$d+$f,$a).')^2 '.d4($c).'\\\\
+            \therefore y = '.d1(2*$a*$d+2*$f+$b,'x').f2(-1*pow($a*$d+$f,2)+$a*$c,$a).'\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //極値
@@ -5348,11 +5720,21 @@ class QuestionController extends Controller
         $item[0] = 'x = \fbox{ア}で';
         $item[1] = '極大値\fbox{イ}、';
         $item[2] = 'x = \fbox{ウ}で';
-        $item[3] = '極大値\fbox{エ}をとる。';
+        $item[3] = '極小値\fbox{エ}をとる。';
+
+        $sample_text = '
+            \begin{eqnarray}
+                f\'(x) &=& '.d1(3*$a,'x^2').d2(2*$b,'x').d4($c).'\\\\
+                       &=& '.d1(6*$x,'(x'.d4(-1*$y).')(x'.d4(-1*$z).')').'\\\\
+            \end{eqnarray}\\\\
+            よって、f(x)は、\\\\
+            x = '.$right_answers[0].'で極大値'.$right_answers[1].'を、\\\\
+            x = '.$right_answers[2].'で極小値'.$right_answers[3].'をとる\\\\
+        ';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //極値から係数の決定
@@ -5397,10 +5779,18 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            f\'(x) = 3ax^2'.d2(2*$p,'bx').d4($q).'\\\\
+            x='.$r.','.$s.'で極値を取るので、f\'('.$r.') = f\'('.$s.') = 0\\\\
+            よって、\\\\
+            '.d1(3*$r*$r,'a').d2(2*$p*$r,'b').d4($q).' = 0\\\\
+            '.d1(3*$s*$s,'a').d2(2*$p*$s,'b').d4($q).' = 0\\\\
+            これを解いて、a='.f3($q,3*$r*$s).',\\ b='.f3($q*($s+$r),-2*$p*$r*$s).'
+        ';
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //方程式の解の個数
@@ -5438,9 +5828,46 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\fbox{ア}個である。';
 
+        $sample_text = '
+            f(x) = '.d1($a,'x^{3}').d2($b,'x^{2}').d2($c,'x').d4($d).'\\ とおくと、\\\\
+            \begin{eqnarray}
+                f\'(x) &=& '.d1(3*$a,'x^2').d2(2*$b,'x').d4($c).'\\\\
+                       &=& '.d1(6*$x,'(x'.d4(-1*$y).')(x'.d4(-1*$z).')').'\\\\
+            \end{eqnarray}\\\\
+            よって、増減表は以下のようになる。\\\\
+            \begin{array}{c||ccccc}
+                \hline
+                x & \cdots & '.$y.' & \cdots & '.$z.' & \cdots \\\\
+                \hline
+                f\'(x) & '.($a>0?'+':'-').' & 0 & '.($a>0?'-':'+').' & 0 & '.($a>0?'+':'-').'\\\\
+                \hline
+                f(x) & '.($a>0?'\nearrow':'\searrow').' & '.$f_y.' & '.($a>0?'\searrow':'\nearrow').' & '.$f_z.' & '.($a>0?'\nearrow':'\searrow').' \\\\
+                \hline
+            \end{array}\\\\
+            したがって、グラフは以下のようになるので、\\\\
+            f(x)=0の実数解の個数は、'.$right_answers[0].'個
+        ';
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:[-10,10,10,-10],
+                    axis: true,
+                    showNavigation: true,
+                    showCopyright: false
+                });
+
+                function bezier(t) {
+                    return '.$a.'*t*t*t + '.$b.'*t*t + '.$c.'*t + '.$d.';
+                }
+
+                board.create(\'functiongraph\', [bezier, -10, 10]);
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //積分法
@@ -5487,9 +5914,17 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                && \int{('.d1($a,'x^{2}').d2($b,'x').d4($c).')}dx\\\\
+                &=& \frac{1}{3} \cdot '.dot3(1,$a,1).'x^3 +\frac{1}{2} \cdot '.dot3(1,$b,1).'x^2'.d2($c,'x').'+C\\\\
+                &=& '.f1($a,3,'x^3').f2($b,2,'x^2').d2($c,'x').'+C
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //定積分
@@ -5528,9 +5963,19 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                && \int_{'.$f.'}^{'.$e.'}{('.d1($a,'x^{2}').d2($b,'x').d4($c).')}dx\\\\
+                &=& \left['.f1($a,3,'x^3').f2($b,2,'x^2').d2($c,'x').'\right]_{'.$f.'}^{'.$e.'}\\\\
+                &=& ('.f1($a,3,' \cdot '.dot3(1,$e,3)).f2($b,2,' \cdot '.dot3(1,$e,2)).d2($c,' \cdot '.dot3(1,$e,1)).') - ('.f1($a,3,' \cdot '.dot3(1,$f,3)).f2($b,2,' \cdot '.dot3(1,$f,2)).d2($c,' \cdot '.dot3(1,$f,1)).')\\\\
+                &=& '.f3(2*$a*$e*$e*$e + 3*$b*$e*$e + 6*$c*$e - 2*$a*$f*$f*$f - 3*$b*$f*$f - 6*$c*$f,6).'
+            \end{eqnarray}
+        ';
+        
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //定積分と微分
@@ -5582,9 +6027,21 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \int_{a}^{x}{f(t)}dt='.d1($p,'x^{2}').d2($q,'x').d4($r).' \cdots (*)\\\\
+            (*)の両辺をxで微分すると、\\\\
+            f(x) = '.d1(2*$p,'x').d4($q).'\\\\
+            また、x=aのとき(*)は、\\\\
+            \begin{eqnarray}
+                0 &=& '.d1($p,'a^2').d2($q,'a').d4($r).'\\\\
+                0 &=& '.d1($x,'(a'.d4(-1*$y).')(a'.d4(-1*$z).')').'\\\\
+                a &=& '.$y.','.$z.'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //絶対値を含む関数の定積分
@@ -5621,9 +6078,25 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            f(x) = x'.d4(-1*$c).'\\ とおく。\\\\
+            '.$a.' \leqq x \leqq '.$b.'\\ において、\\\\
+            '.$a.' \leqq x \lt '.$c.'\\ のとき、f(x) \lt 0\\\\
+            '.$c.' \leqq x \leqq '.$b.'\\ のとき、f(x) \geqq 0\\\\
+            よって、\\\\
+            \begin{eqnarray}
+                && \int_{'.$a.'}^{'.$b.'}{|x'.d4(-1*$c).'|}dx \\\\
+                \\ &=& \int_{'.$a.'}^{'.$c.'}{(-x'.d4($c).')}dx + \int_{'.$c.'}^{'.$b.'}{(x'.d4(-1*$c).')}dx\\\\
+                \\ &=& \left[-\frac{1}{2}x^2'.d2($c,'x').'\right]_{'.$a.'}^{'.$c.'} + \left[\frac{1}{2}x^2'.d2(-1*$c,'x').'\right]_{'.$c.'}^{'.$b.'}\\\\
+                \\ &=& \left\\{(-\frac{1}{2} \cdot '.dot3(1,$c,2).d2($c,' \cdot '.dot3(1,$c,1)).')-(-\frac{1}{2} \cdot '.dot3(1,$a,2).d2($c,' \cdot '.dot3(1,$a,1)).')\right\\}
+                        + \left\\{(\frac{1}{2} \cdot '.dot3(1,$b,2).d2(-1*$c,' \cdot '.dot3(1,$b,1)).')-(\frac{1}{2} \cdot '.dot3(1,$c,2).d2(-1*$c,' \cdot '.dot3(1,$c,1)).')\right\\}\\\\
+                \\ &=& '.f3($a*$a + $b*$b + 2*$c*$c - 2*$a*$c - 2*$b*$c,2).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //曲線とx軸で囲まれた図形の面積
@@ -5665,9 +6138,52 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            '.d1($a,'x^{2}').d2($b,'x').d4($c).' = '.d1($x,'(x'.d4(-1*$y).')(x'.d4(-1*$z).')').'\\\\
+            よって、y='.d1($a,'x^{2}').d2($b,'x').d4($c).'\\ は\\\\
+            x='.$y.','.$z.'\\ でx軸と交わるので、囲まれる部分の面積Sは、\\\\
+        ';
+        if($a > 0){
+            $sample_text .= '
+            \begin{eqnarray}
+                S &=& -\int_{'.$y.'}^{'.$z.'} {('.d1($a,'x^{2}').d2($b,'x').d4($c).')}dx\\\\
+                  &=& -\left['.f1($a,3,'x^3').f2($b,2,'x^2').d2($c,'x').'\right]_{'.$y.'}^{'.$z.'}\\\\
+                  &=& -('.f1($a,3,' \cdot '.dot3(1,$z,3)).f2($b,2,' \cdot '.dot3(1,$z,2)).d2($c,' \cdot '.dot3(1,$z,1)).') + ('.f1($a,3,' \cdot '.dot3(1,$y,3)).f2($b,2,' \cdot '.dot3(1,$y,2)).d2($c,' \cdot '.dot3(1,$y,1)).')\\\\
+                  &=& '.f3(abs($a)*pow($z-$y,3),6).'\\\\
+            \end{eqnarray}
+            ';
+        }else{
+            $sample_text .= '
+            \begin{eqnarray}
+                S &=& \int_{'.$y.'}^{'.$z.'} {('.d1($a,'x^{2}').d2($b,'x').d4($c).')}dx\\\\
+                  &=& \left['.f1($a,3,'x^3').f2($b,2,'x^2').d2($c,'x').'\right]_{'.$y.'}^{'.$z.'}\\\\
+                  &=& ('.f1($a,3,' \cdot '.dot3(1,$z,3)).f2($b,2,' \cdot '.dot3(1,$z,2)).d2($c,' \cdot '.dot3(1,$z,1)).') - ('.f1($a,3,' \cdot '.dot3(1,$y,3)).f2($b,2,' \cdot '.dot3(1,$y,2)).d2($c,' \cdot '.dot3(1,$y,1)).')\\\\
+                  &=& '.f3(abs($a)*pow($z-$y,3),6).'\\\\
+            \end{eqnarray}
+            ';
+        }
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:[-10,10,10,-10],
+                    axis: true,
+                    showNavigation: true,
+                    showCopyright: false
+                });
+
+                function bezier(t) {
+                    return '.$a.'*t*t + '.$b.'*t + '.$c.';
+                }
+
+                board.create(\'functiongraph\', [bezier, -10, 10]);
+                board.create(\'functiongraph\', [bezier, '.$y.', '.$z.'],{color:\'red\'});
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //直線と曲線で囲まれた図形の面積
@@ -5711,9 +6227,61 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            直線と曲線の共有点のx座標は、\\\\
+            '.d1($a,'x').d4($b).' = '.d1($c,'x^{2}').d2($d,'x').d4($e).'\\\\
+            '.d1($c,'x^{2}').d2($d-$a,'x').d4($e-$b).' = 0\\\\
+            '.d1($x,'(x'.d4(-1*$y).')(x'.d4(-1*$z).')').' = 0\\\\
+            x='.$y.','.$z.'\\\\
+            よって、囲まれる部分の面積Sは、\\\\
+        ';
+        if($c > 0){
+            $sample_text .= '
+            \begin{eqnarray}
+                S &=& \int_{'.$y.'}^{'.$z.'} {\left\{('.d1($a,'x').d4($b).') - ('.d1($c,'x^{2}').d2($d,'x').d4($e).')\right\}}dx\\\\
+                  &=& \int_{'.$y.'}^{'.$z.'} {('.d1(-1*$c,'x^{2}').d2($a-$d,'x').d4($b-$e).')}dx\\\\
+                  &=& \left['.f1(-1*$c,3,'x^3').f2($a-$d,2,'x^2').d2($b-$e,'x').'\right]_{'.$y.'}^{'.$z.'}\\\\
+                  &=& ('.f1(-1*$c,3,' \cdot '.dot3(1,$z,3)).f2($a-$d,2,' \cdot '.dot3(1,$z,2)).d2($b-$e,' \cdot '.dot3(1,$z,1)).') + ('.f1(-1*$c,3,' \cdot '.dot3(1,$y,3)).f2($a-$d,2,' \cdot '.dot3(1,$y,2)).d2($b-$e,' \cdot '.dot3(1,$y,1)).')\\\\
+                  &=& '.f3(abs($c)*pow($z-$y,3),6).'\\\\
+            \end{eqnarray}
+            ';
+        }else{
+            $sample_text .= '
+            \begin{eqnarray}
+                S &=& \int_{'.$y.'}^{'.$z.'} {\left\{('.d1($c,'x^{2}').d2($d,'x').d4($e).') - ('.d1($a,'x').d4($b).')\right\}}dx\\\\
+                  &=& \int_{'.$y.'}^{'.$z.'} {('.d1($c,'x^{2}').d2($d-$a,'x').d4($e-$b).')}dx\\\\
+                  &=& \left['.f1($c,3,'x^3').f2($d-$a,2,'x^2').d2($e-$b,'x').'\right]_{'.$y.'}^{'.$z.'}\\\\
+                  &=& ('.f1($c,3,' \cdot '.dot3(1,$z,3)).f2($d-$a,2,' \cdot '.dot3(1,$z,2)).d2($e-$b,' \cdot '.dot3(1,$z,1)).') + ('.f1($c,3,' \cdot '.dot3(1,$y,3)).f2($d-$a,2,' \cdot '.dot3(1,$y,2)).d2($e-$b,' \cdot '.dot3(1,$y,1)).')\\\\
+                  &=& '.f3(abs($c)*pow($z-$y,3),6).'\\\\
+            \end{eqnarray}
+            ';
+        }
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:[-10,10,10,-10],
+                    axis: true,
+                    showNavigation: true,
+                    showCopyright: false
+                });
+
+                function bezier(t) {
+                    return '.$a.'*t + '.$b.';
+                }
+                function bezier2(t) {
+                    return '.$c.'*t*t + '.$d.'*t + '.$e.';
+                }
+
+                board.create(\'functiongraph\', [bezier, -10, 10]);
+                board.create(\'functiongraph\', [bezier2, -10, 10]);
+                board.create(\'functiongraph\', [bezier2, '.$y.', '.$z.'],{color:\'red\'});
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //３次関数ととx軸で囲まれた図形の面積
@@ -5755,9 +6323,43 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            x^{3}'.d2($a,'x^{2}').d2($b,'x').d4($c).' = (x'.d4($x).')(x'.d4($y).')(x'.d4($z).')\\\\
+            よって、y=x^{3}'.d2($a,'x^{2}').d2($b,'x').d4($c).'\\ は\\\\
+            x='.$x.','.$y.','.$z.'\\ でx軸と共有点を持つ\\\\
+            グラフの概形は以下のようになるので、\\\\
+            曲線とx軸で囲まれる部分の面積Sは、\\\\
+            \begin{eqnarray}
+                S &=& \int_{'.$x.'}^{'.$y.'} {(x^{3}'.d2($a,'x^{2}').d2($b,'x').d4($c).')}dx - \int_{'.$y.'}^{'.$z.'} {(x^{3}'.d2($a,'x^{2}').d2($b,'x').d4($c).')}dx\\\\
+                  &=& \left[\frac{1}{4}x^4'.f2($a,3,'x^3').f2($b,2,'x^2').d2($c,'x').'\right]_{'.$x.'}^{'.$y.'} - \left[\frac{1}{4}x^4'.f2($a,3,'x^3').f2($b,2,'x^2').d2($c,'x').'\right]_{'.$y.'}^{'.$z.'}\\\\
+                  &=& \left\{(\frac{1}{4} \cdot '.dot3(1,$y,4).f2($a,3,' \cdot '.dot3(1,$y,3)).f2($b,2,' \cdot '.dot3(1,$y,2)).d2($c,' \cdot '.dot3(1,$y,1)).') - (\frac{1}{4} \cdot '.dot3(1,$x,4).f2($a,3,' \cdot '.dot3(1,$x,3)).f2($b,2,' \cdot '.dot3(1,$x,2)).d2($c,' \cdot '.dot3(1,$x,1)).')\right\}\\\\
+                  && - \left\{(\frac{1}{4} \cdot '.dot3(1,$z,4).f2($a,3,' \cdot '.dot3(1,$z,3)).f2($b,2,' \cdot '.dot3(1,$z,2)).d2($c,' \cdot '.dot3(1,$z,1)).') - (\frac{1}{4} \cdot '.dot3(1,$y,4).f2($a,3,' \cdot '.dot3(1,$y,3)).f2($b,2,' \cdot '.dot3(1,$y,2)).d2($c,' \cdot '.dot3(1,$y,1)).')\right\}\\\\
+                  &=& '.f3($right_answers[0],$right_answers[1]).'\\\\
+            \end{eqnarray}
+        ';
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:[-10,10,10,-10],
+                    axis: true,
+                    showNavigation: true,
+                    showCopyright: false
+                });
+
+                function bezier(t) {
+                    return t*t*t + '.$a.'*t*t + '.$b.'*t + '.$c.';
+                }
+
+                board.create(\'functiongraph\', [bezier, -10, 10]);
+                board.create(\'functiongraph\', [bezier, '.$x.', '.$y.'],{color:\'red\'});
+                board.create(\'functiongraph\', [bezier, '.$y.', '.$z.'],{color:\'red\'});
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //数学Ⅲ
@@ -5808,9 +6410,35 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            下図より、r='.rt2($right_answers[0],$right_answers[1]).',\\ \theta='.f1($theta[0][$s],$theta[1][$s],'\pi').'\\\\
+            よって、'.complex($t*$a_sign[$s],$u,$v,$w).'= '.rt2($right_answers[0],$right_answers[1]).'(\cos{'.f1($theta[0][$s],$theta[1][$s],'\pi').'}+i\sin{'.f1($theta[0][$s],$theta[1][$s],'\pi').'})
+        ';
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:[-6,6,6,-1],
+                    axis: true,
+                    showNavigation: false,
+                    showCopyright: false
+                });
+
+                var p1 = board.create(\'point\',['.($t*$a_sign[$s]*sqrt($u)).',0],{name:\'\',size:1,fixed:true});
+                var p2 = board.create(\'point\',[0,'.($v*sqrt($w)).'],{name:\'\',size:1,fixed:true});
+                var o = board.create(\'point\',[0,0],{name:\'\',size:0,fixed:true});
+                var b = board.create(\'point\',[1,0],{name:\'\',size:0,fixed:true});
+                var r = board.create(\'point\',['.($t*$a_sign[$s]*sqrt($u)).','.($v*sqrt($w)).'],{name:\'\',size:0,fixed:true});
+                board.create(\'line\',[o,r],{straightFirst:false, straightLast:false, lastarrow:true, fixed:true,name:\'r\'});
+                board.create(\'line\',[p1,r],{dash:1,straightFirst:false, straightLast:false,fixed:true});
+                board.create(\'line\',[p2,r],{dash:1,straightFirst:false, straightLast:false,fixed:true});
+                board.create(\'angle\',[b,o,r],{name:\'Θ\'});
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //複素数の積と商
@@ -5879,9 +6507,23 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            それぞれを極形式にして、\\\\
+            \alpha = '.complex($b,$a,$d,$c).' = '.d1($r_1,'(\cos{'.f1($theta[$alpha],180,'\pi').'}+i\sin{'.f1($theta[$alpha],180,'\pi').'})').'\\\\
+            \beta = '.complex($f,$e,$h,$g).' = '.d1($r_2,'(\cos{'.f1($theta[$beta],180,'\pi').'}+i\sin{'.f1($theta[$beta],180,'\pi').'})').'\\\\
+            よって、\\\\
+            \begin{eqnarray}
+                \alpha\beta &=& '.dot3($r_1,$r_2,1).'(\cos{('.f1($theta[$alpha],180,'\pi').'+'.f1($theta[$beta],180,'\pi').')}+i\sin{('.f1($theta[$alpha],180,'\pi').'+'.f1($theta[$beta],180,'\pi').')})\\\\
+                &=& '.d1($r_1*$r_2,'(\cos{'.f1($p,180,'\pi').'}+i\sin{'.f1($p,180,'\pi').'})').'\\\\
+                \frac{\alpha}{\beta} &=& \frac{'.$r_1.'}{'.$r_2.'}(\cos{('.f1($theta[$alpha],180,'\pi').'-'.f1($theta[$beta],180,'\pi').')}+i\sin{('.f1($theta[$alpha],180,'\pi').'-'.f1($theta[$beta],180,'\pi').')})\\\\
+                &=& '.f1($r_1,$r_2,'(\cos{'.f1($theta[$alpha]-$theta[$beta],180,'\pi').'}+i\sin{'.f1($theta[$alpha]-$theta[$beta],180,'\pi').'})').'\\\\
+                '.($p<$q ? '&=& '.f1($r_1,$r_2,'(\cos{'.f1($q,180,'\pi').'}+i\sin{'.f1($q,180,'\pi').'})') :'').'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //複素数の回転
@@ -5964,9 +6606,19 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \alpha = '.complex($b,$a,$d,$c).' = '.d1($r_1,'(\cos{'.f1($theta[$alpha],180,'\pi').'}+i\sin{'.f1($theta[$alpha],180,'\pi').'})').'\\\\
+            よって、これを'.f1($y[0],$y[1],'\pi').'だけ回転させた点B(\beta)は、\\\\
+            \begin{eqnarray}
+                \beta &=& '.d1($r_1,'\left\{\cos{('.f1($theta[$alpha],180,'\pi').'+'.f1($y[0],$y[1],'\pi').')}+i\sin{('.f1($theta[$alpha],180,'\pi').'+'.f1($y[0],$y[1],'\pi').')}\right\}').'\\\\
+                      &=& '.d1($r_1,'(\cos{'.f1($theta[$alpha]+$theta[$beta],180,'\pi').'}+i\sin{'.f1($theta[$alpha]+$theta[$beta],180,'\pi').'})').'\\\\
+                      &=& '.complex($f,$e,$h,$g).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //ド・モアブルの定理
@@ -5977,8 +6629,8 @@ class QuestionController extends Controller
         $option = $this->option;
 
         //変数の設定
-        $theta = [0,30,45,60,90,120,135,150,180];
-        $alpha = rand(0,8);
+        $theta = [30,45,60,90,120,135,150];
+        $alpha = rand(0,6);
         $z = rand(2,5);
 
         $r_1 = rand(1,5)*2;
@@ -6045,9 +6697,18 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                ('.complex($b,$a,$d,$c).')^{'.$z.'} &=& \left\{'.d1($r_1,'(\cos{'.f1($theta[$alpha],180,'\pi').'}+i\sin{'.f1($theta[$alpha],180,'\pi').'})').'\right\}^{'.$z.'}\\\\
+                                                    &=& '.dot3(1,$r_1,$z).'(\cos{('.$z.' \cdot '.f1($theta[$alpha],180,'\pi').')}+i\sin{('.$z.' \cdot '.f1($theta[$alpha],180,'\pi').')})\\\\
+                                                    &=& '.d1(pow($r_1,$z),'(\cos{'.f1($x[0],$x[1],'\pi').'}+i\sin{'.f1($x[0],$x[1],'\pi').'})').'\\\\
+                                                    &=& '.complex($f,$e,$h,$g).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //方程式の表す図形
@@ -6062,10 +6723,13 @@ class QuestionController extends Controller
         $b = rand(2,5);
 
         //答えの計算
-        $right_answers[0] = $a;
+        $right_answers[0] = -1*$a;
         $right_answers[1] = $b*$b-1;
         $right_answers[2] = abs($a)*$b;
         $right_answers[3] = $b*$b-1;
+
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+        list($right_answers[2],$right_answers[3]) = gcd($right_answers[2],$right_answers[3]);
 
         //問題テキストの設定
         $text = '$$ |z'.d4($a).'| = '.d1($b,'|z|').'\\ があらわす図形は、\\\\';
@@ -6085,9 +6749,26 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                |z'.d4($a).'| &=& '.d1($b,'|z|').'\\\\
+                |z'.d4($a).'|^2 &=& '.d1($b*$b,'|z|^2').'\\\\
+                (z'.d4($a).')\overline{(z'.d4($a).')} &=& '.d1($b*$b,'z\bar{z}').'\\\\
+                (z'.d4($a).')(\bar{z}'.d4($a).') &=& '.d1($b*$b,'z\bar{z}').'\\\\
+                z\bar{z}'.d2($a,'z').d2($a,'\bar{z}').d4($a*$a).' &=& '.d1($b*$b,'z\bar{z}').'\\\\
+                '.d1($b*$b-1,'z\bar{z}').d2(-1*$a,'(z+\bar{z})').' &=& '.($a*$a).'\\\\
+                z\bar{z}'.f2(-1*$a,$b*$b-1,'(z+\bar{z})').' &=& '.f3($a*$a,$b*$b-1).'\\\\
+                z\bar{z}'.f2(-1*$a,$b*$b-1,'(z+\bar{z})').'+ ('.f3(abs($a),$b*$b-1).')^2 &=& '.f3($a*$a,$b*$b-1).'+('.f3(abs($a),$b*$b-1).')^2\\\\
+                (z'.f2($a,$b*$b-1).')(\bar{z}'.f2($a,$b*$b-1).') &=& '.f3($a*$a*$b*$b,pow($b*$b-1,2)).'\\\\
+                |z'.f2($a,$b*$b-1).'|^2 &=& ('.f3(abs($a)*$b,$b*$b-1).')^2\\\\
+                |z'.f2($a,$b*$b-1).'| &=& '.f3(abs($a)*$b,$b*$b-1).'\\\\ 
+            \end{eqnarray}\\\\
+            よって、これは点'.f3(-1*$a,$b*$b-1).'を中心とする半径'.f3(abs($a)*$b,$b*$b-1).'の円を表す。
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //なす角
@@ -6132,9 +6813,14 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \frac{\gamma-\alpha}{\beta-\alpha} = '.complex($b,$a,$d,$c).' = '.d1($r_1,'(\cos{'.f1($theta[$alpha],180,'\pi').'}+i\sin{'.f1($theta[$alpha],180,'\pi').'})').'\\\\
+            よって、\angle{\beta \alpha \gamma}='.f1($theta[$alpha],180,'\pi').'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //式と曲線
@@ -6160,9 +6846,40 @@ class QuestionController extends Controller
         $item[0] = '焦点\\ (\fbox{ア},\fbox{イ})、';
         $item[1] = '準線\\ x = \fbox{ウ}';
 
+        $sample_text = '
+            y^{2}='.d1(4*$a,'x').'=4 \cdot '.d1($a,'x').'\\\\
+            よって、焦点は('.$a.',0)\\\\
+            準線は、x = '.(-1*$a).'\\\\
+        ';
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:[-10,10,10,-10],
+                    axis: true,
+                    showNavigation: true,
+                    showCopyright: false
+                });
+
+                function bezier(t) {
+                    return Math.sqrt(4*'.$a.'*t);
+                }
+                function bezier2(t) {
+                    return -1*Math.sqrt(4*'.$a.'*t);
+                }
+
+                board.create(\'functiongraph\', [bezier, -10, 10]);
+                board.create(\'functiongraph\', [bezier2, -10, 10]);
+                var p = board.create(\'point\',['.$a.',0],{name:\'\',size:1,fixed:true});
+                var q = board.create(\'point\',['.(-1*$a).',0],{name:\'\',size:0,fixed:true});
+                var r = board.create(\'point\',['.(-1*$a).',1],{name:\'\',size:0,fixed:true});
+                board.create(\'line\',[q,r],{fixed:true});
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //楕円
@@ -6188,6 +6905,10 @@ class QuestionController extends Controller
             $right_answers[7] = 0;
             list($right_answers[2],$right_answers[3]) = root($right_answers[2],$right_answers[3]);
             list($right_answers[5],$right_answers[6]) = root($right_answers[5],$right_answers[6]);
+            $s[0] = sqrt($a*$a-$b*$b);
+            $s[1] = 0;
+            $s[2] = -1*sqrt($a*$a-$b*$b);
+            $s[3] = 0;
         }else{
             $right_answers[0] = 2*$b;
             $right_answers[1] = 2*$a;
@@ -6199,10 +6920,57 @@ class QuestionController extends Controller
             $right_answers[7] = $b*$b-$a*$a;
             list($right_answers[3],$right_answers[4]) = root($right_answers[3],$right_answers[4]);
             list($right_answers[6],$right_answers[7]) = root($right_answers[6],$right_answers[7]);
+            $s[0] = 0;
+            $s[1] = sqrt($b*$b-$a*$a);
+            $s[2] = 0;
+            $s[3] = -1*sqrt($b*$b-$a*$a);
         }
 
         //問題テキストの設定
         $text = '$$ 楕円\\ \frac{x^{2}}{'.($a*$a).'}+\frac{y^{2}}{'.($b*$b).'}=1\\ は、\\\\';
+
+        $sample_text = '
+            \begin{eqnarray}
+                \frac{x^{2}}{'.($a*$a).'}+\frac{y^{2}}{'.($b*$b).'} &=& 1\\\\
+                \frac{x^{2}}{'.$a.'^2}+\frac{y^{2}}{'.$b.'^2} &=& 1\\\\
+            \end{eqnarray}\\\\
+            よって、図は以下のようになるので、\\\\
+            長軸の長さは\\ '.$right_answers[0].'、短軸の長さは\\ '.$right_answers[1].'\\\\
+            焦点は、\\\\
+        ';
+
+        if($a>$b){
+            $sample_text .= '
+            ('.rt2($right_answers[2],$right_answers[3]).','.$right_answers[4].'),('.rt2($right_answers[5],$right_answers[6]).','.$right_answers[7].')
+            ';
+        }else{
+            $sample_text .= '
+                ('.$right_answers[2].','.rt2($right_answers[3],$right_answers[4]).'),('.$right_answers[5].','.rt2($right_answers[6],$right_answers[7]).')
+            ';
+        }
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:[-1*'.$a.'-1,'.$b.'+1,'.$a.'+1,-1*'.$b.'-1],
+                    axis: true,
+                    showNavigation: true,
+                    showCopyright: false
+                });
+
+                function bezier(t) {
+                    return '.$b.'/'.$a.'*Math.sqrt('.$a.'*'.$a.'-t*t);
+                }
+                function bezier2(t) {
+                    return -1*'.$b.'/'.$a.'*Math.sqrt('.$a.'*'.$a.'-t*t);
+                }
+
+                var p = board.create(\'point\',['.$s[0].','.$s[1].'],{name:\'\',size:1,fixed:true});
+                var q = board.create(\'point\',['.$s[2].','.$s[3].'],{name:\'\',size:1,fixed:true});
+                board.create(\'functiongraph\', [bezier, -1*'.$a.', '.$a.']);
+                board.create(\'functiongraph\', [bezier2, -1*'.$a.', '.$a.']);
+            </script>
+        ';
 
         //空欄テキストの設定
         $item[0] = '長軸の長さ\\ \fbox{ア}、短軸の長さ\\ \fbox{イ}\\\\';
@@ -6228,7 +6996,7 @@ class QuestionController extends Controller
 
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //双曲線
@@ -6274,9 +7042,46 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                \frac{x^{2}}{'.($a*$a).'}-\frac{y^{2}}{'.($b*$b).'} &=& 1\\\\
+                \frac{x^{2}}{'.$a.'^2}-\frac{y^{2}}{'.$b.'^2} &=& 1\\\\
+            \end{eqnarray}\\\\
+            よって、図は以下のようになり、\\\\
+            頂点は、('.$a.',0),('.(-1*$a).',0)\\\\
+            焦点は、('.rt2(1,$a*$a+$b*$b).',0),('.rt2(-1,$a*$a+$b*$b).',0)\\\\
+        ';
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:[-10,10,10,-10],
+                    axis: true,
+                    showNavigation: true,
+                    showCopyright: false
+                });
+
+                function bezier(t) {
+                    return '.$b.'/'.$a.'*Math.sqrt(t*t-'.$a.'*'.$a.');
+                }
+                function bezier2(t) {
+                    return -1*'.$b.'/'.$a.'*Math.sqrt(t*t-'.$a.'*'.$a.');
+                }
+
+                board.create(\'point\',['.$a.',0],{name:\'\',size:1,fixed:true});
+                board.create(\'point\',['.(-1*$a).',0],{name:\'\',size:1,fixed:true});
+                board.create(\'point\',['.sqrt($a*$a+$b*$b).',0],{name:\'\',size:1,fixed:true});
+                board.create(\'point\',['.(-1*sqrt($a*$a+$b*$b)).',0],{name:\'\',size:1,fixed:true});
+                board.create(\'functiongraph\', [bezier, -20,'.(-1*$a).']);
+                board.create(\'functiongraph\', [bezier, '.$a.',20]);
+                board.create(\'functiongraph\', [bezier2, -20,'.(-1*$a).']);
+                board.create(\'functiongraph\', [bezier2, '.$a.',20]);
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //２次曲線の平行移動
@@ -6312,9 +7117,21 @@ class QuestionController extends Controller
         $item[1] = 'x軸方向に\fbox{ウ}、y軸方向に\fbox{エ}だけ\\\\';
         $item[2] = '平行移動したものである。';
 
+        $sample_text = '
+            \begin{eqnarray}
+                '.d1($a,'x^{2}').d2($b,'y^{2}').d2($c,'x').d2($d,'y').d4($e).' &=& 0\\\\
+                '.d1($a,'(x^2'.f2($c,$a,'x').')').d2($b,'(y^2'.f2($d,$b,'y').')').d4($e).' &=& 0\\\\
+                '.d1($a,'(x'.f2($c,2*$a).')^2').f2(-1*$c*$c,4*$a).d2($b,'(y'.f2($d,2*$b,'y').')^2').f2(-1*$d*$d,4*$b).d4($e).' &=& 0\\\\
+                '.d1($a,'(x'.f2($c,2*$a).')^2').d2($b,'(y'.f2($d,2*$b,'y').')^2').' &=& '.($p*$q).'\\\\
+                \frac{(x'.d4(-1*$r).')^2}{'.$p.'} + \frac{(y'.d4(-1*$s).')^2}{'.$q.'} &=& 1\\\\
+            \end{eqnarray}\\\\
+            よってこれは、楕円\frac{x^2}{'.$p.'}+\frac{y^2}{'.$q.'}=1を\\\\
+            x軸方向に'.$r.',\\ y軸方向に'.$s.'\\ だけ平行移動したもの
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //２次曲線と直線の共有点
@@ -6357,6 +7174,22 @@ class QuestionController extends Controller
         $text = '$$ 放物線\\ y^{2}='.d1($p,'x').'と、\\ 直線\\ '.d1($x,'x').d2($y,'y').'='.$z.'\\ の共有点は、\\\\
                 y座標の小さい順に、\\\\';
 
+        $s_2 = gmp_gcd($x,gmp_gcd($p*$y,-1*$p*$z));
+        list($d[0],$d[1],$d[2]) = array($x/$s_2,$p*$y/$s_2,-1*$p*$z/$s_2);
+
+        $sample_text = '
+            y^2 = '.d1($p,'x').'\\ より、x='.f1(1,$p,'y^2').' \cdots (*)\\\\
+            これを直線の方程式に代入して、\\\\
+            '.$x.' \cdot '.f1(1,$p,'y^2').d2($y,'y').' = '.$z.'\\\\
+            '.d1($d[0],'y^2').d2($d[1],'y').d4($d[2]).' = 0\\\\
+            ('.d1($right_answers[3],'y').d4(-1*$right_answers[2]).')('.d1($right_answers[7],'y').d4(-1*$right_answers[6]).') = 0\\\\
+            \therefore y = '.f3($right_answers[2],$right_answers[3]).','.f3($right_answers[6],$right_answers[7]).'\\\\
+            これらを(*)に代入して、\\\\
+            x = '.f3($right_answers[0],$right_answers[1]).','.f3($right_answers[4],$right_answers[5]).'\\\\
+            したがって共有点は、\\\\
+            ('.f3($right_answers[0],$right_answers[1]).','.f3($right_answers[2],$right_answers[3]).'),('.f3($right_answers[4],$right_answers[5]).','.f3($right_answers[6],$right_answers[7]).')
+        ';
+
         //空欄テキストの設定
         $item[0] = '('.($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}},';
         $item[1] = ($right_answers[2]*$right_answers[3]<0?'-':'').'\frac{\fbox{ウ}}{\fbox{エ}}),';
@@ -6375,9 +7208,11 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //２次曲線と接線の方程式
@@ -6413,7 +7248,7 @@ class QuestionController extends Controller
         $item[1] = ($p<0?'-':'+').'\fbox{エ}';
 
         list($right_answers,$option,$blanks,$item[0]) = l_root($right_answers,$option,0,1,$blanks,$item[0]);
-        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,3,$blanks,$item[0]);
+        list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,2,$blanks,$item[0]);
 
         $right_answers = array_values($right_answers);
         $option = array_values($option);
@@ -6423,9 +7258,28 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            接線は(0,'.$p.')を通るので、切片は'.$p.'\\\\
+            よって接線の方程式を\\ y=mx'.d4($p).'\\ とおくと、\\\\
+            これを楕円の式に代入して、\\\\
+            '.d1($a,'x^{2}').d2($b,'(mx'.d4($p).')^2').'='.$c.'\\\\
+            ('.d1($b,'m^2').d4($a).')x^2'.d2(2*$b*$p,'mx').d4($b*$p*$p-$c).' = 0\\\\
+            この式の判別式をDとすると、\\\\
+            D/4 = ('.d1($b*$p,'m').')^2 - ('.d1($b,'m^2').d4($a).') \cdot ('.($b*$p*$p-$c).')\\\\
+            \quad = '.d1($b*$c,'m^2').d4(-1*$a*$b*$p*$p+$a*$c).'\\\\
+            楕円と直線が接するとき、D=0\\ となるので、\\\\
+            \begin{eqnarray}
+                '.d1($b*$c,'m^2').d4(-1*$a*$b*$p*$p+$a*$c).' &=& 0\\\\
+                m^2 &=& '.f3($a*$b*$p*$p-$a*$c,$b*$c).'\\\\
+                m &=& \pm'.fr_rt2(1,$b*$c*($a*$b*$p*$p-$a*$c),$b*$c).'\\\\
+            \end{eqnarray}\\\\
+            よって、接線の方程式は、\\\\
+            y = \pm'.fr_rt2(1,$b*$c*($a*$b*$p*$p-$a*$c),$b*$c).'x'.d4($p).'\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //媒介変数表示
@@ -6457,9 +7311,18 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            y='.d1($a,'x^{2}').d2($b.'tx').d4($c).' = '.d1($a,'(x'.f2($b,2*$a,'t').')^2').f2(-1*$b*$b,4*$a,'t^2').d4($c).'\\\\
+            よって頂点は、('.f1(-1*$b,2*$a,'t').',\\ '.f1(-1*$b*$b,4*$a,'t^2').d4($c).')\\\\
+            x = '.f1(-1*$b,2*$a,'t').',\\ y = '.f1(-1*$b*$b,4*$a,'t^2').d4($c).'\\ とおくと、\\\\
+            t = '.f1(-2*$a,$b,'x').'より、yの式に代入して、\\\\
+            y = '.f1(-1*$b*$b,4*$a,'('.f1(-2*$a,$b,'x').')^2').d4($c).'\\\\
+            \quad = '.d1(-1*$a,'x^2').d4($c).'\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //極座標と直交座標
@@ -6470,8 +7333,8 @@ class QuestionController extends Controller
         $option = $this->option;
 
         //変数の設定
-        $theta = [0,30,45,60,90,120,135,150,180];
-        $alpha = rand(1,8);
+        $theta = [0,30,45,60,120,135,150,180];
+        $alpha = rand(1,7);
 
         $r = rand(1,5)*2;
 
@@ -6535,9 +7398,36 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            r = \sqrt{('.rt2($b,$a).')^2+('.rt2($d,$c).')^2} = '.rt2(1,$b*$b*$a+$d*$d*$c).'\\\\
+            \tan{\theta} = \frac{'.rt2($d,$c).'}{'.rt2($b,$a).'} = '.fr_rt2($d,$a*$c,$b).'\\ より、\\\\
+            \theta = '.f1($theta[$alpha],180,'\pi').'\\\\
+        ';
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:[-6,6,6,-1],
+                    axis: true,
+                    showNavigation: true,
+                    showCopyright: false
+                });
+
+                var p1 = board.create(\'point\',['.($b*sqrt($a)).',0],{name:\'\',size:1,fixed:true});
+                var p2 = board.create(\'point\',[0,'.($d*sqrt($c)).'],{name:\'\',size:1,fixed:true});
+                var o = board.create(\'point\',[0,0],{name:\'\',size:0,fixed:true});
+                var b = board.create(\'point\',[1,0],{name:\'\',size:0,fixed:true});
+                var r = board.create(\'point\',['.($b*sqrt($a)).','.($d*sqrt($c)).'],{name:\'\',size:0,fixed:true});
+                board.create(\'line\',[o,r],{straightFirst:false, straightLast:false, lastarrow:true, fixed:true,name:\'r\'});
+                board.create(\'line\',[p1,r],{dash:1,straightFirst:false, straightLast:false,fixed:true});
+                board.create(\'line\',[p2,r],{dash:1,straightFirst:false, straightLast:false,fixed:true});
+                board.create(\'angle\',[b,o,r],{name:\'Θ\'});
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //関数
@@ -6575,9 +7465,42 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                y &=& \frac{'.d1($a,'x').d4($b).'}{x'.d4($c).'}\\\\
+                  &=& \frac{'.d1($a,'x').d4($a*$c).d4(-1*$a*$c).d4($b).'}{x'.d4($c).'}\\\\
+                  &=& '.($b-$a*$c>0?'':'-').'\frac{'.abs($b-$a*$c).'}{x'.d4($c).'} + \frac{'.d1($a,'(x'.d4($c)).')}{x'.d4($c).'}\\\\
+                  &=& '.($b-$a*$c>0?'':'-').'\frac{'.abs($b-$a*$c).'}{x'.d4($c).'}'.d4($a).'\\\\
+            \end{eqnarray}\\\\
+            図より、漸近線は、\\\\
+            x='.(-1*$c).', \\ y = '.$a.'
+        ';
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:['.$c.'-10,'.$a.'+10,'.(-1*$c).'+10,'.$a.'-10],
+                    axis: true,
+                    showNavigation: true,
+                    showCopyright: false
+                });
+
+                function bezier(t) {
+                    return ('.$a.'*t+'.$b.')/(t+'.$c.');
+                }
+
+                board.create(\'functiongraph\', [bezier, -20, 20]);
+                var o = board.create(\'point\',['.(-1*$c).','.$a.'],{name:\'\',size:0,fixed:true});
+                var x = board.create(\'point\',['.(-1*$c).',0],{name:\'\',size:0,fixed:true});
+                var y = board.create(\'point\',[0,'.$a.'],{name:\'\',size:0,fixed:true});
+                board.create(\'line\',[o,x],{fixed:true,dash:1,color:\'red\'});
+                board.create(\'line\',[o,y],{fixed:true,dash:1,color:\'red\'});
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //分数関数と直線の共有点
@@ -6620,6 +7543,19 @@ class QuestionController extends Controller
         $text = '$$ y='.($x>0?'':'-').'\frac{'.abs($x).'}{'.d1($y,'x').d4($z).'}と、y='.d1($c,'x').d4($d).'の\\\\
                  共有点の座標は、x座標が小さい順に、\\\\';
 
+        $sample_text = '
+            2つの式を連立させて、\\\\
+            '.($x>0?'':'-').'\frac{'.abs($x).'}{'.d1($y,'x').d4($z).'} = '.d1($c,'x').d4($d).'\\\\
+            '.$x.' = '.d1($c*$y,'x^2').d2($d*$y+$c*$z).d4($z*$d).'\\\\
+            '.d1($c*$y,'x^2').d2($d*$y+$c*$z).d4($z*$d-$x).' = 0\\\\
+            ('.d1($right_answers[1],'x').d4(-1*$right_answers[0]).')('.d1($right_answers[5],'x').d4(-1*$right_answers[4]).') = 0\\\\
+            \therefore \\ x = '.f3($right_answers[0],$right_answers[1]).','.f3($right_answers[4],$right_answers[5]).'\\\\
+            y= '.d1($c,'x').d4($d).'\\ に代入して、\\\\
+            y = '.f3($right_answers[2],$right_answers[3]).','.f3($right_answers[6],$right_answers[7]).'\\\\
+            よって、共有点は、\\\\
+            ('.f3($right_answers[0],$right_answers[1]).','.f3($right_answers[2],$right_answers[3]).'),('.f3($right_answers[4],$right_answers[5]).','.f3($right_answers[6],$right_answers[7]).')
+        ';
+
         //空欄テキストの設定
         $item[0] = '('.($right_answers[0]*$right_answers[1]<0?'-':'').'\frac{\fbox{ア}}{\fbox{イ}},';
         $item[1] = ($right_answers[2]*$right_answers[3]<0?'-':'').'\frac{\fbox{ウ}}{\fbox{エ}}),';
@@ -6638,9 +7574,10 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //無理関数
@@ -6651,7 +7588,7 @@ class QuestionController extends Controller
         $option = $this->option;
 
         //変数の設定
-        $a = rand(1,5);
+        $a = rand(2,5);
         do { $b = rand(-5,5); } while( $b==0 );
 
         $p = $a;
@@ -6668,17 +7605,43 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = 'y =\sqrt{'.d1($p,'x').'}のグラフを、\\\\';
         $item[1] = 'x軸方向に'.($right_answers[0]<0?'-':'').'\fbox{ア}だけ移動したものであり、\\\\';
-        $item[2] = '定義域は、x \geqq '.($right_answers[1]<0?'-':'').'\fbox{イ}、';
-        $item[3] = 'y \geqq \fbox{ウ}';
+        $item[2] = '定義域は\\ x \geqq '.($right_answers[1]<0?'-':'').'\fbox{イ}、';
+        $item[3] = '値域は\\ y \geqq \fbox{ウ}';
 
         for($i=0;$i<$blanks;$i++)
         {
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            y =\sqrt{'.d1($p,'x').d4($q).'} = \sqrt{'.d1($p,'(x'.d4($b).')').'}\\\\
+            よって、これはy =\sqrt{'.d1($p,'x').'}のグラフを、\\\\
+            x軸方向に'.(-1*$b).'だけ平行移動させたものである。\\\\
+            (根号の中) \geqq 0\\ より、'.d1($p,'x').d4($q).' \geqq 0\\\\
+            \therefore \\ x \geqq '.(-1*$b).'\\\\
+            \sqrt{'.d1($p,'x').d4($q).'} \geqq 0\\ より、y \geqq 0
+        ';
+
+        $plot = '
+            <script>
+                var board = JXG.JSXGraph.initBoard(\'plot\', {
+                    boundingbox:['.(-1*$b).'-3,5,'.(-1*$b).'+3,-1],
+                    axis: true,
+                    showNavigation: true,
+                    showCopyright: false
+                });
+
+                function bezier(t) {
+                    return Math.sqrt('.$p.'*t+'.$q.');
+                }
+
+                board.create(\'functiongraph\', [bezier, '.(-1*$b).', 20]);
+            </script>
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','plot'));
     }
 
     //逆関数
@@ -6718,9 +7681,20 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                y &=& \frac{'.d1($a,'x').d4($b).'}{'.d1($c,'x').d4($d).'}\\\\
+                y('.d1($c,'x').d4($d).') &=& '.d1($a,'x').d4($b).'\\\\
+                ('.d1($c,'y').d4(-1*$a).')x &=& '.d1(-1*$d,'y').d4($b).'\\\\
+                x &=& \frac{'.d1(-1*$d,'y').d4($b).'}{'.d1($c,'y').d4(-1*$a).'}\\\\
+            \end{eqnarray}\\\\
+            xとyを入れ替えて、\\\\
+            y = \frac{'.d1(-1*$d,'x').d4($b).'}{'.d1($c,'x').d4(-1*$a).'}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //合成関数
@@ -6785,9 +7759,22 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                (g \circ f)(x) &=& g(f(x))\\\\
+                               &=& g('.d1($a,'x^{2}').d2($b,'x').d4($c).')\\\\
+                               &=& '.d1($d,'('.d1($a,'x^{2}').d2($b,'x').d4($c).')').d4($e).'\\\\
+                               &=& '.d1($a*$d,'x^{2}').d2($b*$d,'x').d4($c*$d+$e).'\\\\
+                (f \circ g)(x) &=& f(g(x))\\\\
+                               &=& f('.d1($d,'x').d4($e).')\\\\
+                               &=& '.d1($a,'('.d1($d,'x').d4($e).')^2').d2($b,'('.d1($d,'x').d4($e).')').d4($c).'\\\\
+                               &=& '.d1($a*$d*$d,'x^{2}').d2(2*$a*$d*$e+$b*$d,'x').d4($a*$e*$e+$b*$e+$c).'\\\\
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //極限
@@ -6808,6 +7795,8 @@ class QuestionController extends Controller
         $right_answers[0] = $a;
         $right_answers[1] = $c;
 
+        list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
+
         //問題テキストの設定
         $text = '$$ \lim_{n \to \infty} \frac{'.d1($a,'n').d4($b).'}{'.d1($c,'n').d4($d).'}= ';
 
@@ -6824,9 +7813,14 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \lim_{n \to \infty} \frac{'.d1($a,'n').d4($b).'}{'.d1($c,'n').d4($d).'} = 
+            \lim_{n \to \infty} \frac{'.$a.'+ \frac{'.$b.'}{n}}{'.$c.'+ \frac{'.$d.'}{n}} = '.f3($a,$c).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //無限等比数列の極限
@@ -6849,9 +7843,14 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\fbox{ア}';
 
+        $sample_text = '
+            \lim_{n \to \infty} \frac{'.$a.'^{n+1} - '.$b.'^{n}}{'.$a.'^{n} + '.$b.'^{n}} =
+            \lim_{n \to \infty} \frac{'.$a.' - ('.f3($b,$a).')^{n}}{1 + ('.f3($b,$a).')^{n}} = '.$a.'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //漸化式で定められる数列の極限
@@ -6893,9 +7892,23 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            a_{n+1} = \frac{'.$b.'}{'.$c.'}a_{n}'.d4($d).'\\ より、\\\\
+            a_{n+1}'.f2(-1*$c*$d,$c-$b).' = '.f1($b,$c,'(a_n'.f2(-1*$c*$d,$c-$b).')').'\\\\
+            数列 \left\{a_{n}'.f2(-1*$c*$d,$c-$b).'\right\}は、\\\\
+            初項a_1'.f2(-1*$c*$d,$c-$b).'='.f3($a*$c-$a*$b-$c*$d,$c-$b).',\\ 公比'.f3($b,$c).'\\ の等比数列なので、\\\\
+            \begin{eqnarray}
+                a_{n}'.f2(-1*$c*$d,$c-$b).' &=& '.f3($a*$c-$a*$b-$c*$d,$c-$b).' \cdot ('.f3($b,$c).')^{n-1}\\\\
+                a_{n} &=& '.f3($a*$c-$a*$b-$c*$d,$c-$b).' \cdot ('.f3($b,$c).')^{n-1}'.f2($c*$d,$c-$b).'\\\\
+            \end{eqnarray}\\\\
+            よって極限は、\\\\
+            \lim_{n \to \infty} a_{n} = \lim_{n \to \infty} \left\{'.f3($a*$c-$a*$b-$c*$d,$c-$b).' \cdot ('.f3($b,$c).')^{n-1}'.f2($c*$d,$c-$b).'\right\} =
+            '.f3($c*$d,$c-$b).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //無限等比数列
@@ -6906,7 +7919,7 @@ class QuestionController extends Controller
         $option = $this->option;
 
         //変数の設定
-        $a = rand(-7,7);
+        do{ $a = rand(-7,7); } while($a==0);
         $b = rand(1,5);
         do{ $c = rand(2,7); } while($b>=$c);
 
@@ -6936,9 +7949,20 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            この等比数列の第n項までの和S_nは、\\\\
+            S_n = \frac{'.d1($a,'\left\{1-('.f3($b,$c).')^n\right\}').'}{1-'.f3($b,$c).'}\\\\
+            よって、\\\\
+            \begin{eqnarray}
+                \sum_{n=1}^\infty a_n &=& \lim_{n \to \infty} \frac{'.d1($a,'\left\{1-('.f3($b,$c).')^n\right\}').'}{1-'.f3($b,$c).'}\\\\
+                    &=& \frac{'.$a.'}{1-'.f3($b,$c).'}\\\\
+                    &=& '.f3($a*$c,$c-$b).'\\\\
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //関数の極限
@@ -6985,9 +8009,18 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                \lim_{x \to \infty} \frac{'.d1($a,'x^{2}').d2($b,'x').d4($c).'}{'.d1($d,'x^{2}').d2($e,'x').d4($f).'} &=& \lim_{x \to \infty} \frac{('.d1($p,'x').d4($q).')('.d1($r,'x').d4($s).')}{('.d1($p,'x').d4($q).')('.d1($t,'x').d4($t).')}\\\\
+                    &=& \lim_{x \to \infty} \frac{'.d1($r,'x').d4($s).'}{'.d1($t,'x').d4($u).'}\\\\
+                    &=& \lim_{x \to \infty} \frac{'.$r.'+\frac{'.$s.'}{x}}{'.$t.'+\frac{'.$u.'}{x}}\\\\
+                    &=& '.f3($r,$t).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //三角関数と極限
@@ -7018,9 +8051,17 @@ class QuestionController extends Controller
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
+        $sample_text = '
+            \begin{eqnarray}
+                \lim_{x \to 0} \frac{\sin{'.d1($a,'x').'}}{\sin{'.d1($b,'x').'}} &=& \lim_{x \to 0} \frac{'.$a.'}{'.$b.'} \cdot \frac{'.$b.'}{'.$a.'} \cdot \frac{\sin{'.d1($a,'x').'}}{\sin{'.d1($b,'x').'}}\\\\
+                    &=& \lim_{x \to 0} '.f3($a,$b).' \cdot \frac{\sin{'.d1($a,'x').'}}{'.$a.'} \cdot \frac{'.$b.'}{\sin{'.d1($b,'x').'}}\\\\
+                    &=& '.f3($a,$b).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //微分法
@@ -8477,9 +9518,32 @@ class QuestionController extends Controller
         $item[0] = '正の約数の個数は\fbox{ア}個、';
         $item[1] = 'その和は、\fbox{イ}';
 
+        $p = '';    $q = '';    $r = '';
+        for($i=0;$i<count($ex);$i++){
+            $p .= $base[$i].'^{'.$ex[$i].'}';
+            if($i != count($ex)-1){
+                $p .= ' \cdot ';
+            }
+            $q .= '('.$ex[$i].'+1)';
+            
+            $r .= '(1';
+            for($j=1;$j<=$ex[$i];$j++){
+                $r .= '+'.$base[$i].'^{'.$j.'}';
+            }
+            $r .= ')';
+        }
+
+        $sample_text = '
+            '.$N.'を素因数分解して、'.$N.' = '.$p.'\\\\
+            よって、約数の個数は、\\\\
+            '.$q.' = '.$right_answers[0].'\\\\
+            また、約数の総和は、\\\\
+            '.$r.' = '.$right_answers[1].'\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //順列、組み合わせ、階乗の記号
@@ -8509,9 +9573,43 @@ class QuestionController extends Controller
         $item[1] = '{}_'.$c.' \mathrm{C}_'.$d.'=\fbox{イ}、';
         $item[2] = $e.'! = \fbox{ウ}';
 
+        $p = '';    $q = '';    $r = '';    $s = '';
+
+        for($i=$a;$i>$a-$b;$i--){
+            $p .= $i;
+            if($i!=$a-$b+1){
+                $p .= ' \cdot ';
+            }
+        }
+        for($i=$c;$i>$c-$d;$i--){
+            $q .= $i;
+            if($i!=$c-$d+1){
+                $q .= ' \cdot ';
+            }
+        }
+        for($i=$d;$i>=1;$i--){
+            $r .= $i;
+            if($i!=1){
+                $r .= ' \cdot ';
+            }
+        }
+        for($i=$e;$i>=1;$i--){
+            $s .= $i;
+            if($i!=1){
+                $s .= ' \cdot ';
+            }
+        }
+
+
+        $sample_text = '
+            {}_'.$a.' \mathrm{P}_'.$b.' = '.$p.' = '.$right_answers[0].'\\\\
+            {}_'.$c.' \mathrm{C}_'.$d.' = \frac{'.$q.'}{'.$r.'} = '.$right_answers[1].'\\\\
+            '.$e.'! = '.$s.' = '.$right_answers[2].'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //順列
@@ -8527,7 +9625,7 @@ class QuestionController extends Controller
 
         //答えの計算
         $right_answers[0] = gmp_fact($a+$b);
-        $right_answers[1] = 2*gmp_fact($a+$b-2);
+        $right_answers[1] = $b*($b-1)*gmp_fact($a+$b-2);
         
         //問題テキストの設定
         $text = '$$ 男子'.$a.'人、女子'.$b.'人が一列に並ぶ。\\\\';
@@ -8536,9 +9634,17 @@ class QuestionController extends Controller
         $item[0] = 'この並び方の総数は、\fbox{ア}通り、\\\\';
         $item[1] = '両端が女子になる並び方は、\fbox{イ}通り';
 
+        $sample_text = '
+            合計'.($a+$b).'人が並ぶ並び方の総数は、'.($a+$b).'! = '.$right_answers[0].'\\\\
+            端が女子になる並び方は、\\\\
+            女子'.$b.'人のうち端になる2人を選んで並べる総数が、{}_'.$b.' \mathrm{P}_2 = '.($b*($b-1)).'\\\\
+            残りの'.($a+$b-2).'人の並び方の総数が、'.($a+$b-2).'! = '.gmp_fact($a+$b-2).'\\\\
+            よって、'.($b*($b-1)).' \cdot '.gmp_fact($a+$b-2).' = '.$right_answers[1].'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //円順列
@@ -8560,9 +9666,14 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\fbox{ア}通り';
 
+        $sample_text = '
+            '.$a.'人での円順列になるので、その並び方の総数は、\\\\
+            ('.$a.'-1)! = '.($a-1).'! = '.$right_answers[0].'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //重複順列
@@ -8586,9 +9697,18 @@ class QuestionController extends Controller
         $item[0] = '１冊も取らなくてもいい場合、取り方は\fbox{ア}通り、\\\\';
         $item[1] = '１冊以上取る場合、取り方は\fbox{イ}通り';
 
+        $sample_text = '
+            1冊も取らなくてもいい場合、\\\\
+            それぞれの本に対して、取られるか取られないかの2通り\\\\
+            よって、取り方の総数は、2^'.$a.' = '.$right_answers[0].'\\\\
+            1冊以上取る場合、\\\\
+            すべて取らない場合が1通りあるので、\\\\
+            その取り方の総数は、'.$right_answers[0].'-1 = '.$right_answers[1].'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //組み合わせ
@@ -8616,9 +9736,17 @@ class QuestionController extends Controller
         $item[0] = 'この中から'.$c.'人選ぶ方法は\fbox{ア}通り、\\\\';
         $item[1] = '男子'.$d.'人、女子'.$e.'人選ぶ方法は\fbox{イ}通り';
 
+        $sample_text = '
+            合計'.($a+$b).'人から'.$c.'人を選ぶ選び方の総数は、\\\\
+            {}_{'.($a+$b).'} \mathrm{C}_{'.$c.'} = '.$right_answers[0].'\\\\
+            男子'.$a.'人から'.$d.'人を、女子'.$b.'人から'.$e.'人を選ぶ選び方の総数は、\\\\
+            {}_{'.$a.'} \mathrm{C}_{'.$d.'} \cdot {}_{'.$b.'} \mathrm{C}_{'.$e.'} = '.(gmp_fact($a)/(gmp_fact($d)*gmp_fact($a-$d))).' \cdot '.(gmp_fact($b)/(gmp_fact($e)*gmp_fact($b-$e))).'
+             = '.$right_answers[1].'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //同じものを含む順列
@@ -8690,9 +9818,24 @@ class QuestionController extends Controller
         $item[0] = 'このときの経路の総数は\fbox{ア}通り、\\\\';
         $item[1] = 'A点からB点を通ってC点に向かう経路数は\fbox{イ}通り';
 
+        $sample_text = '
+            AからCまで最短距離で向かうとき、\\\\
+            上に'.$a.'回、右に'.$b.'回進む。\\\\
+            上に行くことを\uparrow、右に行くことを\rightarrowを表すと、\\\\
+            経路の総数は\uparrow'.$a.'個と\rightarrow'.$b.'個を並び替える総数と等しく、\\\\
+            その経路数は、\\\\
+            \frac{'.($a+$b).'!}{'.$a.'! \cdot '.$b.'!} = '.$right_answers[0].'\\\\
+            AからBを通ってCまで最短距離で向かうとき、\\\\
+            AからBまでは、\uparrow'.$d.'個と\rightarrow'.$c.'個を\\\\
+            BからCまでは、\uparrow'.($a-$d).'個と\rightarrow'.($b-$c).'個を\\\\
+            それぞれ並び替える総数に等しいので、\\\\
+            その経路数は、\\\\
+            \frac{'.($c+$d).'!}{'.$c.'! \cdot '.$d.'!} \cdot \frac{'.($a+$b-$c-$d).'!}{'.($a-$d).'! \cdot '.($b-$c).'!} = '.$right_answers[1].'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script'));
+        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script','sample_text'));
     }
 
     //確率の基本
@@ -8706,7 +9849,6 @@ class QuestionController extends Controller
         $r_1 = rand(1,6);
         $r_2 = rand(1,6);
         $a = $r_1*$r_2;
-        $b = rand(3,6)*rand(1,2);
         do { $b = rand(3,6)*rand(1,2); } while( $b==$a );
 
         $list_1 = [1,2,3,4,5,6,8,9,10,12,15,16,18,20,24,25,30,36];
@@ -8727,6 +9869,7 @@ class QuestionController extends Controller
                 }
             }
         }
+        $count[0] = $right_answers[2];  $count[1] = abs($right_answers[4]);
         $right_answers[4] += ($right_answers[0]+$right_answers[2]);
 
         list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
@@ -8741,9 +9884,59 @@ class QuestionController extends Controller
         $item[1] = '積が'.$b.'の倍数になる確率は、\frac{\fbox{ウ}}{\fbox{エ}}\\\\';
         $item[2] = '積が'.$b.'の倍数または'.$a.'になる確率は、\frac{\fbox{オ}}{\fbox{カ}}';
 
+        $sample_text = '
+            積が'.$a.'になるのは、\\\\
+            '.dice_m($a).'\\\\
+            の'.$list_2[array_search($a,$list_1)].'通りなので、確率は\\ '.f3($list_2[array_search($a,$list_1)],36).'\\\\
+            積が'.$b.'の倍数になるのもののうち、\\\\
+        ';
+
+        for($i=0;$i<18;$i++){
+            if($list_1[$i]%$b === 0){
+                $sample_text .= '
+                    積が'.$list_1[$i].'になるのは、\\\\
+                    '.dice_m($list_1[$i]).'\\\\
+                ';
+            }
+        }
+
+        $sample_text .= '
+            の'.$count[0].'通りなので、その確率は、'.f3($right_answers[2],$right_answers[3]).'\\\\
+            積が'.$b.'の倍数かつ'.$a.'になるものは、\\\\
+        ';
+
+        $flag = 0;
+        for($i=0;$i<18;$i++){
+            if($list_1[$i]%$b === 0 && $list_1[$i] === $a){
+                if($flag == 0){
+                    $sample_text .= '
+                        '.dice_m($list_1[$i]).'
+                    ';
+                    $flag = 1;
+                }else{
+                    $sample_text .= '
+                        ,'.dice_m($list_1[$i]).'
+                    ';
+                }
+            }
+        }
+        if($flag === 0){
+            $sample_text .= '
+                存在しないので、\\\\
+                積が'.$b.'の倍数または'.$a.'になるときの確率は、\\\\
+                \frac{'.($list_2[array_search($a,$list_1)]).' + '.$count[0].' '.($count[1] != 0 ? '-'.$count[1] : '' ).'}{36} = '.f3($right_answers[4],$right_answers[5]).'
+            ';
+        }else{
+            $sample_text .= '
+                \\\\の'.$count[1].'通りなので、\\\\
+                積が'.$b.'の倍数または'.$a.'になるときの確率は、\\\\
+                \frac{'.($list_2[array_search($a,$list_1)]).' + '.$count[0].' '.($count[1] =! 0 ? '-'.$count[1] : '' ).'}{36} = '.f3($right_answers[4],$right_answers[5]).'
+            ';
+        }
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //余事象の確率
@@ -8771,9 +9964,17 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}\\\\';
 
+        $sample_text = '
+            全員が男子の場合の確率は、\\\\
+            \frac{{}_{'.$a.'} \mathrm{C}_{'.$c.'}}{{}_{'.($a+$b).'} \mathrm{C}_{'.$c.'}} = '.f3(gmp_fact($a)*gmp_fact($a+$b-$c),gmp_fact($a-$c)*gmp_fact($a+$b)).'\\\\
+            よって、少なくとも一人は女子が含まれる確率は、\\\\
+            余事象を考えて、\\\\
+            1 - '.f3(gmp_fact($a)*gmp_fact($a+$b-$c),gmp_fact($a-$c)*gmp_fact($a+$b)).' = '.f3($right_answers[0],$right_answers[1]).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //反復試行の確率
@@ -8803,9 +10004,18 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}\\\\';
 
+        $sample_text = '
+            赤玉を引く確率は\\ '.f3($a,$a+$b).'\\\\
+            白玉を引く確率は\\ '.f3($b,$a+$b).'\\\\
+            よって、赤玉を'.$d.'回、白玉を'.($c-$d).'回引く確率は、\\\\
+            順番も考慮して、\\\\
+            \frac{'.$c.'!}{'.$d.'! \cdot '.($c-$d).'!} \cdot ('.f3($a,$a+$b).')^{'.$d.'} \cdot ('.f3($b,$a+$b).')^{'.($c-$d).'}
+                = '.f3($right_answers[0],$right_answers[1]).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //条件付き確率
@@ -8833,9 +10043,18 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}\\\\';
 
+        $sample_text = '
+            定期券利用者の確率をP(A)\\\\
+            学生の利用者の確率をP(B)とおくと、\\\\
+            P(A) = '.f3($a,100).',\\ P(B) = '.f3($b,100).'\\\\
+            よって、定期券利用者を選んだ時、その人が学生である\\\\
+            条件付き確率P_A(B)は、\\\\
+            P_A(B) = \frac{P(A \cap B)}{P(A)} = '.f3($b,$a).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //図形の性質
@@ -8879,9 +10098,90 @@ class QuestionController extends Controller
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
+        $sample_text = '
+            三平方の定理より、\\\\
+            AM = \sqrt{('.$a.')^2 - ('.f3($b,2).')^2} = '.fr_rt2(1,4*$a*$a-$b*$b,2).'\\\\
+            重心は、各点から対辺の中点へ引いた\\\\
+            線分を2:1に内分するので、\\\\
+            AG = \frac{2}{3}AM = '.fr_rt2(1,4*$a*$a-$b*$b,3).'
+        ';
+
+        $a_script = '
+            <script type="text/javascript">
+                window.onload = function draw() {
+                    var canvas = document.getElementById(\'canvas\');
+                    if (canvas.getContext) {
+                        var point_A = canvas.getContext(\'2d\');
+                        point_A.beginPath();
+                        point_A.arc(175,20, 3, 0, 2 * Math.PI);
+                        point_A.fill() ;
+
+                        var point_B = canvas.getContext(\'2d\');
+                        point_B.beginPath();
+                        point_B.arc(50,170, 3, 0, 2 * Math.PI);
+                        point_B.fill() ;
+
+                        var point_C = canvas.getContext(\'2d\');
+                        point_C.beginPath();
+                        point_C.arc(300,170, 3, 0, 2 * Math.PI);
+                        point_C.fill() ;
+
+                        var point_G = canvas.getContext(\'2d\');
+                        point_G.beginPath();
+                        point_G.arc(175,120, 3, 0, 2 * Math.PI);
+                        point_G.fill() ;
+
+                        var point_M = canvas.getContext(\'2d\');
+                        point_M.beginPath();
+                        point_M.arc(175,170, 3, 0, 2 * Math.PI);
+                        point_M.fill() ;
+
+                        var tri = canvas.getContext(\'2d\');
+                        tri.beginPath();
+                        tri.moveTo(175,20);
+                        tri.lineTo(50,170);
+                        tri.lineTo(300,170);
+                        tri.lineTo(175,20);
+                        tri.stroke();
+
+                        var dash = canvas.getContext(\'2d\');
+                        dash.beginPath();
+                        dash.setLineDash([2, 2]);
+                        dash.moveTo(175,20);
+                        dash.lineTo(175,170);
+                        dash.stroke();
+
+                        var A = canvas.getContext(\'2d\');
+                        A.fillStyle = \'blue\';
+                        A.font = \'15pt Arial\';
+                        A.fillText(\'A\', 180, 20);
+
+                        var B = canvas.getContext(\'2d\');
+                        B.fillStyle = \'blue\';
+                        B.font = \'15pt Arial\';
+                        B.fillText(\'B\', 40, 160);
+
+                        var C = canvas.getContext(\'2d\');
+                        C.fillStyle = \'blue\';
+                        C.font = \'15pt Arial\';
+                        C.fillText(\'C\', 310, 160);
+
+                        var G = canvas.getContext(\'2d\');
+                        G.fillStyle = \'blue\';
+                        G.font = \'15pt Arial\';
+                        G.fillText(\'G\',180,120);
+
+                        var M = canvas.getContext(\'2d\');
+                        M.fillStyle = \'blue\';
+                        M.font = \'15pt Arial\';
+                        M.fillText(\'M\',180,180);
+                    }
+                }
+            </script>';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','a_script'));
     }
 
     //三角形の内心
@@ -8908,6 +10208,16 @@ class QuestionController extends Controller
                 \angle{BAC}の二等分線が辺BCと交わる点をD、\\\\
                 △ABCの内心をIとするとき、\\\\';
 
+        $sample_text = '
+            角の二等分線と辺の比の関係より、\\\\
+            BD:DC = AB:AC = '.$a.':'.$c.' '.(gmp_gcd($a,$c)!=1 ?'= '.($a/gmp_gcd($a,$c)).':'.($c)/gmp_gcd($a,$c).'':'').'\\\\
+            よって、BD = \frac{'.($a/gmp_gcd($a,$c)).'}{'.($a/gmp_gcd($a,$c)).'+'.($c/gmp_gcd($a,$c)).'}BC = '.f3($a*$b,$a+$c).'\\\\
+            三角形の頂点と内心をつなぐ線分は、角の二等分線となるので、\\\\
+            BIは \angle{ABC} の二等分線となる。\\\\
+            よって、\triangle{ABD} に着目すると、\\\\
+            AI:ID = BA:BD = '.$a.':'.f3($a*$b,$a+$c).' = '.$right_answers[2].':'.$right_answers[3].'
+        ';
+
         //空欄テキストの設定
         $item[0] = 'BD = \frac{\fbox{ア}}{\fbox{イ}}、';
         $item[1] = 'AI:ID = \fbox{ウ}:\fbox{エ}';
@@ -8917,9 +10227,104 @@ class QuestionController extends Controller
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
+        $p[0] = 120;    $p[1] = 20;
+        $q = 50;     $r = 300;
+        $s = 170;
+
+        $A = 250;   $B = sqrt(180*180+140*140);     $C = sqrt(70*70+140*140);
+        $i[0] = ($A*$p[0]+$B*$q+$C*$r)/($A+$B+$C);
+        $i[1] = ($A*$p[1]+$B*$s+$C*$s)/($A+$B+$C);
+
+        $a_script = '
+            <script type="text/javascript">
+                window.onload = function draw() {
+                    var canvas = document.getElementById(\'canvas\');
+                    if (canvas.getContext) {
+                        var point_A = canvas.getContext(\'2d\');
+                        point_A.beginPath();
+                        point_A.arc('.$p[0].','.$p[1].', 3, 0, 2 * Math.PI);
+                        point_A.fill() ;
+
+                        var point_B = canvas.getContext(\'2d\');
+                        point_B.beginPath();
+                        point_B.arc('.$q.','.$s.', 3, 0, 2 * Math.PI);
+                        point_B.fill() ;
+
+                        var point_C = canvas.getContext(\'2d\');
+                        point_C.beginPath();
+                        point_C.arc('.$r.','.$s.', 3, 0, 2 * Math.PI);
+                        point_C.fill() ;
+
+                        var point_D = canvas.getContext(\'2d\');
+                        point_D.beginPath();
+                        point_D.arc('.(($B*$q+$C*$r)/($B+$C)).','.$s.', 3, 0, 2 * Math.PI);
+                        point_D.fill() ;
+
+                        var point_I = canvas.getContext(\'2d\');
+                        point_I.beginPath();
+                        point_I.arc('.$i[0].','.$i[1].', 3, 0, 2 * Math.PI);
+                        point_I.fill() ;
+
+                        var tri = canvas.getContext(\'2d\');
+                        tri.beginPath();
+                        tri.moveTo('.$p[0].','.$p[1].');
+                        tri.lineTo('.$q.','.$s.');
+                        tri.lineTo('.$r.','.$s.');
+                        tri.lineTo('.$p[0].','.$p[1].');
+                        tri.stroke();
+
+                        var dash_A = canvas.getContext(\'2d\');
+                        dash_A.beginPath();
+                        dash_A.setLineDash([2, 2]);
+                        dash_A.moveTo('.$p[0].','.$p[1].');
+                        dash_A.lineTo('.(($B*$q+$C*$r)/($B+$C)).','.$s.');
+                        dash_A.stroke();
+
+                        var dash_B = canvas.getContext(\'2d\');
+                        dash_B.beginPath();
+                        dash_B.setLineDash([2, 2]);
+                        dash_B.moveTo('.$q.','.$s.');
+                        dash_B.lineTo('.(($A*$p[0]+$C*$r)/($A+$C)).','.(($A*$p[1]+$C*$s)/($A+$C)).');
+                        dash_B.stroke();
+
+                        var dash_C = canvas.getContext(\'2d\');
+                        dash_C.beginPath();
+                        dash_C.setLineDash([2, 2]);
+                        dash_C.moveTo('.$r.','.$s.');
+                        dash_C.lineTo('.(($A*$p[0]+$B*$q)/($A+$B)).','.(($A*$p[1]+$B*$s)/($A+$B)).');
+                        dash_C.stroke();
+
+                        var A = canvas.getContext(\'2d\');
+                        A.fillStyle = \'blue\';
+                        A.font = \'15pt Arial\';
+                        A.fillText(\'A\', 130, 20);
+
+                        var B = canvas.getContext(\'2d\');
+                        B.fillStyle = \'blue\';
+                        B.font = \'15pt Arial\';
+                        B.fillText(\'B\', 40, 160);
+
+                        var C = canvas.getContext(\'2d\');
+                        C.fillStyle = \'blue\';
+                        C.font = \'15pt Arial\';
+                        C.fillText(\'C\', 310, 160);
+
+                        var D = canvas.getContext(\'2d\');
+                        D.fillStyle = \'blue\';
+                        D.font = \'15pt Arial\';
+                        D.fillText(\'D\', '.(($B*$q+$C*$r)/($B+$C)).','.$s.'+20);
+
+                        var I = canvas.getContext(\'2d\');
+                        I.fillStyle = \'blue\';
+                        I.font = \'15pt Arial\';
+                        I.fillText(\'I\','.$i[0].'+10,'.$i[1].'+10);
+                    }
+                }
+            </script>';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','a_script'));
     }
 
     //三角形の外心
@@ -9054,15 +10459,30 @@ class QuestionController extends Controller
                     }
                    </script>';
 
+    
+        $alpha = (int)(floor($alpha*180/pi())%2==0?floor($alpha*180/pi()):floor($alpha*180/pi())+1);
+        $beta = (int)floor($beta*180/pi());
         $text = '$$ 上図において、Oは\triangle{ABC}の外心である。\\\\
-                 \alpha = '.(floor($alpha*180/pi())%2==0?floor($alpha*180/pi()):floor($alpha*180/pi())+1).'^\circ、\beta = '.floor($beta*180/pi()).'^\circのとき、';
+                 \alpha = '.$alpha.'^\circ、\beta = '.$beta.'^\circのとき、';
 
         //空欄テキストの設定
         $item[0] = '\angle{OCA} = \fbox{ア}^\circである。';
 
+        
+        $sample_text = '
+            中心角と円周角の関係より、\\\\
+            \angle{ACB} = \frac{1}{2}\angle{AOB} = '.f3($alpha,2).'^\circ\\\\
+            \triangle{AOC}は二等辺三角形なので、\\\\
+            \angle{OCA} = \angle{OAC} = '.$beta.'^\circ\\\\
+            よって、\\\\
+            \angle{BCO} = \angle{ACB} - \angle{OCA} = '.f3($alpha-2*$beta,2).'\\\\
+        ';
+
+        $a_script = $script;
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script'));
+        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script','sample_text','a_script'));
     }
 
     //チェバ、メネラウスの定理
@@ -9099,9 +10519,141 @@ class QuestionController extends Controller
         $item[0] = 'BR:RC=\fbox{ア}:\fbox{イ}\\\\';
         $item[1] = 'AO:OR=\fbox{ウ}:\fbox{エ}';
 
+        $sample_text = '
+            チェバの定理より、\\\\
+            \frac{BR}{RC} \cdot \frac{CQ}{QA} \cdot \frac{AP}{PB} = 1\\\\
+            \frac{BR}{RC} \cdot \frac{'.$d.'}{'.$c.'} \cdot \frac{'.$a.'}{'.$b.'} = 1\\\\
+            \therefore \frac{BR}{RC} = '.f3($b*$c,$a*$d).'\\\\
+            よって、BR:RC = '.$right_answers[0].':'.$right_answers[1].'\\\\
+            また、メネラウスの定理より、\\\\
+            \frac{AP}{PB} \cdot \frac{BC}{CR} \cdot \frac{RO}{OA} = 1\\\\
+            \frac{'.$a.'}{'.$b.'} \cdot \frac{'.($right_answers[0]+$right_answers[1]).'}{'.$right_answers[1].'} \cdot \frac{RO}{OA} = 1\\\\
+            \therefore \frac{AO}{OR} = '.f3($b*$c+$a*$d,$b*$d).'\\\\
+            よって、AO:OR = '.$right_answers[2].':'.$right_answers[3].'\\\\
+        ';
+
+        $x[0] = 120;    $x[1] = 20;
+        $y[0] = 50;     $z[0] = 300;
+        $y[1] = 170;    $z[1] = 170;
+
+        $e = $right_answers[0];     $f = $right_answers[1];
+
+        $p[0] = ($b*$x[0]+$a*$y[0])/($a+$b);    $p[1] = ($b*$x[1]+$a*$y[1])/($a+$b);
+        $q[0] = ($d*$x[0]+$c*$z[0])/($c+$d);    $q[1] = ($d*$x[1]+$c*$z[1])/($c+$d);
+        $r[0] = ($f*$y[0]+$e*$z[0])/($e+$f);    $r[1] = ($f*$y[1]+$e*$z[1])/($e+$f);
+
+        $o[0] = ($right_answers[3]*$x[0]+$right_answers[2]*$r[0])/($right_answers[2]+$right_answers[3]);    $o[1] = ($right_answers[3]*$x[1]+$right_answers[2]*$r[1])/($right_answers[2]+$right_answers[3]);
+
+        $a_script = '
+            <script type="text/javascript">
+                window.onload = function draw() {
+                    var canvas = document.getElementById(\'canvas\');
+                    if (canvas.getContext) {
+                        var point_A = canvas.getContext(\'2d\');
+                        point_A.beginPath();
+                        point_A.arc('.$x[0].','.$x[1].', 3, 0, 2 * Math.PI);
+                        point_A.fill() ;
+
+                        var point_B = canvas.getContext(\'2d\');
+                        point_B.beginPath();
+                        point_B.arc('.$y[0].','.$y[1].', 3, 0, 2 * Math.PI);
+                        point_B.fill() ;
+
+                        var point_C = canvas.getContext(\'2d\');
+                        point_C.beginPath();
+                        point_C.arc('.$z[0].','.$z[1].', 3, 0, 2 * Math.PI);
+                        point_C.fill() ;
+
+                        var point_P = canvas.getContext(\'2d\');
+                        point_P.beginPath();
+                        point_P.arc('.$p[0].','.$p[1].', 3, 0, 2 * Math.PI);
+                        point_P.fill() ;
+
+                        var point_Q = canvas.getContext(\'2d\');
+                        point_Q.beginPath();
+                        point_Q.arc('.$q[0].','.$q[1].', 3, 0, 2 * Math.PI);
+                        point_Q.fill() ;
+
+                        var point_R = canvas.getContext(\'2d\');
+                        point_R.beginPath();
+                        point_R.arc('.$r[0].','.$r[1].', 3, 0, 2 * Math.PI);
+                        point_R.fill() ;
+
+                        var point_O = canvas.getContext(\'2d\');
+                        point_O.beginPath();
+                        point_O.arc('.$o[0].','.$o[1].', 3, 0, 2 * Math.PI);
+                        point_O.fill() ;
+
+                        var tri = canvas.getContext(\'2d\');
+                        tri.beginPath();
+                        tri.moveTo('.$x[0].','.$x[1].');
+                        tri.lineTo('.$y[0].','.$y[1].');
+                        tri.lineTo('.$z[0].','.$z[1].');
+                        tri.lineTo('.$x[0].','.$x[1].');
+                        tri.stroke();
+
+                        var dash_A = canvas.getContext(\'2d\');
+                        dash_A.beginPath();
+                        dash_A.setLineDash([2, 2]);
+                        dash_A.moveTo('.$x[0].','.$x[1].');
+                        dash_A.lineTo('.$r[0].','.$r[1].');
+                        dash_A.stroke();
+
+                        var dash_B = canvas.getContext(\'2d\');
+                        dash_B.beginPath();
+                        dash_B.setLineDash([2, 2]);
+                        dash_B.moveTo('.$y[0].','.$y[1].');
+                        dash_B.lineTo('.$q[0].','.$q[1].');
+                        dash_B.stroke();
+
+                        var dash_C = canvas.getContext(\'2d\');
+                        dash_C.beginPath();
+                        dash_C.setLineDash([2, 2]);
+                        dash_C.moveTo('.$z[0].','.$z[1].');
+                        dash_C.lineTo('.$p[0].','.$p[1].');
+                        dash_C.stroke();
+
+                        var A = canvas.getContext(\'2d\');
+                        A.fillStyle = \'blue\';
+                        A.font = \'15pt Arial\';
+                        A.fillText(\'A\', 130, 20);
+
+                        var B = canvas.getContext(\'2d\');
+                        B.fillStyle = \'blue\';
+                        B.font = \'15pt Arial\';
+                        B.fillText(\'B\', 40, 160);
+
+                        var C = canvas.getContext(\'2d\');
+                        C.fillStyle = \'blue\';
+                        C.font = \'15pt Arial\';
+                        C.fillText(\'C\', 310, 160);
+
+                        var P = canvas.getContext(\'2d\');
+                        P.fillStyle = \'blue\';
+                        P.font = \'15pt Arial\';
+                        P.fillText(\'P\', '.$p[0].', '.$p[1].');
+
+                        var Q = canvas.getContext(\'2d\');
+                        Q.fillStyle = \'blue\';
+                        Q.font = \'15pt Arial\';
+                        Q.fillText(\'Q\', '.$q[0].', '.$q[1].');
+
+                        var R = canvas.getContext(\'2d\');
+                        R.fillStyle = \'blue\';
+                        R.font = \'15pt Arial\';
+                        R.fillText(\'R\', '.$r[0].', '.$r[1].');
+
+                        var O = canvas.getContext(\'2d\');
+                        O.fillStyle = \'blue\';
+                        O.font = \'15pt Arial\';
+                        O.fillText(\'O\', '.$o[0].', '.$o[1].');
+                    }
+                }
+            </script>';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','a_script'));
     }
 
     //三角形の面積比
@@ -9138,9 +10690,131 @@ class QuestionController extends Controller
         $item[0] = 'AR:RQ=\fbox{ア}:\fbox{イ}より、\\\\';
         $item[1] = '\triangle{ABC}:\triangle{BPR}=\fbox{ウ}:\fbox{エ}';
 
+        $sample_text = '
+            メネラウスの定理より、\\\\
+            \frac{AP}{PB} \cdot \frac{BC}{CQ} \cdot \frac{QR}{RA} = 1\\\\
+            \frac{'.$a.'}{'.$b.'} \cdot \frac{'.($c+$d).'}{'.$d.'} \cdot \frac{QR}{RA} = 1\\\\
+            \therefore \frac{AR}{RQ} = '.f3($a*($c+$d),$b*$d).'\\\\
+            よって、\\\\
+            \begin{eqnarray}
+                \triangle{BPR} &=& '.f3($b,$a+$b).'\triangle{ABR}\\\\
+                               &=& '.f3($b,$a+$b).' \cdot '.f3($a*($c+$d),$a*($c+$d)+$b*$d).' \triangle{ABQ}\\\\
+                               &=& '.f3($b,$a+$b).' \cdot '.f3($a*($c+$d),$a*($c+$d)+$b*$d).' \cdot '.f3($c,$c+$d).' \triangle{ABC}\\\\
+                               &=& '.f3($right_answers[3],$right_answers[2]).' \triangle{ABC}\\\\
+            \end{eqnarray}\\\\
+            したがって、\triangle{ABC}:\triangle{BPR} = '.$right_answers[2].':'.$right_answers[3].'\\\\
+        ';
+
+        $x[0] = 120;    $x[1] = 20;
+        $y[0] = 50;     $z[0] = 300;
+        $y[1] = 170;    $z[1] = 170;
+
+        $p[0] = ($b*$x[0]+$a*$y[0])/($a+$b);    $p[1] = ($b*$x[1]+$a*$y[1])/($a+$b);
+        $q[0] = ($d*$y[0]+$c*$z[0])/($c+$d);    $q[1] = ($d*$y[1]+$c*$z[1])/($c+$d);
+        $r[0] = ($right_answers[1]*$x[0]+$right_answers[0]*$q[0])/($right_answers[0]+$right_answers[1]);    $r[1] = ($right_answers[1]*$x[1]+$right_answers[0]*$q[1])/($right_answers[0]+$right_answers[1]);
+
+        $a_script = '
+            <script type="text/javascript">
+                window.onload = function draw() {
+                    var canvas = document.getElementById(\'canvas\');
+                    if (canvas.getContext) {
+                        var point_A = canvas.getContext(\'2d\');
+                        point_A.beginPath();
+                        point_A.arc('.$x[0].','.$x[1].', 3, 0, 2 * Math.PI);
+                        point_A.fill() ;
+
+                        var point_B = canvas.getContext(\'2d\');
+                        point_B.beginPath();
+                        point_B.arc('.$y[0].','.$y[1].', 3, 0, 2 * Math.PI);
+                        point_B.fill() ;
+
+                        var point_C = canvas.getContext(\'2d\');
+                        point_C.beginPath();
+                        point_C.arc('.$z[0].','.$z[1].', 3, 0, 2 * Math.PI);
+                        point_C.fill() ;
+
+                        var point_P = canvas.getContext(\'2d\');
+                        point_P.beginPath();
+                        point_P.arc('.$p[0].','.$p[1].', 3, 0, 2 * Math.PI);
+                        point_P.fill() ;
+
+                        var point_Q = canvas.getContext(\'2d\');
+                        point_Q.beginPath();
+                        point_Q.arc('.$q[0].','.$q[1].', 3, 0, 2 * Math.PI);
+                        point_Q.fill() ;
+
+                        var point_R = canvas.getContext(\'2d\');
+                        point_R.beginPath();
+                        point_R.arc('.$r[0].','.$r[1].', 3, 0, 2 * Math.PI);
+                        point_R.fill() ;
+
+                        var tri = canvas.getContext(\'2d\');
+                        tri.beginPath();
+                        tri.moveTo('.$x[0].','.$x[1].');
+                        tri.lineTo('.$y[0].','.$y[1].');
+                        tri.lineTo('.$z[0].','.$z[1].');
+                        tri.lineTo('.$x[0].','.$x[1].');
+                        tri.stroke();
+
+                        var tri_2 = canvas.getContext(\'2d\');
+                        tri_2.beginPath();
+                        tri_2.moveTo('.$y[0].','.$y[1].');
+                        tri_2.lineTo('.$r[0].','.$r[1].');
+                        tri_2.lineTo('.$p[0].','.$p[1].');
+                        tri_2.lineTo('.$y[0].','.$y[1].');
+                        tri_2.fill();
+
+                        var dash_A = canvas.getContext(\'2d\');
+                        dash_A.beginPath();
+                        dash_A.setLineDash([2, 2]);
+                        dash_A.moveTo('.$x[0].','.$x[1].');
+                        dash_A.lineTo('.$q[0].','.$q[1].');
+                        dash_A.stroke();
+
+                        var dash_C = canvas.getContext(\'2d\');
+                        dash_C.beginPath();
+                        dash_C.setLineDash([2, 2]);
+                        dash_C.moveTo('.$z[0].','.$z[1].');
+                        dash_C.lineTo('.$p[0].','.$p[1].');
+                        dash_C.stroke();
+
+                        var A = canvas.getContext(\'2d\');
+                        A.fillStyle = \'blue\';
+                        A.font = \'15pt Arial\';
+                        A.fillText(\'A\', 130, 20);
+
+                        var B = canvas.getContext(\'2d\');
+                        B.fillStyle = \'blue\';
+                        B.font = \'15pt Arial\';
+                        B.fillText(\'B\', 40, 160);
+
+                        var C = canvas.getContext(\'2d\');
+                        C.fillStyle = \'blue\';
+                        C.font = \'15pt Arial\';
+                        C.fillText(\'C\', 310, 160);
+
+                        var P = canvas.getContext(\'2d\');
+                        P.fillStyle = \'blue\';
+                        P.font = \'15pt Arial\';
+                        P.fillText(\'P\', '.$p[0].', '.$p[1].');
+
+                        var Q = canvas.getContext(\'2d\');
+                        Q.fillStyle = \'blue\';
+                        Q.font = \'15pt Arial\';
+                        Q.fillText(\'Q\', '.$q[0].', '.$q[1].');
+
+                        var R = canvas.getContext(\'2d\');
+                        R.fillStyle = \'blue\';
+                        R.font = \'15pt Arial\';
+                        R.fillText(\'R\', '.$r[0].', '.$r[1].');
+
+                    }
+                }
+            </script>';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','a_script'));
     }
 
     //円に内接する四角形
@@ -9238,9 +10912,16 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\beta = \fbox{ア}^\circ';
 
+        $sample_text = '
+            円に内接する四角形の対角は足して180^\circになるので、\\\\
+            \beta = 180^\circ - \alpha = '.$right_answers[0].'^\circ
+        ';
+
+        $a_script = $script;
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script'));
+        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script','sample_text','a_script'));
     }
 
     //円の接線
@@ -9266,9 +10947,144 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = 'AC = \fbox{ア}';
 
+        $sample_text = '
+            BR = BP = '.$b.'\\ より、\\\\
+            AR = '.$a.' - '.$b.' = '.($a-$b).'\\\\
+            よって、AQ = AR = '.($a-$b).'\\\\
+            また、CQ = CP = '.$c.'\\\\
+            したがって、AC = AQ + CQ = '.$right_answers[0].'
+        ';
+
+        $x[0] = 120;    $x[1] = 20;
+        $y[0] = 50;     $y[1] = 170;
+        $z[0] = 300;    $z[1] = 170;
+
+        $A = 250;   $B = sqrt(180*180+150*150);     $C = sqrt(70*70+150*150);
+        $i[0] = ($A*$x[0]+$B*$y[0]+$C*$z[0])/($A+$B+$C);
+        $i[1] = ($A*$x[1]+$B*$y[1]+$C*$z[1])/($A+$B+$C);
+        $p[0] = $i[0];
+        $p[1] = (($i[0]-$y[0])*($z[1]-$y[1]))/($z[0]-$y[0]) + $y[1];
+        $q[0] = (pow($z[0]-$x[0],2))/($B*$B)*$i[0] + ($z[0]-$x[0])*($z[1]-$x[1])*($i[1]-$x[1])/($B*$B) + pow(($z[1]-$x[1])/$B,2)*$x[0];
+        $q[1] = ($z[1]-$x[1])/($z[0]-$x[0])*($q[0]-$x[0]) + $x[1];
+        $r[0] = (pow($y[0]-$x[0],2))/($C*$C)*$i[0] + ($y[0]-$x[0])*($y[1]-$x[1])*($i[1]-$x[1])/($C*$C) + pow(($y[1]-$x[1])/$C,2)*$x[0];
+        $r[1] = ($y[1]-$x[1])/($y[0]-$x[0])*($r[0]-$x[0]) + $x[1];
+        $s = sqrt(pow($i[0]-$p[0],2)+pow($i[1]-$p[1],2));
+
+        $a_script = '
+            <script type="text/javascript">
+                window.onload = function draw() {
+                    var canvas = document.getElementById(\'canvas\');
+                    if (canvas.getContext) {
+                        var point_A = canvas.getContext(\'2d\');
+                        point_A.beginPath();
+                        point_A.arc('.$x[0].','.$x[1].', 3, 0, 2 * Math.PI);
+                        point_A.fill() ;
+
+                        var point_B = canvas.getContext(\'2d\');
+                        point_B.beginPath();
+                        point_B.arc('.$y[0].','.$y[1].', 3, 0, 2 * Math.PI);
+                        point_B.fill() ;
+
+                        var point_C = canvas.getContext(\'2d\');
+                        point_C.beginPath();
+                        point_C.arc('.$z[0].','.$z[1].', 3, 0, 2 * Math.PI);
+                        point_C.fill() ;
+
+                        var point_I = canvas.getContext(\'2d\');
+                        point_I.beginPath();
+                        point_I.arc('.$i[0].','.$i[1].', 3, 0, 2 * Math.PI);
+                        point_I.fill() ;
+
+                        var point_P = canvas.getContext(\'2d\');
+                        point_P.beginPath();
+                        point_P.arc('.$p[0].','.$p[1].', 3, 0, 2 * Math.PI);
+                        point_P.fill() ;
+
+                        var point_Q = canvas.getContext(\'2d\');
+                        point_Q.beginPath();
+                        point_Q.arc('.$q[0].','.$q[1].', 3, 0, 2 * Math.PI);
+                        point_Q.fill() ;
+
+                        var point_R = canvas.getContext(\'2d\');
+                        point_R.beginPath();
+                        point_R.arc('.$r[0].','.$r[1].', 3, 0, 2 * Math.PI);
+                        point_R.fill() ;
+
+                        var tri = canvas.getContext(\'2d\');
+                        tri.beginPath();
+                        tri.moveTo('.$x[0].','.$x[1].');
+                        tri.lineTo('.$y[0].','.$y[1].');
+                        tri.lineTo('.$z[0].','.$z[1].');
+                        tri.lineTo('.$x[0].','.$x[1].');
+                        tri.stroke();
+
+                        var circle = canvas.getContext(\'2d\');
+                        circle.beginPath();
+                        circle.arc('.$i[0].','.$i[1].', '.$s.', 0, 2 * Math.PI);
+                        circle.stroke() ;
+
+                        var dash_A = canvas.getContext(\'2d\');
+                        dash_A.beginPath();
+                        dash_A.setLineDash([2, 2]);
+                        dash_A.moveTo('.$i[0].','.$i[1].');
+                        dash_A.lineTo('.$p[0].','.$p[1].');
+                        dash_A.stroke();
+
+                        var dash_B = canvas.getContext(\'2d\');
+                        dash_B.beginPath();
+                        dash_B.setLineDash([2, 2]);
+                        dash_B.moveTo('.$i[0].','.$i[1].');
+                        dash_B.lineTo('.$q[0].','.$q[1].');
+                        dash_B.stroke();
+
+                        var dash_C = canvas.getContext(\'2d\');
+                        dash_C.beginPath();
+                        dash_C.setLineDash([2, 2]);
+                        dash_C.moveTo('.$i[0].','.$i[1].');
+                        dash_C.lineTo('.$r[0].','.$r[1].');
+                        dash_C.stroke();
+
+                        var A = canvas.getContext(\'2d\');
+                        A.fillStyle = \'blue\';
+                        A.font = \'15pt Arial\';
+                        A.fillText(\'A\', 130, 20);
+
+                        var B = canvas.getContext(\'2d\');
+                        B.fillStyle = \'blue\';
+                        B.font = \'15pt Arial\';
+                        B.fillText(\'B\', 40, 160);
+
+                        var C = canvas.getContext(\'2d\');
+                        C.fillStyle = \'blue\';
+                        C.font = \'15pt Arial\';
+                        C.fillText(\'C\', 310, 160);
+
+                        var I = canvas.getContext(\'2d\');
+                        I.fillStyle = \'blue\';
+                        I.font = \'15pt Arial\';
+                        I.fillText(\'I\','.$i[0].'+10,'.$i[1].'+10);
+
+                        var P = canvas.getContext(\'2d\');
+                        P.fillStyle = \'blue\';
+                        P.font = \'15pt Arial\';
+                        P.fillText(\'P\','.$p[0].'+5,'.$p[1].'-5);
+
+                        var Q = canvas.getContext(\'2d\');
+                        Q.fillStyle = \'blue\';
+                        Q.font = \'15pt Arial\';
+                        Q.fillText(\'Q\','.$q[0].'+10,'.$q[1].');
+
+                        var R = canvas.getContext(\'2d\');
+                        R.fillStyle = \'blue\';
+                        R.font = \'15pt Arial\';
+                        R.fillText(\'R\','.$r[0].'-20,'.$r[1].'+5);
+                    }
+                }
+            </script>';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text','a_script'));
     }
 
     //接線と弦のつくる角
@@ -9369,12 +11185,36 @@ class QuestionController extends Controller
 
                             var point_A = canvas.getContext(\'2d\');
                             point_A.beginPath();
-                            point_A.arc('.$c[0].', '.$c[1].', 3, 0, 2 * Math.PI);
+                            point_A.arc('.$a[0].', '.$a[1].', 3, 0, 2 * Math.PI);
                             point_A.fill() ;
+                            var point_B = canvas.getContext(\'2d\');
+                            point_B.beginPath();
+                            point_B.arc('.$b[0].', '.$b[1].', 3, 0, 2 * Math.PI);
+                            point_B.fill() ;
+                            var point_C = canvas.getContext(\'2d\');
+                            point_C.beginPath();
+                            point_C.arc('.$c[0].', '.$c[1].', 3, 0, 2 * Math.PI);
+                            point_C.fill() ;
+                            var point_D = canvas.getContext(\'2d\');
+                            point_D.beginPath();
+                            point_D.arc('.$d[0].', '.$d[1].', 3, 0, 2 * Math.PI);
+                            point_D.fill() ;
                             var A = canvas.getContext(\'2d\');
                             A.fillStyle = \'blue\';
                             A.font = \'15pt Arial\';
-                            A.fillText(\'A\', '.$c[0].'+5, '.$c[1].'+10);
+                            A.fillText(\'A\', '.$a[0].'-15, '.$a[1].'+10);
+                            var B = canvas.getContext(\'2d\');
+                            B.fillStyle = \'blue\';
+                            B.font = \'15pt Arial\';
+                            B.fillText(\'B\', '.$b[0].'-20, '.$b[1].'+10);
+                            var C = canvas.getContext(\'2d\');
+                            C.fillStyle = \'blue\';
+                            C.font = \'15pt Arial\';
+                            C.fillText(\'C\', '.$c[0].'+5, '.$c[1].'+10);
+                            var D = canvas.getContext(\'2d\');
+                            D.fillStyle = \'blue\';
+                            D.font = \'15pt Arial\';
+                            D.fillText(\'D\', '.$d[0].'-20, '.$d[1].'+5);
 
                             var alpha = canvas.getContext(\'2d\');
                             alpha.beginPath();
@@ -9425,15 +11265,22 @@ class QuestionController extends Controller
                     }
                    </script>';
 
-        $text = '$$ 上図において、直線は点Aにおける接線である。\\\\このとき、';
+        $text = '$$ 上図において、直線は点Cにおける接線である。\\\\このとき、';
 
         //空欄テキストの設定
         $item[0] = '\alpha = \fbox{ア}^\circ、';
         $item[1] = '\beta = \fbox{イ}^\circ';
 
+        $sample_text = '
+            接弦定理より、\alpha = '.$right_answers[0].'^\circ\\\\
+            円に内接する四角形の対角は足して180^\circなので、\\\\
+            \angle{ACD} = 180^\circ - '.$a_text.' = '.(180-floor($alpha*180/pi())).'^\circ\\\\
+            よって、\beta = 180^\circ - ('.$b_text.'+'.(180-floor($alpha*180/pi())).'^\circ) = '.$right_answers[1].'^\circ
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script'));
+        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script','sample_text'));
     }
 
     //方べきの定理
@@ -9545,9 +11392,18 @@ class QuestionController extends Controller
 
         list($right_answers,$option,$blanks,$item[0]) = l_frac($right_answers,$option,1,$blanks,$item[0]);
 
+        $sample_text = '
+            方べきの定理より、\\\\
+            \begin{eqnarray}
+                AO \cdot DO &=& BO \cdot CO\\\\
+                '.$AO.' \cdot '.$OD.' &=& '.$BO.' \cdot CO\\\\
+                CO &=& '.f3($AO*$OD,$BO).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script'));
+        return view('question/canvas',compact('right_answers','unit','question','text','blank_text','blanks','start','canvas','script','sample_text'));
     }
 
     //２円の関係
@@ -9576,9 +11432,18 @@ class QuestionController extends Controller
         $item[1] = '2円が外接するとき、d = \fbox{ウ}\\\\';
         $item[2] = '2円が内接するとき、d = \fbox{エ}\\\\';
 
+        $sample_text = '
+            2円が異なる2点で交わるとき、\\\\
+            |'.$a.'-'.$b.'| \lt d\\ より、'.(-1*abs($a-$b)).' \lt d \lt '.abs($a-$b).'\\\\
+            外接するとき、\\\\
+            d = '.$a.'+'.$b.' = '.($a+$b).'\\\\
+            内接するとき、\\\\
+            d = |'.$a.'-'.$b.'| = '.abs($a-$b).'\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     
@@ -9652,9 +11517,32 @@ class QuestionController extends Controller
         $item[0] = '最大公約数は\fbox{ア}\\\\';
         $item[1] = '最小公倍数は\fbox{イ}';
 
+        list($base[0],$ex[0]) = prime_factrization($a);
+        list($base[1],$ex[1]) = prime_factrization($b);
+        list($base[2],$ex[2]) = prime_factrization($g);
+        list($base[3],$ex[3]) = prime_factrization($l);
+
+        for($j=0;$j<4;$j++){
+            for($i=0;$i<count($base[$j]);$i++){
+                if($i==0){
+                    $p[$j] = $base[$j][$i].'^{'.$ex[$j][$i].'}';
+                }else{
+                    $p[$j] = $p[$j] . ' \cdot '.$base[$j][$i].'^{'.$ex[$j][$i].'}';
+                }
+            }
+        }
+
+        $sample_text = '
+            '.$a.' = '.$p[0].'\\\\
+            '.$b.' = '.$p[1].'\\\\
+            したがって、\\\\
+            最大公約数は\\ '.$p[2].' = '.$g.'\\\\
+            最小公倍数は\\ '.$p[3].' = '.$l.'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //余り
@@ -9685,9 +11573,21 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\fbox{ア}';
 
+        $sample_text = '
+            ある自然数k,l\\ を用いて、\\\\
+            m='.d1($a,'k').d4($b).',\\ n='.d1($c,'l').d4($d).'\\ とおく。\\\\
+            このとき、\\\\
+            \begin{eqnarray}
+                '.d1($e,'m').d2($f,'n').' &=& '.d1($e,'('.d1($a,'k').d4($b).')').d2($f,'('.d1($c,'l').d4($d).')').'\\\\
+                    &=& '.d1($e*$a,'k').d2($f*$c,'l').d4($e*$b+$f*$d).'\\\\
+                    &=& '.d1($g,'('.f1($e*$a,$g,'k').f2($f*$c,$g,'l').d4(floor(($e*$b+$f*$d)/$g)).')').d4(($e*$b+$f*$d)%$g).'
+            \end{eqnarray}\\\\
+            よって、余りは\\ '.$right_answers[0].'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //ユークリッドの互除法と１次不定方程式
@@ -9699,7 +11599,7 @@ class QuestionController extends Controller
 
         //変数の設定
         $a = rand(11,61);
-        $b = rand(11,61);
+        do { $b = rand(10,61); }while($a <= $b);
 
         list($a,$b) = gcd($a,$b);
 
@@ -9724,12 +11624,61 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $temp = '';
+
+        $i=0;
+
+        while($b!=1){
+            $p[$i] = $a;    $q[$i] = $b;    $r[$i] = floor($a/$b);  $s[$i] = $a%$b;
+            $temp .= $p[$i] . '='.$q[$i].' \times '.$r[$i].'+'.$s[$i].'\quad \rightarrow \quad '.$s[$i].' = '.$p[$i].'-'.$q[$i].' \times '.$r[$i].'\\\\';
+            $a = $q[$i];  $b = $s[$i];
+            $i++;
+        }
+
+        $temp_2 = '
+            \begin{eqnarray}
+                '.$s[$i-1].' &=& '.$p[$i-1].'\times 1+'.$q[$i-1].' \times '.dot3(1,-1*$r[$i-1],1).'\\\\
+        ';
+        $t = 1; $u = -1*$r[$i-1];
+        for($j=($i-1);$j>0;$j--){
+            $temp_2 .= '
+                    &=& '.$p[$j].' \times '.dot3(1,$t,1).' + ('.$p[$j-1].'-'.$q[$j-1].' \times '.$r[$j-1].') \times '.dot3(1,$u,1).'\\\\
+                    &=& '.$p[$j-1].' \times '.dot3(1,$u,1).' + '.$q[$j-1].' \times '.dot3(1,$t+$u*-1*$r[$j-1],1).'\\\\
+            ';
+            $tem = $t;
+            $t = $u;  $u = $tem+$u*-1*$r[$j-1]; 
+        }
+        $temp_2 .= '
+            \end{eqnarray}
+        ';
+
+        $sample_text = '
+            '.$temp.'
+            これらの式を下から代入していくと、\\\\
+            '.$temp_2.'\\\\
+            よって、この式を満たす整数解の一つは、x='.$t.',\\ y='.$u.'\\\\
+
+            このとき、\\\\
+            \begin{array}{cccccc}
+                 & '.d1($p[0],'x').' & + & '.d1($q[0],'y').' & = & 1\\\\
+                - ) & '.$p[0].' \cdot '.dot3(1,$t,1).' & + & '.$q[0].' \cdot '.dot3(1,$u,1).' & = & 1\\\\
+                \hline
+                 & '.d1($p[0],'(x'.d4(-1*$t).')').' & + & '.d1($q[0],'(y'.d4(-1*$u).')').' & = & 0\\\\
+            \end{array}\\\\
+            
+            '.d1($p[0],'(x'.d4(-1*$t).')').' = '.d1(-1*$q[0],'(y'.d4(-1*$u).')').'\\\\
+            '.$p[0].',\\ '.$q[0].'は互いに素なので、ある整数kを用いて、\\\\
+            x'.d4(-1*$t).'='.d1($q[0],'k').'\quad \therefore x = '.d1($q[0],'k').d4($t).'\\\\
+            y'.d4(-1*$u).'='.d1(-1*$p[0],'k').'\quad \therefore y = '.d1(-1*$p[0],'k').d4($u).'\\\\
+
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
-    //余り
+    //n進法
     public function unit403_q05($unit,$question){
         //初期設定
         $question_id = 40305;
@@ -9753,9 +11702,32 @@ class QuestionController extends Controller
         $item[0] = $n.'進数\\ '.$a.$b.$c.'_{('.$n.')}を10進数で表すと、\fbox{ア}\\\\';
         $item[1] = '10進数\\ '.$N.'を'.$m.'進数で表すと、\fbox{イ}_{('.$m.')}';
 
+        $sample_text = '
+            '.$a.$b.$c.'_{('.$n.')} = '.$a.' \cdot '.$n.'^2 + '.$b.' \cdot '.$n.'^1 + '.$c.' \cdot '.$n.'^0 = '.$right_answers[0].'\\\\
+            '.$N.'を'.$m.'で割った余りを考えて、\\\\
+            \begin{array}{ccccc}
+        ';
+        $i=0;
+        while($N!=0){
+            $d[$i] = $N%$m;
+            $sample_text .= ''.$m.' & ) & '.$N.' & \cdots & '.($N%$m).'\\\\ \hline';
+            $i++;
+            $N = floor($N/$m);
+        }
+        $temp = '';
+        for($j=$i-1;$j>=0;$j--){
+            $temp .= $d[$j];
+        }
+        $sample_text .= '
+            &&0&&\\\\
+            \end{array}\\\\
+            余りを下から数えて、'.$temp.'_{('.$m.')}
+        ';
+
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //数学B
@@ -9813,9 +11785,16 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            DはBCを'.$a.':'.$b.'に内分するので、\\\\
+            \vec{AD} = \frac{'.d1($b,'\vec{AB}').d2($a,'\vec{AC}').'}{'.$a.'+'.$b.'} = '.f1($b,$a+$b,'\vec{AB}').f2($a,$a+$b,'\vec{AC}').'\\\\
+            EはBCを'.$c.':'.$d.'に外分するので、\\\\
+            \vec{AE} = \frac{'.d1(-1*$d,'\vec{AB}').d2($c,'\vec{AC}').'}{'.$c.'-'.$d.'} = '.f1(-$d,$c-$d,'\vec{AB}').f2($c,$c-$d,'\vec{AC}').'\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //分点の位置ベクトル
@@ -9864,9 +11843,21 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            DはABを'.$a.':'.$b.'に内分するので、\\\\
+            \vec{AD} = \frac{'.$a.'}{'.$a.'+'.$b.'}\vec{AB} = '.f1($a,$a+$b,'\vec{AB}').'\\\\
+            EはBCを'.$c.':'.$d.'に内分するので、\\\\
+            \vec{AE} = \frac{'.d1($d,'\vec{AB}').d2($c,'\vec{AC}').'}{'.$c.'+'.$d.'} = '.f1($d,$c+$d,'\vec{AB}').f2($c,$c+$d,'\vec{AC}').'\\\\
+            よって、\triangle{ADE}の重心をGとすると、\\\\
+            \begin{eqnarray}
+                \vec{AG} &=& \frac{\vec{AA}+\vec{AD}+\vec{AE}}{3}\\\\
+                         &=& '.f1($a*($c+$d) + $d*($a+$b),3*($a+$b)*($c+$d),'\vec{AB}').f2($c,3*($c+$d),'\vec{AC}').'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //ベクトルの成分と大きさ
@@ -9905,9 +11896,18 @@ class QuestionController extends Controller
         $right_answers = array_values($right_answers);
         $option = array_values($option);
 
+        $sample_text = '
+            \begin{eqnarray}
+                \vec{AB} &=& \vec{OB} - \vec{OA}\\\\
+                         &=& ('.$d.',\\ '.$e.',\\ '.$f.') - ('.$a.',\\ '.$b.',\\ '.$c.')\\\\
+                         &=& ('.($d-$a).',\\ '.($e-$b).',\\ '.($f-$c).')\\\\
+            \end{eqnarray}\\\\
+            また、|\vec{AB}| = \sqrt{'.dot3(1,$d-$a,2).'+'.dot3(1,$e-$b,2).'+'.dot3(1,$f-$c,2).'} = '.rt2(1,pow($d-$a,2)+pow($e-$b,2)+pow($f-$c,2)).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //一直線上にある条件
@@ -9931,7 +11931,7 @@ class QuestionController extends Controller
         list($right_answers[0],$right_answers[1]) = gcd($right_answers[0],$right_answers[1]);
 
         //問題テキストの設定
-        $text = '$$ ３点A('.$a.','.$b.')、B('.$c.','.$d.')、C(x,'.$e.')が\\\\
+        $text = '$$ 3点A('.$a.','.$b.')、B('.$c.','.$d.')、C(x,'.$e.')が\\\\
                  同一直線状にあるとき、';
 
         //空欄テキストの設定
@@ -9947,9 +11947,21 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            A,B,Cが一直線上にあるとき、\\\\
+            \begin{eqnarray}
+                \vec{AB} &=& k\vec{AC}\\\\
+                \vec{OB}-\vec{OA} &=& k(\vec{OC}-\vec{OA})\\\\
+                ('.($c-$a).','.($d-$b).') &=& k(x'.d4(-1*$a).','.($e-$b).')\\\\
+            \end{eqnarray}\\\\
+            よって、'.($c-$a).'=k(x'.d4(-1*$a).'), \\ '.($d-$b).' = '.d1($e-$b,'k').'\\\\
+            これを解いて、\\\\
+            k = '.f3($d-$b,$e-$b).',\\ x = '.f3(($c-$a)*($e-$b)+$a*($d-$b),$d-$b).'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //交点の位置ベクトル
@@ -9996,9 +12008,24 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            DF:FC = t:(1-t)\\ とおくと、\\\\
+            \vec{AF} = (1-t)\vec{AD} + t\vec{AC}\\\\
+            \vec{AD} = '.f1($a,$a+$b,'\vec{AB}').'\\ より、\\\\
+            \vec{AF} = '.f1($a,$a+$b,'(1-t)\vec{AB}').' +t\vec{AC}\\\\
+            同様に、BF:FE = s:(1-s)\\ とおくと、\\\\
+            \vec{AF} = (1-s)\vec{AB} + s\vec{AE}\\\\
+            \vec{AE} = '.f1($c,$c+$d,'\vec{AC}').'\\ より、\\\\
+            \vec{AF} = (1-s)\vec{AB} + '.f1($c,$c+$d,'s\vec{AC}').'\\\\
+            \vec{AB}と\vec{AC}は一次独立なので、係数を比較して、\\\\
+            '.f1($a,$a+$b,'(1-t)').' = 1-s, \quad t = '.f1($c,$c+$d,'s').'\\\\
+            これを解いて、s = '.f3($b*($c+$d),($a+$b)*($c+$d)-$a*$c).',\\ t = '.f3($b*$c,($a+$b)*($c+$d)-$a*$c).'\\\\
+            したがって、\vec{AF} = '.f1($a*$d,($a+$b)*($c+$d)-$a*$c,'\vec{AB}').f2($b*$c,($a+$b)*($c+$d)-$a*$c,'\vec{AC}').'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //内積と角の大きさ
@@ -10030,7 +12057,7 @@ class QuestionController extends Controller
         list($right_answers[2],$right_answers[3]) = root($right_answers[2],$right_answers[3]);
 
         //問題テキストの設定
-        $text = '$$ ３点O,A,Bについて、\\\\ 
+        $text = '$$ 3点O,A,Bについて、\\\\ 
                 |\vec{OA}|='.$a.'、|\vec{OB}|='.$b.'、';
         if(abs($in[1]) == 1){
             $text .= '\vec{OA} \cdot \vec{OB}='.$in[0].'のとき、\\\\';
@@ -10053,9 +12080,21 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \vec{OA} \cdot \vec{OB} = |\vec{OA}||\vec{OB}|\cos{\angle{AOB}}より、\\\\
+            \cos{\angle{AOB}} = \frac{\vec{OA} \cdot \vec{OB}}{|\vec{OA}||\vec{OB}|} = '.f3($cos[0],$cos[1]).'\\\\
+            また、
+            \begin{eqnarray}
+                |'.d1($d,'\vec{OA}').d2($e,'\vec{OB}').'|^2 &=& '.d1($d*$d,'|\vec{OA}|^2').d2(2*$d*$e,'\vec{OA} \cdot \vec{OB}').d2($e*$e,'|\vec{OB}|^2').'\\\\
+                    &=& '.($d*$d*$a*$a).f2(2*$d*$e*$in[0],$in[1]).d4($e*$e*$b*$b).'\\\\
+                    &=& '.($a*$a*$d*$d + $d*$e*($a*$a+$b*$b-$c*$c) + $b*$b*$e*$e).'
+            \end{eqnarray}\\\\
+            よって、|'.d1($d,'\vec{OA}').d2($e,'\vec{OB}').'| = '.rt2(1,$a*$a*$d*$d + $d*$e*($a*$a+$b*$b-$c*$c) + $b*$b*$e*$e).'\\\\
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //成分と内積
@@ -10095,9 +12134,20 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \vec{a} \cdot \vec{b} = '.dot3($a,$c,1).' + '.dot3($b,$d,1).' = '.($a*$c+$b*$d).'\\\\
+            \vec{a}と\vec{p}が垂直であるとき、\vec{a} \cdot \vec{p} = 0\\ より、\\\\
+            \begin{eqnarray}
+                \vec{a} \cdot (\vec{a}+t\vec{b}) &=& 0\\\\
+                |\vec{a}|^2 + t\vec{a} \cdot \vec{b} &=& 0\\\\
+                '.($a*$a+$b*$b).d2($a*$c+$b*$d,'t').' &=& 0\\\\
+                t &=& '.f3(-1*($a*$a+$b*$b),$a*$c+$b*$d).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //数列
@@ -10160,9 +12210,21 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            初項'.$a.',\\ 公差'.$d.'の等差数列なので、\\\\
+            a_n = '.$a.' + (n-1) \cdot '.dot3(1,$d,1).'\\\\
+            \quad = '.d1($d,'n').d4($a-$d).'\\\\
+            この等差数列の初項から第n項までの和S_nは、\\\\
+            初項'.$a.',\\ 末項'.d1($d,'n').d4($a-$d).',\\ 項数n\\ と考えて、\\\\
+            \begin{eqnarray}
+                S_n &=& \frac{'.$a.' + ('.d1($d,'n').d4($a-$d).')}{2}n\\\\
+                    &=& '.f1($d,2,'n^2').f2(2*$a-$d,2,'n').'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //等比数列
@@ -10216,9 +12278,16 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            初項'.$a.',\\ 公比'.$r.'なので、\\\\
+            a_n = '.dot3($a,$r,'n-1').'\\\\
+            この等比数列の初項から第n項までの和S_nは、\\\\
+            S_n = \frac{'.d1($a,'('.dot3(1,$r,'n').'-1)').'}{'.$r.'-1} = '.f1($a,$r-1,'('.dot3(1,$r,'n').'-1)').'
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //Σの計算　その１
@@ -10274,9 +12343,17 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            \begin{eqnarray}
+                \sum_{k=1}^{n}('.d1($a,'k^{2}').d2($b,'k').d4($c).') &=& '.f1($a,6,'n(n+1)(2n+1)').f2($b,2,'n(n+1)').d2($c,'n').'\\\\
+                    &=& '.f1($a,6,'(2n^3+3n^2+n)').f2($b,2,'(n^2+n)').d2($c,'n').'\\\\
+                    &=& '.f1($a,3,'n^3').f2($a+$b,2,'n^2').f2($a+3*$b+6*$c,6,'n').'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //Σの計算　その２
@@ -10301,9 +12378,13 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\frac{\fbox{ア}^{n+\fbox{イ}}-\fbox{ウ}}{\fbox{エ}}';
 
+        $sample_text = '
+            \sum_{k=1}^{n}'.$a.'^{k} = \frac{'.$a.'('.$a.'^n-1)}{'.$a.'-1} = \frac{'.$a.'^{n+1}-'.$a.'}{'.($a-1).'}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //分数の数列の和
@@ -10338,9 +12419,36 @@ class QuestionController extends Controller
         //空欄テキストの設定
         $item[0] = '\frac{\fbox{ア}}{\fbox{イ}}';
 
+        switch($a){
+            case 1:
+                $sample_text = '
+                    \frac{k}{k+1} = \frac{1}{k} - \frac{1}{k+1}\\\\
+                    よって、\\\\
+                    \begin{eqnarray}
+                        && \sum_{k=1}^{'.$b.'}\frac{1}{k(k+'.$a.')}\\\\
+                        &=& (\frac{1}{1}-\frac{1}{2}) + (\frac{1}{2}-\frac{1}{3}) + \cdots + (\frac{1}{'.$b.'}-\frac{1}{'.($b+1).'})\\\\
+                        &=& 1 - \frac{1}{'.($b+1).'}\\\\
+                        &=& '.f3($b,$b+1).'
+                    \end{eqnarray}
+                ';
+                break;
+            case 2:
+                $sample_text = '
+                    \frac{k}{k+2} = \frac{1}{2}(\frac{1}{k} - \frac{1}{k+2})\\\\
+                    よって、\\\\
+                    \begin{eqnarray}
+                        && \sum_{k=1}^{'.$b.'}\frac{1}{k(k+'.$a.')}\\\\
+                        &=& \frac{1}{2}\left\{(\frac{1}{1}-\frac{1}{3}) + (\frac{1}{2}-\frac{1}{4}) + \cdots + (\frac{1}{'.($b-1).'}-\frac{1}{'.($b+1).'}) +(\frac{1}{'.$b.'}-\frac{1}{'.($b+2).'})\right\}\\\\
+                        &=& \frac{1}{2} \left( 1+\frac{1}{2} - \frac{1}{'.($b+1).'} - \frac{1}{'.($b+2).'} \right) \\\\
+                        &=& '.f3($b*(3*$b+5),4*($b+1)*($b+2)).'
+                    \end{eqnarray}
+                ';
+                break;
+        }
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //階差数列
@@ -10402,9 +12510,20 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            n \geqq 2\\ のとき、\\\\
+            \begin{eqnarray}
+                a_n &=& a_1 + \sum_{k=1}^{n-1}{b_k}\\\\
+                    &=& '.$a.' + \sum_{k=1}^{n-1}{('.d1($b,'k').d4($c).')}\\\\
+                    &=& '.$a.'  '.f2($b,2,'(n-1)n').d2($c,'(n-1)').'\\\\
+                    &=& '.f1($b,2,'n^2').f2(-1*$b+2*$c,2,'n').d4($a-$c).'
+            \end{eqnarray}\\\\
+            これは、n=1のときも成り立つ。
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //和から一般項
@@ -10443,9 +12562,21 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            a_1 = S_1 = '.($x+$y).'\\\\
+            n \geqq 2\\ のとき、\\\\
+            \begin{eqnarray}
+                a_n &=& S_n - S_{n-1}\\\\
+                    &=& ('.f1($a[0],$a[1],'n^2').f2($b[0],$b[1],'n').') - \left\{ '.f1($a[0],$a[1],'(n-1)^2').f2($b[0],$b[1],'(n-1)').'\right\}\\\\
+                    &=& '.f1($a[0],$a[1],'n^2').f2($b[0],$b[1],'n').f2(-1*$a[0],$a[1],'(n^2-2n+1)').f2(-1*$b[0],$b[1],'(n-1)').'\\\\
+                    &=& '.d1($x,'n').d4($y).'
+            \end{eqnarray}\\\\
+            これは、n=1のときも成り立つ
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //群数列
@@ -10470,8 +12601,8 @@ class QuestionController extends Controller
 
         //問題テキストの設定
         $text = '$$ ある等差数列\{a_{n}\}の一般項は、a_{n} = '.d1($a,'n').d4($b).'である。\\\\
-                 この数列を次のように、1,3,5,…,(2n-1)と群に分ける。\\\\
-                 a_{1}\\ |\\ a_{2} \\ a_{3} \\ a_{4} \\ |\\ a_{5} \\ a_{6} \\ a_{7} \\ a_{8} \\ a_{9} \\ | \\ …\\\\';
+                 この数列を次のように、1,3,5, \cdots ,(2n-1)と群に分ける。\\\\
+                 a_{1}\\ |\\ a_{2} \\ a_{3} \\ a_{4} \\ |\\ a_{5} \\ a_{6} \\ a_{7} \\ a_{8} \\ a_{9} \\ | \\ \cdots \\\\';
 
         //空欄テキストの設定
         $item[0] = 'このとき、第n群の最初の項は、';
@@ -10514,9 +12645,32 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            第(n-1)群までに含まれる項の項数は、\\\\
+            \sum_{k=1}^{n-1} {(2k-1)} = n^2-2n+1\\\\
+            よって、第n群の最初の項は、\\\\
+            (n^2-2n+1)+1 = (n^2-2n+2)番目の項なので、\\\\
+            一般項\\ a_k = '.d1($a,'k').d4($b).'\\ より、\\\\
+            第n群の最初の項は、\\\\
+            '.d1($a,'(n^2-2n+2)').d4($b).' = '.d1($a,'n^2').d2(-2*$a,'n').d4(2*$a+$b).'\\\\
+            また、第n群までに含まれる項の項数は、\\\\
+            \sum_{k=1}^{n} {(2k-1)} = n^2\\\\
+            よって、第n群の最後の項は、n^2番目の項なので、\\\\
+            一般項\\ a_k = '.d1($a,'k').d4($b).'\\ より、\\\\
+            第n群の最後の項は、'.d1($a,'n^2').d4($b).'\\\\
+            したがって、第n群は、\\\\
+            初項'.d1($a,'n^2').d2(-2*$a,'n').d4(2*$a+$b).',\\ 末項'.d1($a,'n^2').d4($b).',\\ \\\\
+            項数2n-1\\ の等差数列とみなせるので、その和は、\\\\
+            \begin{eqnarray}
+                &&\frac{('.d1($a,'n^2').d2(-2*$a,'n').d4(2*$a+$b).')+('.d1($a,'n^2').d4($b).')}{2} \cdot (2n-1) \\\\
+                \quad    &=& ('.d1($a,'n^2').d2(-1*$a,'n').d4($a+$b).')(2n-1)\\\\
+                \quad    &=& '.d1(2*$a,'n^3').d2(-3*$a,'n^2').d2(3*$a+2*$b,'n').d4(-1*$a-$b).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
     //漸化式
@@ -10563,9 +12717,23 @@ class QuestionController extends Controller
             $right_answers[$i] = abs($right_answers[$i]);
         }
 
+        $sample_text = '
+            a_{n+1} = '.d1($b,'a_n').d4($c).'より、\\\\
+            特性方程式\\ \alpha = '.d1($b,'\alpha').d4($c).'\\ を解いて、\\\\
+            \alpha = '.f4($c,1-$b).'\\\\
+            よって、漸化式を変形すると、\\\\
+            a_{n+1}'.f4(-1*$c,1-$b).' = '.d1($b,'(a_n'.f4(-1*$c,1-$b).')').'\\\\
+            数列\left\{a_n'.f4(-1*$c,1-$b).'\right\}は、\\\\
+            初項'.f4($a-$a*$b-$c,1-$b).',\\ 公比'.$b.'\\ の等比数列なので、\\\\
+            \begin{eqnarray}
+                a_n'.f4(-1*$c,1-$b).' &=& ('.f3($a-$a*$b-$c,1-$b).') \cdot '.dot3(1,$b,'n-1').'\\\\
+                    a_n &=& ('.f3($a-$a*$b-$c,1-$b).') \cdot '.dot3(1,$b,'n-1').''.f4($c,1-$b).'
+            \end{eqnarray}
+        ';
+
         $blank_text = str_replace($option,$this->option,implode($item)).'$$';
         $start = time();
-        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start'));
+        return view('question/sentence',compact('right_answers','unit','question','text','blank_text','blanks','start','sample_text'));
     }
 
 
