@@ -17,8 +17,6 @@ class CreateFormulasTable extends Migration
             $table->id();
             $table->integer('unit_id');
             $table->string('name');
-            $table->string('content');
-            $table->string('canvas')->nullable();
         });
     }
 
