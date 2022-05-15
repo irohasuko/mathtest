@@ -14,7 +14,6 @@ class SortController extends Controller
     }
 
     public function unit_select(){
-
         $math1s = Unit::where('id','>',100)->where('id','<',200)->get();
         $math2s = Unit::where('id','>',200)->where('id','<',300)->get();
         $math3s = Unit::where('id','>',300)->where('id','<',400)->get();

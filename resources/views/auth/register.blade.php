@@ -8,7 +8,11 @@
                 <div class="card-header">{{ __('登録') }}</div>
 
                 <div class="card-body">
+                    @isset($authgroup)
+                    <form method="POST" action="{{ url("register/$authgroup") }}">
+                    @else
                     <form method="POST" action="{{ route('register') }}">
+                    @endisset
                         @csrf
 
                         <div class="form-group row">

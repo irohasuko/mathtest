@@ -63,29 +63,51 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
-                        @guest
+                        @if(!Auth::check() && (!isset($authgroup) || !Auth::guard($authgroup)->check()))
                             @if (Route::has('login'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('ログイン') }}</a>
+                                    @isset($authgroup)
+                                    <a class="nav-link" href="{{ url("login/$authgroup") }}">{{ __('Login') }}</a>
+                                    @else
+                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                    @endisset
                                 </li>
                             @endif
 
                             @if (Route::has('register'))
+                            @isset($authgroup)
+                            @if (Route::has("$authgroup-register"))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('登録') }}</a>
+                                    <a class="nav-link" href="{{ route("$authgroup-register") }}">{{ __('Register') }}</a>
                                 </li>
+                            @endif
+                            @else
+                            @if (Route::has('register'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                </li>
+                            @endif
+                            @endisset
                             @endif
                         @else
                             <li class="nav-item dropdown">
+                                
+                                @isset($authgroup)
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    {{ Auth::guard($authgroup)->user()->name }}さん
+                                </a>
+                                @else
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}さん
                                 </a>
+                                @endisset
+                                
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{route('home')}}">ホーム画面へ</a>
                                     <a class="dropdown-item" href="{{route('random_list')}}">弱点演習</a>
                                     <a class="dropdown-item" href="{{route('formula_list')}}">公式一覧</a>
-                                    
+                                    <a class="dropdown-item" href="{{route('password_update')}}">パスワード更新</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -98,7 +120,7 @@
                                     
                                 </div>
                             </li>
-                        @endguest
+                        @endif
                     </ul>
                 </div>
             </div>

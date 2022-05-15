@@ -45,5 +45,7 @@ class Handler extends ExceptionHandler
         if ($e->getStatusCode() == 419) {
         return response()->view('error/form');
     }
+
+    
   }
 }

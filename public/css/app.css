@@ -10026,3 +10026,24 @@ h3 {
 	text-align: center;
   overflow-x: auto;
 }
+
+/** チェックOFFなら非表示 */
+.address{ 
+  display: none;
+}
+/** チェックONなら表示 */
+input:checked ~ .address{
+  display: block;
+}
+ 
+/** チェックボックス横にラベル表示 */
+[type="checkbox"].toggle{
+  position: relative;
+}
+[type="checkbox"].toggle:after{
+  position: absolute;
+  width: 100px; height: 20px;
+  padding-left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}

@@ -20,7 +20,33 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/auth/passwords/update', [App\Http\Controllers\HomeController::class, 'password_update'])->name('password_update');
+Route::post('/auth/passwords/update', [App\Http\Controllers\HomeController::class, 'password_update_post'])->name('password_update_post');
 
+
+Route::get('/login/admin', [App\Http\Controllers\Auth\LoginController::class, 'showAdminLoginForm']);
+Route::get('/register/admin', [App\Http\Controllers\Auth\RegisterController::class, 'showAdminRegisterForm']);
+
+Route::post('/login/admin', [App\Http\Controllers\Auth\LoginController::class, 'adminLogin']);
+Route::post('/register/admin', [App\Http\Controllers\Auth\RegisterController::class, 'registerAdmin'])->name('admin-register');
+
+//管理者用
+Route::get('/admin/home',[App\Http\Controllers\AdminController::class, 'index'])->middleware('auth:admin')->name('admin-home');
+Route::get('/admin/group_management',[App\Http\Controllers\GroupController::class, 'index'])->middleware('auth:admin')->name('group_manage');
+Route::get('/admin/group/{id}', [App\Http\Controllers\GroupController::class, 'user_list'])->name('user_list');
+Route::get('/admin/add_group', [App\Http\Controllers\GroupController::class, 'add_group'])->name('add_group');
+Route::post('/admin/add_group', [App\Http\Controllers\GroupController::class, 'add'])->name('add_class');
+Route::get('/admin/add_member/{id}', [App\Http\Controllers\GroupController::class, 'add_member'])->name('add_member');
+Route::post('/admin/add_member/{id}', [App\Http\Controllers\GroupController::class, 'add_member_post'])->name('add_member_post');
+Route::get('/admin/user/{id}', [App\Http\Controllers\GroupController::class, 'user_manage'])->name('user_manage');
+
+Route::get('/admin/group/{id}/add_homework', [App\Http\Controllers\HomeworkController::class, 'add_homework'])->name('add_homework');
+Route::post('/admin/group/{id}/add_homework', [App\Http\Controllers\HomeworkController::class, 'add'])->name('add_work');
+Route::get('/admin/homework/detail/{id}', [App\Http\Controllers\HomeworkController::class, 'homework_detail'])->name('homework_detail');
+
+
+
+//ユーザ用
 Route::get('/random_list', [App\Http\Controllers\RandomController::class, 'list'])->name('random_list');
 
 //ユニットの選択ページ

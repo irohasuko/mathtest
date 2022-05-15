@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
@@ -26,7 +27,6 @@ class HomeController extends Controller
         $record_count = [0,0,0,0,0];
         $question_count = [0,0,0,0,0];
 
-        
         //$records = \App\Models\User::find(auth()->user()->id)->records()->where('result',1)->get();
         $records = \App\Models\User::find(auth()->user()->id)->records()
                                         ->where('result',1)
@@ -57,5 +57,25 @@ class HomeController extends Controller
         $question_count[4] = \App\Models\Question::where('unit_id','>',500)->count();
 
         return view('home',compact('record_count','question_count'));
+    }
+
+    public function password_update(){
+
+        return view('auth/passwords/update');
+    }
+
+    public function password_update_post(Request $request){
+        $user = \App\Models\User::find(auth()->user()->id);
+        if(password_verify($request->current_password, $user->password)){
+            if($request->new_password == $request->check_password){
+                $user->password = bcrypt($request->new_password);
+                $user->save();
+            }else{
+                return redirect(route('password_update'))->with('flashmessage','同じパスワードを入力してください');
+            }
+        }else{
+            return redirect(route('password_update'))->with('flashmessage','現在のパスワードが間違っています');
+        }
+        return redirect(route('home'))->with('flashmessage','パスワードの更新が完了しました');
     }
 }
