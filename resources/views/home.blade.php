@@ -30,7 +30,11 @@
                     <h4 class="card-title">弱点演習</h4>
                     <p class="card-text">正答率の低い問題を抽出して演習できます</p>
                     <div class="text-right">
-                        <a href="random_list" class="btn btn-primary">学習する</a>
+                        @if(Auth::check())
+                            <a href="random_list" class="btn btn-primary">学習する</a>
+                        @else
+                            ※ログインすると使用可能
+                        @endif
                     </div>
                 </div>
             </div>
@@ -61,12 +65,15 @@
                             <th scope="col">数学B</th>
                         </tr>
                         <tr>
-                            @for($i = 0; $i < 5; $i++)
-                            <td>{{$record_count[$i]}}/{{$question_count[$i]}}</td>
-                            @endfor
+                            @if(Auth::check())
+                                @for($i = 0; $i < 5; $i++)
+                                <td>{{$record_count[$i]}}/{{$question_count[$i]}}</td>
+                                @endfor
+                            @endif
                         </tr>
                     </table>
                     --}}
+                    @if(Auth::check())
                     <p>数学Ⅰ</p>
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" style="width: {{($record_count[0]/$question_count[0])*100}}%;" aria-valuenow="{{$record_count[0]}}" aria-valuemin="0" aria-valuemax="{{$question_count[0]}}">{{round($record_count[0]/$question_count[0]*100)}}%</div>
@@ -87,6 +94,9 @@
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" style="width: {{($record_count[4]/$question_count[4])*100}}%;" aria-valuenow="{{$record_count[4]}}" aria-valuemin="0" aria-valuemax="{{$question_count[4]}}">{{round($record_count[4]/$question_count[4]*100)}}%</div>
                     </div><br>
+                    @else
+                    <div>※ログインすると使用可能</div>
+                    @endif
                     
 
                 </div> 

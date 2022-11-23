@@ -10,10 +10,12 @@ use App\Models\Unit;
 class QuestionController extends Controller
 {
     //ユーザ認証
+    /*
     public function __construct()
     {
         $this->middleware('auth');
     }
+    */
 
     public function question($unit_id,$q_id)
     {
