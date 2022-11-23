@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Unit;
 use App\Models\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SortController extends Controller
 {
+    /*
     public function __construct()
     {
         $this->middleware('auth');
     }
+    */
 
     public function unit_select(){
         $math1s = Unit::where('id','>',100)->where('id','<',200)->get();
@@ -25,21 +28,27 @@ class SortController extends Controller
     public function q_select($id){
         $unit = Unit::where('id',$id)->first();
         $items = Question::where('unit_id', $id)->get();
-        $records = \App\Models\User::find(auth()->user()->id)->records()
-                                        ->where('unit_id',$id)
-                                        ->where('result',1)
-                                        ->select('question_id')
-                                        ->groupBy('question_id')
-                                        ->get();
-        $success = [];
-        foreach($items as $item){
-            $success[$item->q_id] = 0;
+        if(Auth::check()){
+            $records = \App\Models\User::find(auth()->user()->id)->records()
+                                            ->where('unit_id',$id)
+                                            ->where('result',1)
+                                            ->select('question_id')
+                                            ->groupBy('question_id')
+                                            ->get();
+            $success = [];
+            foreach($items as $item){
+                $success[$item->q_id] = 0;
+            }
+
+            foreach($records as $record){
+                $success[$record->question_id] = 1;
+            }
+        
+            return view('select/item_select',compact('items','success','unit'));
+        }else{
+            return view('select/item_select',compact('items','unit'));
         }
 
-        foreach($records as $record){
-            $success[$record->question_id] = 1;
-        }
-        return view('select/item_select',compact('items','success','unit'));
     }
 
     public function q_route($q_id){

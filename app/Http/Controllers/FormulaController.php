@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Models\Formula;
+use Illuminate\Support\Facades\Auth;
 
 class FormulaController extends Controller
 {
+    /*
     public function __construct()
     {
         $this->middleware('auth');
     }
+    */
 
     public function formula_list(){
         $math1s = Unit::where('id','>',100)->where('id','<',200)->get();

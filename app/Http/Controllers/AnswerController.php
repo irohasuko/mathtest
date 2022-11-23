@@ -7,6 +7,7 @@ use App\Models\Record;
 use App\Models\Question;
 use App\Models\Unit;
 use App\Models\Formula;
+use Illuminate\Support\Facades\Auth;
 
 class AnswerController extends Controller
 {
@@ -47,15 +48,17 @@ class AnswerController extends Controller
     //結果の保存
     public function store_result($unit_id, $question_id, $result,$time) :void
     {
-        $record = new Record();
+        if(Auth::check()){
+            $record = new Record();
 
-        $record->user_id = auth()->user()->id;
-        $record->unit_id = $unit_id;
-        $record->question_id = $question_id;
-        $record->result = $result;
-        $record->time = $time;
+            $record->user_id = auth()->user()->id;
+            $record->unit_id = $unit_id;
+            $record->question_id = $question_id;
+            $record->result = $result;
+            $record->time = $time;
 
-        $record->save();
+            $record->save();
+        }
     }
 
     public function unit101_a01(Request $request, $unit,$question,$time)
